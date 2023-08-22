@@ -1,0 +1,149 @@
+version: '3.7'
+#docker network create --driver bridge --subnet=200.200.0.0/16 --ip-range=200.200.200.0/24 --gateway=200.200.0.1 wsn_net
+
+networks:
+  wsn_net:
+    ipam:
+      config:
+        - subnet: 200.200.200.0/24  # Subnet của mạng
+          ip_range: 200.200.200.0/24  # Phạm vi IP cho mạng
+          gateway: 200.200.200.1  # Gateway của mạng
+
+services:
+  #####################################################
+  ############# A. ZABBIX CLUSTER #####################
+  #####################################################
+  #2. Start empty MySQL server instance
+  mysql:
+      container_name: wsnCluster_zabbix-mysql-server
+      user: root
+      environment:
+          - MYSQL_DATABASE=zabbix
+          - MYSQL_USER=zabbix
+          - MYSQL_PASSWORD=zabbix_pwd
+          - MYSQL_ROOT_PASSWORD=root_pwd
+      networks:
+          wsn_net:
+            ipv4_address: '200.200.200.2'
+      restart: unless-stopped
+      image: 'mysql:8.0'
+      command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
+    
+  #3. Start Zabbix Java gateway instance
+  zabbix-java-gateway:
+      container_name: wsnCluster_zabbix-java-gateway
+      user: root
+      networks: 
+          wsn_net:
+            ipv4_address: '200.200.200.3'
+      restart: unless-stopped
+      image: 'zabbix/zabbix-java-gateway:alpine-6.2-latest'
+  #4. Start Zabbix server instance and link the instance with created MySQL server instance
+  zabbix-server-mysql:
+      container_name: wsnCluster_zabbix-server-agent
+      user: root
+      environment:
+          - DB_SERVER_HOST=mysql-server
+          - MYSQL_DATABASE=zabbix
+          - MYSQL_USER=zabbix
+          - MYSQL_PASSWORD=zabbix_pwd
+          - MYSQL_ROOT_PASSWORD=root_pwd
+          - ZBX_JAVAGATEWAY=zabbix-java-gateway
+      volumes:
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/4_Zabbix_Server
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/var/lib/zabbix/shareFolder
+      networks: 
+          wsn_net:
+            ipv4_address: '200.200.200.4'
+      ports:
+          - '1000:10051' #Agent port of Zabbix server
+      working_dir: /4_Zabbix_Server
+      restart: unless-stopped
+      image: 'zabbix/zabbix-server-mysql:alpine-6.2-latest'
+
+  #5. Start Zabbix web interface instance and link the instance with created MySQL server instance
+  zabbix-web-nginx-mysql:
+      container_name: wsnCluster_zabbix-web-nginx-mysql
+      user: root
+      environment:
+          - ZBX_SERVER_HOST=zabbix-server-mysql
+          - DB_SERVER_HOST=mysql-server
+          - MYSQL_DATABASE=zabbix
+          - MYSQL_USER=zabbix
+          - MYSQL_PASSWORD=zabbix_pwd
+          - MYSQL_ROOT_PASSWORD=root_pwd
+      volumes:
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/5_Zabbix_Web
+      networks: 
+          wsn_net:
+            ipv4_address: '200.200.200.5'
+      ports:
+          - '1001:8080'
+      working_dir: /5_Zabbix_Web
+      restart: unless-stopped
+      image: 'zabbix/zabbix-web-nginx-mysql:alpine-6.2-latest'
+
+  #####################################################
+  ############# B. OTHER CONTAINERS #####################
+  #####################################################
+  #6. MQTT broker
+  #USER: mqtt_broker
+  #PASS: !Da#ImU%VuF3V
+  lotus_mqtt: #Alpine Linux
+    image: meomay22/eclipse-mosquitto-pwfile:1.2
+    container_name: wsnCluster_mqtt
+    user: root
+    restart: always
+    volumes:
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/6_MQTT_Broker:/6_MQTT_Broker
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
+    ports:
+      # - 1883:1883 #Tag V1.0
+      - 1002:1885 #Tag V1.1
+      - 1003:9001 #MQTT over Websocket
+    working_dir: /6_MQTT_Broker
+    networks:
+      wsn_net: #external network
+        ipv4_address: '200.200.200.6'
+    command: /bin/sh -c "screen -dmS MQTT_BROKER /docker-entrypoint.sh /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf &&
+                         screen -dmS SKIO_MQTT sleep 5;python3 /7_SocketIO_Server/Application/socketIo_MqttSideExec.py &&
+                         tail -f /dev/null"
+
+  #7. Socket.io
+  lotus_socketio: #Ubuntu Linux
+    # build: ./socketio/
+    image: meomay22/lotus_socketio:1.0
+    container_name: wsnCluster_socketio
+    user: root
+    restart: 'always'
+    networks:
+      wsn_net: #external network
+        ipv4_address: '200.200.200.7'
+    ports:
+      - 1004:5000
+    volumes:
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
+    working_dir: /7_SocketIO_Server
+    command: "python3 /7_SocketIO_Server/Application/socketIo_AsyncServer.py"
+
+  #8. Socket.io_Client
+  lotus_socketio_client:
+    # build: ./socketio/
+    image: meomay22/lotus_socketio_client:1.0
+    container_name: wsnCluster_socketio_client
+    user: root
+    restart: 'always'
+    networks:
+      wsn_net: #external network
+        ipv4_address: '200.200.200.8'
+    volumes:
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/8_PyWorker
+      - /Users/dungtran/HShare/:/HShare #Mount thư mục HShare vào container
+    working_dir: /8_PyWorker
+    command: "tail -f /dev/null"
+

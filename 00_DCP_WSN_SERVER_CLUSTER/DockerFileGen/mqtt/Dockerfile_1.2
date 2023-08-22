@@ -1,0 +1,25 @@
+# A. Hàm build & update image:
+# 1. cd /Users/dungtran/DCP_MySQL_phpMyAdmin/mqtt
+# 2. docker build -f Dockerfile_1.2 -t meomay22/eclipse-mosquitto-pwfile:1.2 .
+# 3. security -v unlock-keychain ~/Library/Keychains/login.keychain-db (Pass: s***n)
+# 4. docker push meomay22/eclipse-mosquitto-pwfile:1.2
+# B. Update:
+# 1. Cài đặt python3, pip3 và các thư viện cần thiết: pip3 install -r /pip_requirement.txt
+# 2. Cài đặt screen: apk add screen
+# 3. Copy thư mục socketio_app vào thư mục /socketio_app (Có file chạy là: /socketio_app/socketIo_MqttSideExec.py)
+# 4. Cài đặt tự động chạy (default) nếu không được yêu cầu chạy command từ bên ngoài.
+
+
+FROM meomay22/eclipse-mosquitto-pwfile:1.1
+USER root
+ADD ./pip_requirement.txt /pip_requirement.txt
+RUN apk update
+RUN apk add python3
+RUN apk add py3-pip
+RUN apk add python3-pip
+RUN pip3 install -r /pip_requirement.txt
+WORKDIR /
+ADD ./socketio_app /socketio_app
+WORKDIR /socketio_app
+RUN apk add screen
+

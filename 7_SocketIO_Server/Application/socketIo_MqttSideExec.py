@@ -1,27 +1,23 @@
 import __init
+############ IMPORT PARAMETER ############
+from Application.parameter import *
+import sys,os
+if os.path.exists("/myConfiguration.py"): #Mapped from host to container
+  MAIN_WORKDIR = os.path.dirname(sys.path[0])
+  os.system("cp /myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+  from cloneMyConfig import *
+##########################################
 import socketio
 from Library.A9_MQTT.mqtt import mqttClass #pip install paho-mqtt
 import threading
 import random
 import json
 
-############################################################
-# USER CONFIGURATION                                       #
-############################################################
-SOCKETIO_EXPORT_LICENSE_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
-SOCKETIO_EXPORT_LICENSE_TOPIC_LIST.append("WSN_GW_01C823")  
-# MQTT_BROKER_IP = "100.100.100.3"
-MQTT_BROKER_IP = "127.0.0.1"
-MQTT_PORT = 1885
-MQTT_USERNAME = "mqtt_broker"
-MQTT_PASSWORD = "!Da#ImU%VuF3V"
-MQTT_CLIENT_ID = f'MQTT_EXCTL_'+str(random.randint(0, 10000))
 
-SOCKETIO_URL = "http://100.100.100.4:5000" # EX: "http://lotus1104.synology.me:83"
 ############################################################
 # 1. CONNECT TO MQTT BROKER                                #
 ############################################################
-MQTT = mqttClass(MQTT_BROKER_IP, MQTT_PORT, MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_PASSWORD)
+MQTT = mqttClass(MQTT_BROKER_IP, MQTT_PORT, MQTT_CLIENT_MQTT_EXCTL_ID, MQTT_USERNAME, MQTT_PASSWORD)
 def subcribeFilter(msg):
   jsonData = eval(msg.payload.decode())
   #Check sender uid

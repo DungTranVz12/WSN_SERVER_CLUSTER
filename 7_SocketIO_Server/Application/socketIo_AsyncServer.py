@@ -40,7 +40,7 @@ connection_manager = NamespaceConnectionManager()
 ############################################################
 # 1. CONNECT TO MQTT BROKER                                #
 ############################################################
-MQTT = mqttClass(MQTT_BROKER_IP, MQTT_PORT, MQTT_CLIENT_SIO_ID, MQTT_USERNAME, MQTT_PASSWORD)
+MQTT = mqttClass(MQTT_BROKER_IP, MQTT_PORT, MQTT_CLIENT_SIO_EXCTL_ID, MQTT_USERNAME, MQTT_PASSWORD)
 threading.Thread(target=MQTT.listen).start()
 ##############################################################
 
