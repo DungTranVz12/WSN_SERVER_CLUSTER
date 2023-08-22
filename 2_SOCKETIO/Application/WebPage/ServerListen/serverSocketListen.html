@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Example</h1>
+    <input type="text" id="messageInput" placeholder="Type your message">
+    <button id="sendButton">Send</button>
+    <ul id="messages"></ul>
+
+    <script>
+        // Kết nối tới namespace "SERVER_LISTEN"
+        const socket = io('/SERVER_LISTEN');
+
+        // Lấy các phần tử DOM cần thao tác
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const messagesList = document.getElementById('messages');
+
+        // Xử lý khi nhấn nút "Send"
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+            if (message) {
+                socket.emit('SOCKET', {"topic":"SERVER_LISTEN","message":message});
+                messageInput.value = '';
+            }
+        });
+
+        
+        // Xử lý khi nhận tin nhắn mới từ máy chủ
+        socket.connect('SERVER_LISTEN', (message) => {
+            const li = document.createElement('li');
+            li.textContent = message;
+            messagesList.appendChild(li);
+        });
+
+        // Xử lý khi nhận tin nhắn mới từ máy chủ
+        socket.on('SERVER_LISTEN', (message) => {
+            const li = document.createElement('li');
+            li.textContent = message;
+            messagesList.appendChild(li);
+        });
+    </script>
+</body>
+</html>

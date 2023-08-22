@@ -1,0 +1,7 @@
+apk update
+apk add python3
+apk add py3-pip
+pip install python-socketio
+pip install paho-mqtt
+pip install requests
+pip install websocket-client

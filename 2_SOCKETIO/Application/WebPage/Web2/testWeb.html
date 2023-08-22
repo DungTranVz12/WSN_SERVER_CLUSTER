@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- kết nối socket.io tới server -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+    <script>var socket = io();</script>
+    <!-- end -->
+
+</head>
+<body>
+
+    <div class="jumbotron text-center">
+    <h1></h1>
+    <p>Kết quả trả về</p> 
+    </div>
+    
+    <div class="container text-center">
+        <label for="text">Nhập Text</label>
+        <input type="text" id="text" name="text" placeholder="Nhập Text">
+        <button type="button" class="btn btn-success" onclick="send()">Gửi</button>
+    </div>
+
+    <script>
+        function send()
+        {
+            var text = $('#text').val();
+
+            // gửi giá trị qua server
+            socket.emit( 'client', text );
+        }
+
+        // nhận giá trị từ server
+        socket.on( 'server', (data)=>{
+            $('h1').html(data);
+        });
+    </script>
+
+</body>
+</html>
