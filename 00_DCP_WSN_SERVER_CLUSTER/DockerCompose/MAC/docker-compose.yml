@@ -22,12 +22,21 @@ services:
           - MYSQL_USER=zabbix
           - MYSQL_PASSWORD=!Da#ImU%VuF3V
           - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
+      volumes:
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL:/2_MySQL
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/0_MySQL_DATA_BKUP:/mySqlBackupDir            #MySQL data backup
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/mysqlBackupScript.sh:/mysqlBackupScript.sh   #MySQL data backup script
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/data:/var/lib/mysql                          #MySQL data
+      ports:
+        - 10000:3306
       networks:
           wsn_net:
             ipv4_address: '200.200.200.2'
       restart: unless-stopped
       image: 'mysql:8.0'
-      command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
+      # command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
+      command: /bin/bash -l -c "sleep 10 && sh /mysqlBackupScript.sh & mysqld --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password"
 
   #3. Start Zabbix Java gateway instance
   wsnCluster_zabbix-java-gateway:
@@ -57,7 +66,7 @@ services:
           wsn_net:
             ipv4_address: '200.200.200.4'
       ports:
-          - '10000:10051' #Agent port of Zabbix server
+          - '10001:10051' #Agent port of Zabbix server
       working_dir: /4_Zabbix_Server
       restart: unless-stopped
       image: 'zabbix/zabbix-server-mysql:alpine-6.2-latest'
@@ -80,7 +89,7 @@ services:
           wsn_net:
             ipv4_address: '200.200.200.5'
       ports:
-          - '10001:8080'
+          - '10002:8080'
       working_dir: /5_Zabbix_Web
       restart: unless-stopped
       image: 'zabbix/zabbix-web-nginx-mysql:alpine-6.2-latest'
@@ -102,8 +111,8 @@ services:
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
     ports:
       # - 1883:1883 #Tag V1.0
-      - 10002:1885 #Tag V1.1
-      - 10003:9001 #MQTT over Websocket
+      - 10003:1885 #Tag V1.1
+      - 10004:9001 #MQTT over Websocket
     working_dir: /6_MQTT_Broker
     networks:
       wsn_net: #external network
@@ -123,7 +132,7 @@ services:
       wsn_net: #external network
         ipv4_address: '200.200.200.7'
     ports:
-      - 10004:5000
+      - 10005:5000
     volumes:
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
@@ -154,7 +163,7 @@ services:
     user: root
     restart: always
     ports:
-      - 10005:80 #http://192.168.60.168:81
+      - 10006:80 #http://192.168.60.168:81
     links:
       - 'wsnCluster_zabbix-mysql-server:db' #<Tên service>[:tạo alias cho service]. CHÚ Ý: Nếu tên service không sẵn là 'db' thì
                          #alias name của mysql phải là 'db' vì code bên trong phpmyadmin sẽ tìm kiếm DB server theo tên này.
