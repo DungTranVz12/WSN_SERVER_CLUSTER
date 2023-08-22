@@ -43,12 +43,12 @@ services:
       container_name: wsnCluster_zabbix-server-agent
       user: root
       environment:
-          - DB_SERVER_HOST=mysql-server
+          - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
           - MYSQL_DATABASE=zabbix
           - MYSQL_USER=zabbix
           - MYSQL_PASSWORD=zabbix_pwd
           - MYSQL_ROOT_PASSWORD=root_pwd
-          - ZBX_JAVAGATEWAY=zabbix-java-gateway
+          - ZBX_JAVAGATEWAY=wsnCluster_zabbix-java-gateway
       volumes:
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/4_Zabbix_Server
@@ -57,7 +57,7 @@ services:
           wsn_net:
             ipv4_address: '200.200.200.4'
       ports:
-          - '1000:10051' #Agent port of Zabbix server
+          - '10000:10051' #Agent port of Zabbix server
       working_dir: /4_Zabbix_Server
       restart: unless-stopped
       image: 'zabbix/zabbix-server-mysql:alpine-6.2-latest'
@@ -67,8 +67,8 @@ services:
       container_name: wsnCluster_zabbix-web-nginx-mysql
       user: root
       environment:
-          - ZBX_SERVER_HOST=zabbix-server-mysql
-          - DB_SERVER_HOST=mysql-server
+          - ZBX_SERVER_HOST=wsnCluster_zabbix-server-agent
+          - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
           - MYSQL_DATABASE=zabbix
           - MYSQL_USER=zabbix
           - MYSQL_PASSWORD=zabbix_pwd
@@ -80,7 +80,7 @@ services:
           wsn_net:
             ipv4_address: '200.200.200.5'
       ports:
-          - '1001:8080'
+          - '10001:8080'
       working_dir: /5_Zabbix_Web
       restart: unless-stopped
       image: 'zabbix/zabbix-web-nginx-mysql:alpine-6.2-latest'
@@ -102,8 +102,8 @@ services:
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
     ports:
       # - 1883:1883 #Tag V1.0
-      - 1002:1885 #Tag V1.1
-      - 1003:9001 #MQTT over Websocket
+      - 10002:1885 #Tag V1.1
+      - 10003:9001 #MQTT over Websocket
     working_dir: /6_MQTT_Broker
     networks:
       wsn_net: #external network
@@ -123,7 +123,7 @@ services:
       wsn_net: #external network
         ipv4_address: '200.200.200.7'
     ports:
-      - 1004:5000
+      - 10004:5000
     volumes:
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
