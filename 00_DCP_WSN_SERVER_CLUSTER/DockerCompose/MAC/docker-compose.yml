@@ -14,23 +14,23 @@ services:
   ############# A. ZABBIX CLUSTER #####################
   #####################################################
   #2. Start empty MySQL server instance
-  mysql:
+  wsnCluster_zabbix-mysql-server:
       container_name: wsnCluster_zabbix-mysql-server
       user: root
       environment:
           - MYSQL_DATABASE=zabbix
           - MYSQL_USER=zabbix
-          - MYSQL_PASSWORD=zabbix_pwd
-          - MYSQL_ROOT_PASSWORD=root_pwd
+          - MYSQL_PASSWORD=!Da#ImU%VuF3V
+          - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
       networks:
           wsn_net:
             ipv4_address: '200.200.200.2'
       restart: unless-stopped
       image: 'mysql:8.0'
       command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
-    
+
   #3. Start Zabbix Java gateway instance
-  zabbix-java-gateway:
+  wsnCluster_zabbix-java-gateway:
       container_name: wsnCluster_zabbix-java-gateway
       user: root
       networks: 
@@ -39,15 +39,15 @@ services:
       restart: unless-stopped
       image: 'zabbix/zabbix-java-gateway:alpine-6.2-latest'
   #4. Start Zabbix server instance and link the instance with created MySQL server instance
-  zabbix-server-mysql:
+  wsnCluster_zabbix-server-agent:
       container_name: wsnCluster_zabbix-server-agent
       user: root
       environment:
           - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
           - MYSQL_DATABASE=zabbix
           - MYSQL_USER=zabbix
-          - MYSQL_PASSWORD=zabbix_pwd
-          - MYSQL_ROOT_PASSWORD=root_pwd
+          - MYSQL_PASSWORD=!Da#ImU%VuF3V
+          - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
           - ZBX_JAVAGATEWAY=wsnCluster_zabbix-java-gateway
       volumes:
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
@@ -63,7 +63,7 @@ services:
       image: 'zabbix/zabbix-server-mysql:alpine-6.2-latest'
 
   #5. Start Zabbix web interface instance and link the instance with created MySQL server instance
-  zabbix-web-nginx-mysql:
+  wsnCluster_zabbix-web-nginx-mysql:
       container_name: wsnCluster_zabbix-web-nginx-mysql
       user: root
       environment:
@@ -71,8 +71,8 @@ services:
           - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
           - MYSQL_DATABASE=zabbix
           - MYSQL_USER=zabbix
-          - MYSQL_PASSWORD=zabbix_pwd
-          - MYSQL_ROOT_PASSWORD=root_pwd
+          - MYSQL_PASSWORD=!Da#ImU%VuF3V
+          - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
       volumes:
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/5_Zabbix_Web
@@ -91,7 +91,7 @@ services:
   #6. MQTT broker
   #USER: mqtt_broker
   #PASS: !Da#ImU%VuF3V
-  lotus_mqtt: #Alpine Linux
+  wsnCluster_mqtt: #Alpine Linux
     image: meomay22/eclipse-mosquitto-pwfile:1.2
     container_name: wsnCluster_mqtt
     user: root
@@ -113,7 +113,7 @@ services:
                          tail -f /dev/null"
 
   #7. Socket.io
-  lotus_socketio: #Ubuntu Linux
+  wsnCluster_socketio: #Alpine Linux
     # build: ./socketio/
     image: meomay22/lotus_socketio:1.0
     container_name: wsnCluster_socketio
@@ -131,7 +131,7 @@ services:
     command: "python3 /7_SocketIO_Server/Application/socketIo_AsyncServer.py"
 
   #8. Socket.io_Client
-  lotus_socketio_client:
+  wsnCluster_socketio_client: #Alpine Linux
     # build: ./socketio/
     image: meomay22/lotus_socketio_client:1.0
     container_name: wsnCluster_socketio_client
@@ -147,3 +147,17 @@ services:
     working_dir: /8_PyWorker
     command: "tail -f /dev/null"
 
+  #9. phpMyAdmin
+  wsnCluster_zabbix_phpmyadmin:
+    image: phpmyadmin
+    container_name: wsnCluster_zabbix_phpmyadmin
+    user: root
+    restart: always
+    ports:
+      - 10005:80 #http://192.168.60.168:81
+    links:
+      - 'wsnCluster_zabbix-mysql-server:db' #<Tên service>[:tạo alias cho service]. CHÚ Ý: Nếu tên service không sẵn là 'db' thì
+                         #alias name của mysql phải là 'db' vì code bên trong phpmyadmin sẽ tìm kiếm DB server theo tên này.
+    networks:
+      wsn_net:
+        ipv4_address: '200.200.200.9'
