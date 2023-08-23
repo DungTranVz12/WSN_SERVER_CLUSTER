@@ -1,0 +1,194 @@
+[
+    {
+        "id": 1,
+        "title": "Project Onboarding", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes": [
+            {
+                "id":1,
+                "description":"In some cases saw that the annotation created by someone else did not update in the file tab/diff view file tab but the annotation list in the hover was updated where in when i clicked view, it did not take me to the newly created annotation as it was not visible in the list of annotations as of yet in the file tab. "
+            },
+            {
+                "id":2,
+                "description":"In case someone clicks in the message box for an annotation and then clicks on the file or directly hovers over the code mark in the gutter and clicks on the view link, then the focusing does not work always."
+            },
+            {
+                "id":3,
+                "description":"Max number of characters for message/description of annotation/codemark needs to be set and based on it two lines at max need to be shown."
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Users and Groups onboarding tour", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes": [
+            {
+                "id":1,
+                "description":"In case someone clicks in the message box for an annotation and then clicks on the file or directly hovers over the code mark in the gutter and clicks on the view link, then the focusing does not work always."
+            },
+            {
+                "id":2,
+                "description":"In case someone clicks in the message box for an annotation and then clicks on the file or directly hovers over the code mark in the gutter and clicks on the view link, then the focusing does not work always."
+            },
+            {
+                "id":3,
+                "description":"In case someone clicks in the message box for an annotation and then clicks on the file or directly hovers over the code mark in the gutter and clicks on the view link, then the focusing does not work always."
+            },
+            {
+                "id":4,
+                "description":"In case someone clicks in the message box for an annotation and then clicks on the file or directly hovers over the code mark in the gutter and clicks on the view link, then the focusing does not work always."
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Project properties", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes": [
+            {
+                "id":1,
+                "description":"Test 1"
+            },
+            {
+                "id":2,
+                "description":"Test 2"
+            },
+            {
+                "id":3,
+                "description":"Test 3"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Properties Access", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes": [
+            {
+                "id":1
+            },
+            {
+                "id":2
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Project Onboarding", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes":[
+            {
+                "id":1
+            },
+            {
+                "id":2
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Project Onboarding", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes":[
+            {
+                "id":1
+            },
+            {
+                "id":2
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Project Onboarding", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes":[
+            {
+                "id":1
+            },
+            {
+                "id":2
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "title": "Project Onboarding", 
+        "description": "This collection of codenotes should give you and understanding on where to start", 
+        "codenotes":[
+            {
+                "id":1
+            },
+            {
+                "id":2
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            },
+            {
+                "id":3
+            },
+            {
+                "id":4
+            }
+        ]
+    }
+]

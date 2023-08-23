@@ -23,8 +23,9 @@ services:
           - MYSQL_PASSWORD=!Da#ImU%VuF3V
           - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
       volumes:
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
-          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL:/2_MySQL
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL:/AppDir
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/0_MySQL_DATA_BKUP:/mySqlBackupDir            #MySQL data backup
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/mysqlBackupScript.sh:/mysqlBackupScript.sh   #MySQL data backup script
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/data:/var/lib/mysql                          #MySQL data
@@ -47,10 +48,10 @@ services:
             ipv4_address: '200.200.200.3'
       restart: unless-stopped
       image: 'zabbix/zabbix-java-gateway:alpine-6.2-latest'
+      
   #4. Start Zabbix server instance and link the instance with created MySQL server instance
   wsnCluster_zabbix-server-agent:
       container_name: wsnCluster_zabbix-server-agent
-      user: root
       environment:
           - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
           - MYSQL_DATABASE=zabbix
@@ -60,14 +61,14 @@ services:
           - ZBX_JAVAGATEWAY=wsnCluster_zabbix-java-gateway
       volumes:
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
-          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/4_Zabbix_Server
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/AppDir
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/var/lib/zabbix/shareFolder
       networks: 
           wsn_net:
             ipv4_address: '200.200.200.4'
       ports:
           - '10001:10051' #Agent port of Zabbix server
-      working_dir: /4_Zabbix_Server
+      working_dir: /AppDir
       restart: unless-stopped
       image: 'zabbix/zabbix-server-mysql:alpine-6.2-latest'
 
@@ -83,14 +84,15 @@ services:
           - MYSQL_PASSWORD=!Da#ImU%VuF3V
           - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
       volumes:
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
           - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
-          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/5_Zabbix_Web
+          - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/AppDir
       networks: 
           wsn_net:
             ipv4_address: '200.200.200.5'
       ports:
           - '10002:8080'
-      working_dir: /5_Zabbix_Web
+      working_dir: /AppDir
       restart: unless-stopped
       image: 'zabbix/zabbix-web-nginx-mysql:alpine-6.2-latest'
 
@@ -106,25 +108,26 @@ services:
     user: root
     restart: always
     volumes:
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
-      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/6_MQTT_Broker:/6_MQTT_Broker
-      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/6_MQTT_Broker:/AppDir
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir2
     ports:
       # - 1883:1883 #Tag V1.0
       - 10003:1885 #Tag V1.1
       - 10004:9001 #MQTT over Websocket
-    working_dir: /6_MQTT_Broker
+    working_dir: /AppDir
     networks:
       wsn_net: #external network
         ipv4_address: '200.200.200.6'
     command: /bin/sh -c "screen -dmS MQTT_BROKER /docker-entrypoint.sh /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf &&
-                         screen -dmS SKIO_MQTT sleep 5;python3 /7_SocketIO_Server/Application/socketIo_MqttSideExec.py &&
+                         screen -dmS SKIO_MQTT sleep 5;python3 /AppDir2/Application/socketIo_MqttSideExec.py &&
                          tail -f /dev/null"
 
   #7. Socket.io
   wsnCluster_socketio: #Alpine Linux
     # build: ./socketio/
-    image: meomay22/lotus_socketio:1.0
+    image: meomay22/socketio_alpine:1.0
     container_name: wsnCluster_socketio
     user: root
     restart: 'always'
@@ -134,15 +137,27 @@ services:
     ports:
       - 10005:5000
     volumes:
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
-      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/7_SocketIO_Server
-    working_dir: /7_SocketIO_Server
-    command: "python3 /7_SocketIO_Server/Application/socketIo_AsyncServer.py"
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir
+    working_dir: /AppDir
+    command: "python3 /AppDir/Application/socketIo_AsyncServer.py"
+
+
+
+
+
 
   #8. Socket.io_Client
+  ##### THIẾU ######
+  # + pip install py-zabbix
+
+
+
+
   wsnCluster_socketio_client: #Alpine Linux
     # build: ./socketio/
-    image: meomay22/lotus_socketio_client:1.0
+    image: meomay22/socketio_alpine:1.0
     container_name: wsnCluster_socketio_client
     user: root
     restart: 'always'
@@ -150,11 +165,13 @@ services:
       wsn_net: #external network
         ipv4_address: '200.200.200.8'
     volumes:
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
-      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/8_PyWorker
+      - /Users/dungtran/HShare/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir
       - /Users/dungtran/HShare/:/HShare #Mount thư mục HShare vào container
-    working_dir: /8_PyWorker
-    command: "tail -f /dev/null"
+    working_dir: /AppDir
+    # command: "tail -f /dev/null"
+    command: "python3 /AppDir/Application/scanZabbixProblem.py"
 
   #9. phpMyAdmin
   wsnCluster_zabbix_phpmyadmin:

@@ -1,0 +1,63 @@
+[
+    {
+        "id": 1,
+        "title": "status:open",
+        "description": "Show open Codenotes and Code Tours"
+    },
+    {
+        "id": 2,
+        "title": "status:resolved",
+        "description": "Show resolved Codenotes and Code Tours"
+    },
+    {
+        "id": 3,
+        "title": "author:@",
+        "description": "Show Codenotes and Code Tours created by you (@me) or any teammate (@username)"
+    },
+    {
+        "id": 4,
+        "title": "participant:@",
+        "description": "Show Codenotes and Code Tours you (@me) or any teammate (@username) particiapte in"
+    },
+    {
+        "id": 5,
+        "title": "mention:@",
+        "description": "Show Codenotes and Code Tours where you (@me) or any teammate (@username) where mentioned in either title or description"
+    },
+    {
+        "id": 6,
+        "title": "title:",
+        "description": "Show Codenotes and Code Tours that contain a specific keyword in their title"
+    },
+    {
+        "id": 7,
+        "title": "label:",
+        "description": "Show Codenotes and Code Tours with specific label",
+        "options":[]
+    },
+    {
+        "id": 8,
+        "title": "file:",
+        "description": "Show Codenotes and Code Tours that have files with matching keyword in files titles"
+    },
+    {
+        "id": 9,
+        "title": "commit:",
+        "description": "Show Codenotes and Code Tours that include code with specified commit ID"
+    },
+    {
+        "id": 10,
+        "title": "branch:",
+        "description": "Show Codenotes and Code Tours that include code with specified branch"
+    },
+    {
+        "id": 11,
+        "title": "repo:",
+        "description": "Show Codenotes and Code Tours that include code from current repossitory (repo:current) specified repository (repo:name)"
+    },
+    {
+        "id": 12,
+        "title": "date:",
+        "description": "Show Codenotes and Code Tours that were created today (date: today), yesterday (date:yesterday) on a specific date (date:YYYY-MM-DD, date:<YYYY-MM-DD, date:>YYYY-MM-DD)"
+    }
+]    

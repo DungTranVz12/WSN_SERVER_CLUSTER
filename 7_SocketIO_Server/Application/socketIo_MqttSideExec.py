@@ -2,9 +2,9 @@ import __init
 ############ IMPORT PARAMETER ############
 from Application.parameter import *
 import sys,os
-if os.path.exists("/myConfiguration.py"): #Mapped from host to container
-  MAIN_WORKDIR = os.path.dirname(sys.path[0])
-  os.system("cp /myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
+  MAIN_WORKDIR = sys.path[0]
+  os.system("cp /0_SHARE/myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
   from cloneMyConfig import *
 ##########################################
 import socketio

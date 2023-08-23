@@ -1,9 +1,9 @@
 import __init
 ############ IMPORT PARAMETER ############
 import sys,os
-if os.path.exists("/myConfiguration.py"): #Mapped from host to container
-  MAIN_WORKDIR = os.path.dirname(sys.path[0])
-  os.system("cp /myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
+  MAIN_WORKDIR = sys.path[0]
+  os.system("cp /0_SHARE/myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
   from cloneMyConfig import *
 else:
   from Application.parameter import *
@@ -14,8 +14,7 @@ from Library.A9_MQTT.mqtt import mqttClass #pip install paho-mqtt
 import threading
 import pprint
 import json
-import wget
-        
+
 #########################################################################################
 # A. SOCKETIO PART
 #########################################################################################
@@ -48,9 +47,7 @@ def SOCKET(data:dict):
   if method == "problem.get":
     getThenSendHostGroupProblem(params["hostgroupName"],params["topic"])
     
-  
-  
-SOCKETIO_URL = "http://lotus_socketio:5000" # EX: "http://lotus1104.synology.me:83"
+
 sio.connect(SOCKETIO_URL,namespaces=['/ZABBIX'])
 
 #########################################################################################
@@ -90,10 +87,7 @@ def subcribeFilter(msg):
       
 
       
-      #Download from a link
-      print(URL)
-      wget()
-      wget.download(URL, f'./ABC.png')
+
 
 
 
@@ -111,7 +105,7 @@ threading.Thread(target=MQTT.listen).start()
 zabbixLib = ZABBIX_LIB(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS, ZABBIX_URL)
 def getHostGroupProblem(hostgroupName):
   group_id = zabbixLib.getHostGroupID(hostgroupName)
-  hostGroupProblem = zabbixLib.checkGroupProblem(group_id,ZABBIX_SERVER)
+  hostGroupProblem = zabbixLib.checkGroupProblem(group_id,ZABBIX_WEB_OUTSIDE_IP_PORT)
   return hostGroupProblem
 
 def sendHostGroupProblem (topic:str,hostGroupProblem):

@@ -2,9 +2,9 @@ import __init
 ############ IMPORT PARAMETER ############
 from Application.parameter import *
 import sys,os
-if os.path.exists("/myConfiguration.py"): #Mapped from host to container
-  MAIN_WORKDIR = os.path.dirname(sys.path[0])
-  os.system("cp /myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
+  MAIN_WORKDIR = sys.path[0]
+  os.system("cp /0_SHARE/myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
   from cloneMyConfig import *
 ##########################################
 from aiohttp import web
@@ -167,11 +167,11 @@ async def SOCKET(sid, data:dict):
 #Bước 3: Cấu hình cho ứng dụng web
 async def index(request):
     """Serve the client-side application."""
-    with open('/HShare/socketio_app/WebPage/Web2/testWeb.html') as f:
+    with open('/AppDir/Application/WebPage/Web2/testWeb.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 async def socketIoTest(request):
     """Serve the client-side application."""
-    with open('/HShare/socketio_app/WebPage/Web1/socketIoTest.html') as f:
+    with open('/AppDir/Application/WebPage/Web1/socketIoTest.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 # app.router.add_static('/static', 'static')
 app.router.add_get('/test', index)
@@ -182,7 +182,7 @@ app.router.add_get('/', socketIoTest)
 ### APPLICAITON ROUTER                                                                           #
 ##################################################################################################
 async def SERVER_LISTEN(request):
-    with open('/HShare/socketio_app/WebPage/ServerListen/serverSocketListen.html') as f:
+    with open('/AppDir/Application/WebPage/ServerListen/serverSocketListen.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 app.router.add_get('/listen', SERVER_LISTEN)
 ##############################
@@ -190,17 +190,17 @@ app.router.add_get('/listen', SERVER_LISTEN)
 ##############################
 #COMMON FILES
 async def ZBProblem_common_styles(request):
-    with open('/HShare/socketio_app/WebPage/ZBProblem/common/styles.css') as f:
+    with open('/AppDir/Application/WebPage/ZBProblem/common/styles.css') as f:
         return web.Response(text=f.read(), content_type='text/css')
 app.router.add_get('/ZBProblem/commmon/styles.css', ZBProblem_common_styles)
 async def ZBProblem_01C821_script(request):
-    with open('/HShare/socketio_app/WebPage/ZBProblem/common/script.js') as f:
+    with open('/AppDir/Application/WebPage/ZBProblem/common/script.js') as f:
         return web.Response(text=f.read(), content_type='application/javascript')
 app.router.add_get('/ZBProblem/commmon/script.js', ZBProblem_01C821_script)
 
 #1. ZBProblem_01C821
 async def ZBProblem_01C821(request):
-    with open('/HShare/socketio_app/WebPage/ZBProblem/01C821/index.html') as f:
+    with open('/AppDir/Application/WebPage/ZBProblem/01C821/index.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
 app.router.add_get('/ZBProblem_01C821', ZBProblem_01C821)
 
