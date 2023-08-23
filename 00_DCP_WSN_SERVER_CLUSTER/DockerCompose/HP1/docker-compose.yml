@@ -1,0 +1,188 @@
+version: '3.7'
+#docker network create --driver bridge --subnet=200.200.0.0/16 --ip-range=200.200.200.0/24 --gateway=200.200.0.1 wsn_net
+
+networks:
+  wsn_net:
+    ipam:
+      config:
+        - subnet: 200.200.200.0/24  # Subnet của mạng
+          ip_range: 200.200.200.0/24  # Phạm vi IP cho mạng
+          gateway: 200.200.200.1  # Gateway của mạng
+
+services:
+  #####################################################
+  ############# A. ZABBIX CLUSTER #####################
+  #####################################################
+  #2. Start empty MySQL server instance
+  wsnCluster_zabbix-mysql-server:
+      container_name: wsnCluster_zabbix-mysql-server
+      user: root
+      environment:
+          - MYSQL_DATABASE=zabbix
+          - MYSQL_USER=zabbix
+          - MYSQL_PASSWORD=!Da#ImU%VuF3V
+          - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
+      volumes:
+          - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
+          - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+          - /root/0_GIT_WSN_SERVER_CLUSTER/2_MySQL:/AppDir
+          - /root/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/0_MySQL_DATA_BKUP:/mySqlBackupDir            #MySQL data backup
+          - /root/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/mysqlBackupScript.sh:/mysqlBackupScript.sh   #MySQL data backup script
+          - /root/0_GIT_WSN_SERVER_CLUSTER/2_MySQL/data:/var/lib/mysql                          #MySQL data
+      ports:
+        - 10000:3306
+      networks:
+          wsn_net:
+            ipv4_address: '200.200.200.2'
+      restart: unless-stopped
+      image: 'mysql:8.0'
+      # command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
+      command: /bin/bash -l -c "sleep 10 && sh /mysqlBackupScript.sh & mysqld --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password"
+
+  #3. Start Zabbix Java gateway instance
+  wsnCluster_zabbix-java-gateway:
+      container_name: wsnCluster_zabbix-java-gateway
+      user: root
+      networks: 
+          wsn_net:
+            ipv4_address: '200.200.200.3'
+      restart: unless-stopped
+      image: 'zabbix/zabbix-java-gateway:alpine-6.2-latest'
+      
+  #4. Start Zabbix server instance and link the instance with created MySQL server instance
+  wsnCluster_zabbix-server-agent:
+      container_name: wsnCluster_zabbix-server-agent
+      environment:
+          - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
+          - MYSQL_DATABASE=zabbix
+          - MYSQL_USER=zabbix
+          - MYSQL_PASSWORD=!Da#ImU%VuF3V
+          - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
+          - ZBX_JAVAGATEWAY=wsnCluster_zabbix-java-gateway
+      volumes:
+          - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+          - /root/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/AppDir
+          - /root/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/var/lib/zabbix/shareFolder
+      networks: 
+          wsn_net:
+            ipv4_address: '200.200.200.4'
+      ports:
+          - '10001:10051' #Agent port of Zabbix server
+      working_dir: /AppDir
+      restart: unless-stopped
+      image: 'zabbix/zabbix-server-mysql:alpine-6.2-latest'
+
+  #5. Start Zabbix web interface instance and link the instance with created MySQL server instance
+  wsnCluster_zabbix-web-nginx-mysql:
+      container_name: wsnCluster_zabbix-web-nginx-mysql
+      user: root
+      environment:
+          - ZBX_SERVER_HOST=wsnCluster_zabbix-server-agent
+          - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
+          - MYSQL_DATABASE=zabbix
+          - MYSQL_USER=zabbix
+          - MYSQL_PASSWORD=!Da#ImU%VuF3V
+          - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
+      volumes:
+          - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
+          - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+          - /root/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/AppDir
+      networks: 
+          wsn_net:
+            ipv4_address: '200.200.200.5'
+      ports:
+          - '10002:8080'
+      working_dir: /AppDir
+      restart: unless-stopped
+      image: 'zabbix/zabbix-web-nginx-mysql:alpine-6.2-latest'
+
+  #####################################################
+  ############# B. OTHER CONTAINERS #####################
+  #####################################################
+  #6. MQTT broker
+  #USER: mqtt_broker
+  #PASS: !Da#ImU%VuF3V
+  wsnCluster_mqtt: #Alpine Linux
+    image: meomay22/eclipse-mosquitto-pwfile:1.2
+    container_name: wsnCluster_mqtt
+    user: root
+    restart: always
+    volumes:
+      - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
+      - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+      - /root/0_GIT_WSN_SERVER_CLUSTER/6_MQTT_Broker:/AppDir
+      - /root/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir2
+    ports:
+      # - 1883:1883 #Tag V1.0
+      - 10003:1885 #Tag V1.1
+      - 10004:9001 #MQTT over Websocket
+    working_dir: /AppDir
+    networks:
+      wsn_net: #external network
+        ipv4_address: '200.200.200.6'
+    command: /bin/sh -c "screen -dmS MQTT_BROKER /docker-entrypoint.sh /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf &&
+                         screen -dmS SKIO_MQTT sleep 5;python3 /AppDir2/Application/socketIo_MqttSideExec.py &&
+                         tail -f /dev/null"
+
+  #7. Socket.io
+  wsnCluster_socketio: #Alpine Linux
+    # build: ./socketio/
+    image: meomay22/socketio_alpine:1.0
+    container_name: wsnCluster_socketio
+    user: root
+    restart: 'always'
+    networks:
+      wsn_net: #external network
+        ipv4_address: '200.200.200.7'
+    ports:
+      - 10005:5000
+    volumes:
+      - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
+      - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+      - /root/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir
+    working_dir: /AppDir
+    command: "python3 /AppDir/Application/socketIo_AsyncServer.py"
+
+
+
+
+
+
+  #8. Socket.io_Client
+  ##### THIẾU ######
+  # + pip install py-zabbix
+
+
+
+
+  wsnCluster_socketio_client: #Alpine Linux
+    # build: ./socketio/
+    image: meomay22/socketio_alpine:1.0
+    container_name: wsnCluster_socketio_client
+    user: root
+    restart: 'always'
+    networks:
+      wsn_net: #external network
+        ipv4_address: '200.200.200.8'
+    volumes:
+      - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
+      - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
+      - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir
+    working_dir: /AppDir
+    # command: "tail -f /dev/null"
+    command: "python3 /AppDir/Application/scanZabbixProblem.py"
+
+  #9. phpMyAdmin
+  wsnCluster_zabbix_phpmyadmin:
+    image: phpmyadmin
+    container_name: wsnCluster_zabbix_phpmyadmin
+    user: root
+    restart: always
+    ports:
+      - 10006:80 #http://192.168.60.168:81
+    links:
+      - 'wsnCluster_zabbix-mysql-server:db' #<Tên service>[:tạo alias cho service]. CHÚ Ý: Nếu tên service không sẵn là 'db' thì
+                         #alias name của mysql phải là 'db' vì code bên trong phpmyadmin sẽ tìm kiếm DB server theo tên này.
+    networks:
+      wsn_net:
+        ipv4_address: '200.200.200.9'
