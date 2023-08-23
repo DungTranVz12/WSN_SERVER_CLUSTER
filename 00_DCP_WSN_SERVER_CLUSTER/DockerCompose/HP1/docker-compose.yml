@@ -36,7 +36,6 @@ services:
             ipv4_address: '200.200.200.2'
       restart: unless-stopped
       image: 'mysql:8.0'
-      # command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
       command: /bin/bash -l -c "sleep 10 && sh /mysqlBackupScript.sh & mysqld --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password"
 
   #3. Start Zabbix Java gateway instance
@@ -169,8 +168,14 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir
     working_dir: /AppDir
+    # depends_on:
+    #   - wsnCluster_zabbix-server-agent
+    #   - wsnCluster_mqtt
+    #   - wsnCluster_socketio
     # command: "tail -f /dev/null"
-    command: "python3 /AppDir/Application/scanZabbixProblem.py"
+    # command: "python3 /AppDir/Application/scanZabbixProblem.py"
+    command: /bin/sh -c "sleep 10 && screen -dmS SCAN_PROBLEM python3 /AppDir/Application/scanZabbixProblem.py && 
+                         tail -f /dev/null"
 
   #9. phpMyAdmin
   wsnCluster_zabbix_phpmyadmin:

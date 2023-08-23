@@ -10,3 +10,5 @@
 8_PyWorker/Conf/__pycache__/loggingSetup.cpython-311.pyc
 8_PyWorker/Library/A6_Zabbix/__pycache__/Zabbix_Wrap.cpython-311.pyc
 8_PyWorker/Library/A9_MQTT/__pycache__/mqtt.cpython-311.pyc
+7_SocketIO_Server/__pycache__/cloneMyConfig.cpython-311.pyc
+8_PyWorker/__pycache__/cloneMyConfig.cpython-311.pyc
