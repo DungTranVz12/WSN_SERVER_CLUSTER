@@ -51,7 +51,7 @@ def SOCKET(data:dict):
 sio.connect(SOCKETIO_URL,namespaces=['/ZABBIX'])
 
 #########################################################################################
-# A. SOCKETIO PART
+# B. MQTT PART
 #########################################################################################
 ############################################################
 # 1. CONNECT TO MQTT BROKER                                #
@@ -100,7 +100,7 @@ threading.Thread(target=MQTT.listen).start()
 
 
 #########################################################################################
-# ZABBIX PART
+# C. ZABBIX PART
 #########################################################################################
 zabbixLib = ZABBIX_LIB(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS, ZABBIX_URL)
 def getHostGroupProblem(hostgroupName):
@@ -115,51 +115,9 @@ def sendHostGroupProblem (topic:str,hostGroupProblem):
   }
   sio.emit('SOCKET', {"topic":topic,"message":message},namespace='/ZABBIX')
   
-  
 def getThenSendHostGroupProblem(hostgroupName:str,topic:str):
   hostGroupProblem = getHostGroupProblem(hostgroupName)
   pprint.pprint(hostGroupProblem)
   sendHostGroupProblem(topic,hostGroupProblem)
 ##################################################################################################
-print("===== START =====")
-# getThenSendHostGroupProblem("SeasideConsulting_GW01C821","WSN_GW_01C821")
-
-#Kiểm tra thư mục /HShare/ có file ZabbixReq không?
-#Nếu có thì load hết nội dung của file vào một biến data tạm thời. Sau đó xóa file ZabbixReq.
-#Tiến hành đọc từng dòng của biến data tạm thời
-#Nếu dòng nào có lineData["method"] là "problem.get" thì gọi hàm getThenSendHostGroupProblem(lineData["params"]["hostgroupName"],lineData["params"]["topic"])
-#Nếu không thì bỏ qua
-# import os
-# import time
-
-# os.system("touch /HShare/ZabbixReq")
-# os.system("echo '{\"method\":\"problem.get\",\"params\":{\"hostgroupName\":\"SeasideConsulting_GW01C821\",\"topic\":\"WSN_GW_01C821\"}}' >> /HShare/ZabbixReq")
-
-# while True:
-#   if os.path.exists("/HShare/ZabbixReq"):
-#     print("===== ZabbixReq FOUND =====")
-#     with open("/HShare/ZabbixReq","r") as f:
-#       data = f.read()
-#       f.close()
-#     os.remove("/HShare/ZabbixReq")
-#     for line in data.split("\n"):
-#       if line == "":
-#         continue
-#       lineData = eval(line)
-#       try:
-#         #1. Request "problem.update"
-#         if lineData["method"] == "problem.get":
-#           getThenSendHostGroupProblem(lineData["params"]["hostgroupName"],lineData["params"]["topic"])
-#         #2. Request others
-#         
-#       except Exception as e:
-#         print(e)
-#  time.sleep(0.001)
-
-
-
-
-
 print("===== DONE =====")
-
-#http://157.65.24.169/zabbix.php?show=3&show_timeline=1&action=problem.view&groupids%5B%5D=38&hostids%5B%5D=10593

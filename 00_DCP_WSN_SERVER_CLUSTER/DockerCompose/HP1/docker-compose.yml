@@ -146,7 +146,8 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir
     working_dir: /AppDir
-    command: "python3 /AppDir/Application/socketIo_AsyncServer.py"
+    # command: "python3 /AppDir/Application/socketIo_AsyncServer.py"
+    command: "tail -f /dev/null"
 
 
 
@@ -154,10 +155,10 @@ services:
   ##### THIẾU ######
   # + pip install py-zabbix
 
-  wsnCluster_socketio_client: #Alpine Linux
+  wsnCluster_PyWorker: #Alpine Linux
     # build: ./socketio/
     image: meomay22/socketio_alpine:1.0
-    container_name: wsnCluster_socketio_client
+    container_name: wsnCluster_PyWorker
     user: root
     restart: 'always'
     networks:
@@ -172,12 +173,12 @@ services:
     #   - wsnCluster_zabbix-server-agent
     #   - wsnCluster_mqtt
     #   - wsnCluster_socketio
-    # command: "tail -f /dev/null"
+    command: "tail -f /dev/null"
     # command: "python3 /AppDir/Application/scanZabbixProblem.py"
     # command: /bin/sh -c "pip install py-zabbix &&
     #                      screen -dmS SCAN_PROBLEM python3 /AppDir/Application/scanZabbixProblem.py && 
     #                      tail -f /dev/null"
-    command: /bin/sh -c "pip install py-zabbix && python3 /AppDir/Application/scanZabbixProblem.py"
+    # command: /bin/sh -c "pip install py-zabbix && python3 /AppDir/Application/scanZabbixProblem.py"
 
   #9. phpMyAdmin
   wsnCluster_zabbix_phpmyadmin:
