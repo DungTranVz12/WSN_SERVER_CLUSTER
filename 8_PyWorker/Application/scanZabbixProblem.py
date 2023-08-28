@@ -26,7 +26,7 @@ def subcribeFilter(msg):
     message = eval(str(jsonData["message"]))
     # print(jsonData)
     if "SIO_EXCTL" in jsonData["uid"] and "problem.get" in message["method"]:
-      print(message["params"]["hostgroupName"])
+      print("\nGet request SCAN_PROBLEM from Socket for HostGroup: "+message["params"]["hostgroupName"])
       problemResult = getHostGroupProblem(hostgroupName=message["params"]["hostgroupName"])
       if problemResult == False:
         print("ERROR: Cannot get problem from Zabbix")
@@ -41,6 +41,7 @@ def subcribeFilter(msg):
             "params": problemResult
           }
         }
+        print("Publish SCAN_PROBLEM reuslt to Topic "+str(topic)+" with message:" + str(message))
         MQTT.publish(str(topic), str(message))
       
   except Exception as e:
@@ -48,16 +49,12 @@ def subcribeFilter(msg):
     pass
     
 
-      
-
 #Subscribe all accept topic
 for gateway in ACCEPT_LIST_OF_GATEWAY:
   for acceptTopic in ACCEPT_LIST_OF_TOPIC:
     if acceptTopic == "WEB.SCAN_PROBLEM":
       MQTT.subscribe(gateway+"."+acceptTopic)
 MQTT.msgRcvFilter = subcribeFilter
-threading.Thread(target=MQTT.listen).start()
-
 
 #########################################################################################
 # C. ZABBIX PART
@@ -69,5 +66,6 @@ def getHostGroupProblem(hostgroupName):
     return False
   hostGroupProblem = zabbixLib.checkGroupProblem(group_id,ZABBIX_WEB_OUTSIDE_IP_PORT)
   return hostGroupProblem
-##################################################################################################
+#########################################################################################
+threading.Thread(target=MQTT.listen).start()
 print("===== DONE =====")

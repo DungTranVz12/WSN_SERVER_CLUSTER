@@ -57,8 +57,8 @@ services:
       - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=!Da#ImU%VuF3V
-      - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
+      - MYSQL_PASSWORD=zabbix_pwd
+      - MYSQL_ROOT_PASSWORD=root_pwd
       - ZBX_JAVAGATEWAY=wsnCluster_zabbix-java-gateway
     volumes:
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
@@ -84,8 +84,8 @@ services:
       - DB_SERVER_HOST=wsnCluster_zabbix-mysql-server
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=!Da#ImU%VuF3V
-      - MYSQL_ROOT_PASSWORD=!Da#ImU%VuF3V
+      - MYSQL_PASSWORD=zabbix_pwd
+      - MYSQL_ROOT_PASSWORD=root_pwd
     volumes:
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
@@ -146,11 +146,11 @@ services:
     command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime &&
                          screen -dmS SocketIoSever    python3 /AppDir/Application/socketIo_AsyncServer.py && sleep 5 &&
                          screen -dmS SocketIoMqttSide python3 /AppDir/Application/socketIo_MqttSideExec.py &&
-                         tail -f /dev/null"
+                         tail -f /dev/null" #Sleep 5 giây đợi SocketIO Server và Web server khởi động xong.
 
 
 
-  #8. Socket.io_Client
+  #8. wsnCluster_PyWorker
   ##### THIẾU ######
   # + pip install py-zabbix
 
@@ -169,11 +169,13 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir
       - /root/0_GIT_WSN_SERVER_CLUSTER:/0_GIT_WSN_SERVER_CLUSTER
     working_dir: /AppDir
-    # depends_on:
-    #   - wsnCluster_zabbix-server-agent
-    #   - wsnCluster_mqtt
-    #   - wsnCluster_socketio
-    command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime && tail -f /dev/null"
+    depends_on:
+      - wsnCluster_zabbix-server-agent
+      - wsnCluster_mqtt
+      - wsnCluster_socketio
+    command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime && sleep 5 &&
+                         screen -dmS PyWorker python3 /AppDir/Application/scanZabbixProblem.py &&
+                         tail -f /dev/null" #Sleep 5 giây đợi SocketIO Server và Web server khởi động xong.
     # command: "python3 /AppDir/Application/scanZabbixProblem.py"
     # command: /bin/sh -c "pip install py-zabbix &&
     #                      screen -dmS SCAN_PROBLEM python3 /AppDir/Application/scanZabbixProblem.py && 

@@ -1,9 +1,17 @@
 const socket = io(); // Replace with your actual Socket.io server URL
+let counter = 0; // Khởi tạo biến đếm
+let refreshTime = parseInt(Math.random()*100)*100 + 55000; // Khởi tạo biến ngẫu nhiên từ 55s đến 65s với. Mỗi step 100ms. Tránh trường hợp tất cả các client gửi request cùng lúc.
+console.log("refreshTime: " + refreshTime);
+
 socket.on('connect', () => {
   console.log('Connected to server');
   var message = {"method":"problem.get","params":{"hostgroupName":hostgroupName,"topic":topic}};
   socket.emit('SOCKET',{"topic":topic,"message": message}); // Request initial status from server on connect
 });
+
+function resetCounter() {
+  counter = 0; // Đặt lại biến đếm về 0
+}
 
 function updateHostStatus (message){
   message = JSON.parse(message.replace(/'/g, '"'));
@@ -26,6 +34,7 @@ function updateHostStatus (message){
 socket.on(topic, (message) => {
   console.log("Received message from server");
   updateHostStatus(message);
+  resetCounter(); // Gọi hàm để đặt lại biến đếm sau khi nhận được gói tin cập nhật từ server
   //Save message to local storage
   localStorage.setItem("LOCAL_STORE_HOST_PROBLEM", JSON.stringify(message));
 });
@@ -99,8 +108,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Periodically send update status request
   setInterval(() => {
-    var message = {"method":"problem.get","params":{"hostgroupName":hostgroupName,"topic":topic}};
-    socket.emit('SOCKET',{"topic":topic,"message": message}); // Request initial status from server on connect
-  }, 60000);
+    remainTime = refreshTime - counter*100;
+    if (remainTime <= 0) {
+      var message = {"method":"problem.get","params":{"hostgroupName":hostgroupName,"topic":topic}};
+      socket.emit('SOCKET',{"topic":topic,"message": message});
+      console.log("Periodically send update status request");
+      counter = 0;
+    }
+    // console.log("Remaining time: " + remainTime/1000 + "s");
+    if (remainTime % 1000 == 0) {
+      console.log("Remaining time: " + remainTime/1000 + "s");
+    }
+    counter = counter + 1;
+  }, 100); // 100ms
+
+  
 });
 
