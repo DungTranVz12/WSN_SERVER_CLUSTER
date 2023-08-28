@@ -116,7 +116,6 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/6_MQTT_Broker:/AppDir
-      - /root/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir2
     ports:
       # - 1883:1883 #Tag V1.0
       - 10003:1885 #Tag V1.1
@@ -125,9 +124,6 @@ services:
     networks:
       wsn_net: #external network
         ipv4_address: '200.200.200.6'
-    command: /bin/sh -c "screen -dmS MQTT_BROKER /docker-entrypoint.sh /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf &&
-                         screen -dmS SKIO_MQTT sleep 5;python3 /AppDir2/Application/socketIo_MqttSideExec.py &&
-                         tail -f /dev/null"
 
   #7. Socket.io
   wsnCluster_socketio: #Alpine Linux

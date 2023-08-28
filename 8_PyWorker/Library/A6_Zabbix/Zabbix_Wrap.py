@@ -384,7 +384,6 @@ class zabbix_Wrapper:
       
       #3. RETURN RESULT
       returnList = list()
-      
       for host in sortHostList:
         hostJson = {}
         if host in problemHostList:
