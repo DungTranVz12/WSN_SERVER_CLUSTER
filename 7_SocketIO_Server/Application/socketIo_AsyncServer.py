@@ -1,11 +1,15 @@
 import __init
 ############ IMPORT PARAMETER ############
-from Application.parameter import *
 import sys,os
+import re
 if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
   MAIN_WORKDIR = sys.path[0]
   os.system("cp /0_SHARE/myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+  os.system("touch "+MAIN_WORKDIR+"/cloneMyConfig.py")
+  os.system("touch /0_SHARE/myConfiguration.py")
   from cloneMyConfig import *
+else:
+  from Application.parameter import *
 ##########################################
 from aiohttp import web
 import socketio
@@ -94,7 +98,10 @@ async def disconnect(sid):
 import datetime
 # Khi nhận được tin nhắn từ client đến trung tâm điều phối tin nhắn: SKRX
 async def rootMessageFilter (topic,message,sid,namespace='Root'):
-  message = eval(message)
+  try:
+    message = eval(message) #Num -> string, string same dict -> dict
+  except:
+    message = str(message) #String -> string
   if type(message) is not dict:
     await sio.emit(topic,message,skip_sid=sid) #Send message to all clients except sender
     dateTime = datetime.datetime.now().strftime("%H:%M:%S")
@@ -136,9 +143,11 @@ async def SOCKET(sid, data:dict):
     message = str(jsonData['message'])
     await rootMessageFilter(topic,message,sid,namespace) #Filter message
     #CHECK LICENSE
-    if topic in MQTT_EXPORT_LICENSE_TOPIC_LIST:
-      #SEND TO MQTT BROKER
-      MQTT.publish(topic=topic, msg=str({"uid": MQTT_CLIENT_ID,"message":message})) #Send message to MQTT Broker
+    #Compare topic with Regex EXPORT_LICENSE_TO_MQTT_TOPIC_LIST
+    for regex in EXPORT_LICENSE_TO_MQTT_TOPIC_LIST:
+      if re.search(regex, topic):
+        #SEND TO MQTT BROKER
+        MQTT.publish(topic=topic, msg=str({"uid": MQTT_CLIENT_SIO_EXCTL_ID,"message":message})) #Send message to MQTT Broker
       
 @sio.event(namespace="/MQTT")
 @sio.event(namespace="/ZABBIX")
@@ -207,6 +216,17 @@ app.router.add_get('/ZBProblem_01C821', ZBProblem_01C821)
 
 
 ##################################################################################################
+#Check update myConfiguration.py to reboot container
+# def checkUpdateMyConfigurationFileToRebootContainer():
+#   while True:
+#     if os.path.exists("/0_SHARE/myConfiguration.py") and os.path.exists("/AppDir/cloneMyConfig.py"):
+#       if os.path.getmtime("/0_SHARE/myConfiguration.py") > os.path.getmtime("/AppDir/cloneMyConfig.py"):
+#         print ("myConfiguration.py updated. Rebooting container...")
+#         os.system("reboot")
+#     time.sleep(5)
+# threading.Thread(target=checkUpdateMyConfigurationFileToRebootContainer).start()
+
 if __name__ == '__main__':
     web.run_app(app,port=5000)
+
     

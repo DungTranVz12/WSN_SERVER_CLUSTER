@@ -22,12 +22,12 @@ MQTT_CLIENT_ID  = f'MQTT_CLENT_JP_'+str(random.randint(0, 10000))
 MQTT_TOPIC      = "WSN_SVR_JP_REQ"
 
 ################### SOCKETIO #######################
-MQTT_EXPORT_LICENSE_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
-MQTT_EXPORT_LICENSE_TOPIC_LIST.append("WSN_GW_01C823")  
+EXPORT_LICENSE_TO_MQTT_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
+EXPORT_LICENSE_TO_MQTT_TOPIC_LIST.append("WSN_GW_01C823")  
 MQTT_CLIENT_SIO_EXCTL_ID       = f'SIO_EXCTL_'+str(random.randint(0, 10000))
 
-SOCKETIO_EXPORT_LICENSE_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
-SOCKETIO_EXPORT_LICENSE_TOPIC_LIST.append("WSN_GW_01C823")  
+EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
+EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append("WSN_GW_01C823")  
 MQTT_CLIENT_MQTT_EXCTL_ID          = f'MQTT_EXCTL_'+str(random.randint(0, 10000))
 
 SOCKETIO_URL = f'http://200.200.200.7:5000' # EX: "http://lotus1104.synology.me:83"

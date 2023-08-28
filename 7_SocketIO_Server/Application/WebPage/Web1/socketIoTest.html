@@ -23,21 +23,21 @@
         sendButton.addEventListener('click', () => {
             const message = messageInput.value;
             if (message) {
-                socket.emit('SOCKET', {"topic":"WSN_GW_01C823","message":message});
+                socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":message});
                 messageInput.value = '';
             }
         });
 
         
         // Xử lý khi nhận tin nhắn mới từ máy chủ
-        socket.connect('WSN_GW_01C823', (message) => {
+        socket.connect('WSN_GW_01C823.WEB.TEST', (message) => {
             const li = document.createElement('li');
             li.textContent = message;
             messagesList.appendChild(li);
         });
 
         // Xử lý khi nhận tin nhắn mới từ máy chủ
-        socket.on('WSN_GW_01C823', (message) => {
+        socket.on('WSN_GW_01C823.WEB.TEST', (message) => {
             const li = document.createElement('li');
             li.textContent = message;
             messagesList.appendChild(li);

@@ -147,7 +147,10 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir
     working_dir: /AppDir
     # command: "python3 /AppDir/Application/socketIo_AsyncServer.py"
-    command: "tail -f /dev/null"
+    command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime &&
+                         screen -dmS SocketIoSever    python3 /AppDir/Application/socketIo_AsyncServer.py && sleep 5 &&
+                         screen -dmS SocketIoMqttSide python3 /AppDir/Application/socketIo_MqttSideExec.py &&
+                         tail -f /dev/null"
 
 
 
@@ -168,12 +171,13 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir
+      - /root/0_GIT_WSN_SERVER_CLUSTER:/0_GIT_WSN_SERVER_CLUSTER
     working_dir: /AppDir
     # depends_on:
     #   - wsnCluster_zabbix-server-agent
     #   - wsnCluster_mqtt
     #   - wsnCluster_socketio
-    command: "tail -f /dev/null"
+    command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime && tail -f /dev/null"
     # command: "python3 /AppDir/Application/scanZabbixProblem.py"
     # command: /bin/sh -c "pip install py-zabbix &&
     #                      screen -dmS SCAN_PROBLEM python3 /AppDir/Application/scanZabbixProblem.py && 

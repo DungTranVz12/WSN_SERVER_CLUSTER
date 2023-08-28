@@ -8,10 +8,47 @@ if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
 else:
   from Application.parameter import *
 ##########################################
+import socketio
 from Library.A6_Zabbix.Zabbix_Wrap import zabbix_Wrapper as ZABBIX_LIB
 from Library.A9_MQTT.mqtt import mqttClass #pip install paho-mqtt
 import threading
 import pprint
+import json
+
+# #########################################################################################
+# # A. SOCKETIO PART
+# #########################################################################################
+# sio = socketio.Client()
+
+# @sio.event(namespace='/ZABBIX')
+# def SOCKET(data:dict):
+#   #1.Convert data to JSON
+#   if type(data) == str:
+#     message = json.loads(data)
+#   elif type(data) == dict:
+#     message = data
+#   else:
+#     print("[SOCKET] Received message is not string or dict => Skip message")
+#     return
+#   if 'method' in message.keys():
+#     method = message['method']
+#   else:
+#     print("[SOCKET] Received message has no 'method' key => Skip message")
+#     return
+#   if 'params' in message.keys():
+#     params = message['params']
+#   else:
+#     print("[SOCKET] Received message has no 'method' key => Skip message")
+#     return
+#   ###############################
+#   #2. Check method
+#   ###############################
+#   #2.1. Check "problem.get"
+#   if method == "problem.get":
+#     getThenSendHostGroupProblem(params["hostgroupName"],params["topic"])
+    
+
+# sio.connect(SOCKETIO_URL,namespaces=['/ZABBIX'])
 
 #########################################################################################
 # B. MQTT PART
@@ -50,6 +87,12 @@ def subcribeFilter(msg):
       
 
       
+
+
+
+
+
+
 
 MQTT.subscribe(MQTT_TOPIC)
 MQTT.msgRcvFilter = subcribeFilter
