@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("Periodically send update status request");
       counter = 0;
     }
-    // console.log("Remaining time: " + remainTime/1000 + "s");
     if (remainTime % 1000 == 0) {
       console.log("Remaining time: " + remainTime/1000 + "s");
     }

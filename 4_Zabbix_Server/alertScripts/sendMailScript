@@ -1,0 +1,20 @@
+#!/bin/sh
+#get sendTo, subject, body from zabbix
+sendTo=$1
+subject=$2
+body=$3
+#send mail
+message='{
+  "uid": "Zabbix_Agent_'${RANDOM}'",
+  "message": {
+    "method": "mail.send",
+    "params": {
+      "sendTo": "'${sendTo}'",
+      "subject": "'${subject}'",
+      "body": '${body}'
+    }
+  }
+}'
+mosquitto_pub -h wsnCluster_mqtt -p 1885 -u mqtt_broker -P !Da#ImU%VuF3V -t "ZABBIX_AGENT_PUBLISH" -m "$message"
+
+

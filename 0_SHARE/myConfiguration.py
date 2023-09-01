@@ -3,15 +3,20 @@
 #################################################
 ZABBIX_WEB_OUTSIDE_IP_PORT = "lotus1104.synology.me:10002" #HP1
 
-########## 1. MQTT Server ##########
+################### MySQL DEFINE ########################
+MYSQL_HOST     = "wsnCluster_zabbix-mysql-server"
+MYSQL_DATABASE = "zabbix"
+MYSQL_USER     = "root"
+MYSQL_PASS     =  "root_pwd"
 ################### ZABBIX DEFINE #######################
-ZABBIX_SERVER   = 'wsnCluster_zabbix-server-agent'
-ZABBIX_WEB_IP   = 'wsnCluster_zabbix-web-nginx-mysql'
-ZABBIX_WEB_PORT = '8080'
-ZABBIX_PORT     = 10051
-ZABBIX_USER     = 'Admin'
-ZABBIX_PASS     = 'zabbix'
-ZABBIX_URL      = 'http://'+ZABBIX_WEB_IP+':'+ZABBIX_WEB_PORT
+ZABBIX_SERVER       = 'wsnCluster_zabbix-server-agent'
+ZABBIX_WEB_IP       = 'wsnCluster_zabbix-web-nginx-mysql'
+ZABBIX_WEB_PORT     = '8080'
+ZABBIX_PORT         = 10051
+ZABBIX_USER         = 'Admin'
+ZABBIX_PASS         = 'zabbix'
+ZABBIX_URL          = 'http://'+ZABBIX_WEB_IP+':'+ZABBIX_WEB_PORT
+ZABBIX_MYSQL_UPLOAD = True #Upload data to MySQL directly. Not user Zabbix Sender Library.
 ################### MQTT DEFINE #######################
 import random
 MQTT_BROKER_IP  = "wsnCluster_mqtt"

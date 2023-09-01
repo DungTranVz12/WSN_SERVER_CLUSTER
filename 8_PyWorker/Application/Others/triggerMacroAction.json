@@ -1,0 +1,54 @@
+//1. Cấu hình Zabbix Action gửi mail với MACRO sau:
+Action Subject: "[Zabbix Warning] {TRIGGER.STATUS}: {TRIGGER.NAME}"
+Action body:
+{
+  "MAIL.TEMPLATE":"Temp_01",
+  "DATE":"{DATE}",
+  "TIME":"{TIME}",
+  "EVENT.ID":"{EVENT.ID}",
+  "EVENT.NAME":"{EVENT.NAME}",
+  "EVENT.SEVERITY":"{EVENT.SEVERITY}",
+  "EVENT.STATUS":"{EVENT.STATUS}",
+  "TRIGGER.HOSTGROUP.NAME":"{TRIGGER.HOSTGROUP.NAME}",
+  "HOST.ID":"{HOST.ID}",
+  "HOST.NAME":"{HOST.NAME}",
+  "ITEM.ID":"{ITEM.ID}",
+  "ITEM.NAME":"{ITEM.NAME}",
+  "ITEM.KEY":"{ITEM.KEY}",
+  "ITEM.LASTVALUE":"{ITEM.LASTVALUE}",
+  "ITEM.VALUE":"{ITEM.VALUE}",
+  "ITEM.VALUETYPE":"{ITEM.VALUETYPE}"
+}
+
+//2. Kết quả nhận được.
+Topic: WSN_GW_01C823.WEB.TEST
+{
+  "uid": "Zabbix_Agent_22710",
+  "message": {
+    "method": "mail.send",
+    "params": {
+      "sendTo": "tran.dung@cmengineering.com.vn",
+      "subject": "[Zabbix Warning] PROBLEM: OverThreshold",
+      "body": {
+"MAIL.TEMPLATE":"Temp_01",
+"DATE":"2023.08.29",
+"TIME":"23:28:41",
+"EVENT.ID":"7205",
+"EVENT.NAME":"OverThreshold",
+"EVENT.SEVERITY":"High",
+"EVENT.STATUS":"PROBLEM",
+"TRIGGER.HOSTGROUP.NAME":"TestHostGroup",
+"HOST.NAME":"TestHost",
+"HOST.ID":"10622",
+"ITEM.ID":"44665",
+"ITEM.NAME":"TestItem",
+"ITEM.KEY":"TestUid.Test.1",
+"ITEM.LASTVALUE":"30",
+"ITEM.VALUE":"40",
+"ITEM.VALUETYPE":"0"
+
+}
+    }
+  }
+}
+

@@ -3,15 +3,20 @@ from time import sleep
 from Conf.loggingSetup import *
 from pyzabbix import ZabbixMetric, ZabbixSender
 from pyzabbix.api import ZabbixAPI
-# from Library.A6_Zabbix.Components.ZabbixSender import ZabbixSender, ZabbixPacket
+from Library.A5_MySQL.mySql_Wrap import genWhereCond, mySql_Wrapper as MYSQL
+import time
 
 class zabbix_Wrapper:
-  def __init__(self, zabbix_server = '128.199.153.250', zabbix_port = 10051 , zabbix_user = 'admin', zabbix_password = 'CMEV12345',zabbix_url="http://128.199.153.250/zabbix"):
+  def __init__(self, zabbix_server = '128.199.153.250', zabbix_port = 10051 , zabbix_user = 'admin', zabbix_password = 'CMEV12345',zabbix_url="http://128.199.153.250/zabbix",
+               mysqlHost="wsnCluster_zabbix-mysql-server",mySqlUser="zabbix",mySqlPass="zabbix_pwd",mySqlDatabase="zabbix",ZABBIX_MYSQL_UPLOAD=False):
     self.zabbix_server = zabbix_server
     self.zabbix_port = zabbix_port
     self.zabbix_user = zabbix_user
     self.zabbix_password = zabbix_password
     self.zabbix_api = ZabbixAPI(url=zabbix_url, user=self.zabbix_user, password=self.zabbix_password)
+    self.zabbix_mysql_upload = ZABBIX_MYSQL_UPLOAD
+    if self.zabbix_mysql_upload == True:
+      self.zabbixMySql = MYSQL(mysqlHost,mySqlUser,mySqlPass,mySqlDatabase)
     
   def createHostgroup(self,zbx_hostgroup):
     '''
@@ -25,7 +30,7 @@ class zabbix_Wrapper:
     - `PIC`: ✨ Components/PIC/001.png
     '''
     try:
-        result = self.zabbix_api.do_request('hostgroup.get', {'filter': {'name': [zbx_hostgroup]}})
+        result = self.zabbix_api.do_request('hostgroup.get', {'search': {'name': [zbx_hostgroup]}})
         if [name['name'] for name in result['result']] == []:
             self.zabbix_api.hostgroup.create(name=zbx_hostgroup)
             logger.info(f'[Zabbix] Hostgroup created: {zbx_hostgroup} : {str(result)}')      # log hostgroup creation
@@ -43,7 +48,7 @@ class zabbix_Wrapper:
       - getHostGroupID('ABC_Customer')
     '''
     try:
-        result = self.zabbix_api.do_request('hostgroup.get', {'filter': {'name': [hostgroupName]}})
+        result = self.zabbix_api.do_request('hostgroup.get', {'search': {'name': [hostgroupName]}})
         if [name['name'] for name in result['result']] == []:
             return False
         else:
@@ -64,7 +69,7 @@ class zabbix_Wrapper:
     - `PIC`: ✨ Components/PIC/001.png
     '''
     try:
-        result = self.zabbix_api.do_request('hostgroup.get', {'filter': {'groupid': [zbx_hostgroup_id]}})
+        result = self.zabbix_api.do_request('hostgroup.get', {'search': {'groupid': [zbx_hostgroup_id]}})
         if [name['name'] for name in result['result']] == []:
             return False
         else:
@@ -104,11 +109,11 @@ class zabbix_Wrapper:
     - `PIC`: ✨ Components/PIC/001.png
     '''
     try:
-        result = self.zabbix_api.do_request('host.get', {'filter':{'host':[zbx_host]}})
+        result = self.zabbix_api.do_request('host.get', {'search':{'host':[zbx_host]}})
         if [host['host'] for host in result['result']] != []:
             return True
         else:
-            result = self.zabbix_api.do_request('hostgroup.get', {'filter': {'name': [zbx_hostgroup]}})
+            result = self.zabbix_api.do_request('hostgroup.get', {'search': {'name': [zbx_hostgroup]}})
             if [name['name'] for name in result['result']] == []:
                 # HostGroup doesn't exist
                 return False
@@ -131,7 +136,7 @@ class zabbix_Wrapper:
       - getHostID('DaLat_Tanung_GW0')
     '''
     try:
-        result = self.zabbix_api.do_request('host.get', {'filter': {'host': [hostName]}})
+        result = self.zabbix_api.do_request('host.get', {'search': {'host': [hostName]}})
         if [host['host'] for host in result['result']] == []:
             return False
         else:
@@ -151,7 +156,7 @@ class zabbix_Wrapper:
       - getHostName('10050')
     '''
     try:
-        result = self.zabbix_api.do_request('host.get', {'filter': {'hostid': [hostID]}})
+        result = self.zabbix_api.do_request('host.get', {'search': {'hostid': [hostID]}})
         if [host['hostid'] for host in result['result']] == []:
             return False
         else:
@@ -174,11 +179,11 @@ class zabbix_Wrapper:
     - `PIC`: ✨ Components/PIC/001.png
     '''
     try:
-        result = self.zabbix_api.do_request('item.get', {'host': zbx_host, 'filter': {'key_':[zbx_item_UID]}})
+        result = self.zabbix_api.do_request('item.get', {'host': zbx_host, 'search': {'key_':[zbx_item_UID]}})
         if [host['key_'] for host in result['result']] != []:
             return True
         else:
-            result = self.zabbix_api.do_request('host.get', {'filter':{'host':[zbx_host]}})
+            result = self.zabbix_api.do_request('host.get', {'search':{'host':[zbx_host]}})
             if [host['host'] for host in result['result']] == []:
                 # Host doesn't exist
                 return False
@@ -203,7 +208,7 @@ class zabbix_Wrapper:
       - getItemID('DaLat_Tanung_GW0',"201X0.1.2")
     '''
     try:
-        result = self.zabbix_api.do_request('item.get', {'host': hostName, 'filter': {'key_': [itemKey]}})
+        result = self.zabbix_api.do_request('item.get', {'host': hostName, 'search': {'key_': [itemKey]}})
         if [item['name'] for item in result['result']] == []:
             return False
         else:
@@ -212,7 +217,7 @@ class zabbix_Wrapper:
         logger.error('[Zabbix] Unable to request to server')
         return False
       
-  def updateItemValue (self,zbx_host, zbx_item_UID, zbx_item_value):
+  def updateItemValue (self,zbx_host, zbx_item_UID, zbx_item_value,clockNs=None):
     '''
     - `name`: updateItemValue
     - `description`:  Tạo item trên Zabbix.
@@ -220,32 +225,67 @@ class zabbix_Wrapper:
       - `zbx_host`: Tên host.
       - `zbx_item_UID`: UID của item. VD: 201X0.1.2 # CMEV, ABC_Customer, X, GW ID 0. Sensor ID 1. CH2.
       - `zbx_item_value`: Giá trị item.
+      - `clockNs`: Thời gian clock và nano second trên bảng của Zabbix/histry của giá trị item. Nếu không có thì lấy thời gian hiện tại.
     - `return`: None
     - `Example`:
       - updateItemValue('DaLat_Tanung_GW0', '201X0.1.2', '250')
     - `PIC`: ✨ Components/PIC/001.png
     '''
-    metrics = [ZabbixMetric(zbx_host, zbx_item_UID, zbx_item_value)]
+    if clockNs == None:
+      metrics = [ZabbixMetric(zbx_host, zbx_item_UID, zbx_item_value)]
+    else:
+      metrics = [ZabbixMetric(zbx_host, zbx_item_UID, zbx_item_value,clock=clockNs)]
     ZabbixSender(zabbix_server=self.zabbix_server, zabbix_port=self.zabbix_port).send(metrics)
     
-    # server = ZabbixSender(self.zabbix_server,self.zabbix_port)
-    # packet = ZabbixPacket()
-    # packet.add(zbx_host,zbx_item_UID,zbx_item_value)
-    # server.send(packet)
-
-
-
-
-  # def updateItemValue2 (self,zbx_itemid, zbx_item_value):
-  #   try:
-  #     self.zabbix_api.item.update(itemid=str(zbx_itemid),name=str(zbx_item_value))
-  #     logger.info(f'[Zabbix] Hostgroup renamed: {zbx_hostgroup_new_name}')      # log hostgroup creation
-  #   except Exception:
-  #       logger.error('[Zabbix] Unable to request to server')
-    
-
-      
-
+  def updateItemValueMySqlOrSender(self,itemId_MySql:int=123456, zbx_item_value=0,epochTimeStamp:float=None,hostName_zabbixSender:str=None,itemKey_zabbixSender:str=None):
+    '''
+    - `name`: updateItemValueMySqlOrSender
+    - `description`:  Upload giá trị của item lên mysql trực tiếp (Nếu có cấu hình ZABBIX_MYSQL_UPLOAD = True) hoặc gửi giá trị của item lên Zabbix Server (Nếu có cấu hình ZABBIX_MYSQL_UPLOAD = False).
+    - `parameters`:
+      - `itemId_MySql`: UID của item (Key của item).
+      - `zbx_item_value`: Giá trị item.
+      - `epochTimeStamp`: Thời gian của giá trị item. Nếu không có thì lấy thời gian hiện tại.
+      - `hostName`: Tên host. Nếu không có thì lấy thời tên host của itemId.
+      - `itemKey`: Key của item. Nếu không có thì lấy key của itemId.
+    - `return`: None
+    - `Example`:
+      - ZABBIX_MYSQL_UPLOAD = True
+      - updateItemValueMySqlOrSender(123456, 250, time.time(), 'DaLat_Tanung_GW0', '201X0.1.2'
+    '''
+    # INSERT INTO `history` (`itemid`, `clock`, `value`, `ns`) VALUES ('44412', '1693560397', '40', '0');
+    if self.zabbix_mysql_upload == True:
+      try:
+        print("Upload to Zabbix Server by MySQL")
+        if epochTimeStamp == None: epochTimeStamp = time.time()
+        print(epochTimeStamp)
+        clock = int(epochTimeStamp)
+        ns = int((epochTimeStamp - clock)* 1000000000)
+        
+        #Correct type of zbx_item_value
+        if type(zbx_item_value) == str:
+          zbx_item_value = f'"{zbx_item_value}"'
+        elif type(zbx_item_value) == int:
+          zbx_item_value = f'{zbx_item_value}'
+        elif type(zbx_item_value) == float:
+          zbx_item_value = f'{zbx_item_value}'
+        else:
+          zbx_item_value = f'"{zbx_item_value}"'
+            
+        #Insert to mysql
+        columnString = 'itemid, clock, value, ns'
+        valueString  = str(itemId_MySql)+','+str(clock)+','+str(zbx_item_value)+','+str(ns)
+        print(valueString)
+        self.zabbixMySql.insertRow("history", columnString, valueString)
+      except Exception as e:
+        print(e)
+        logger.error('[Zabbix] Unable to request to server')
+    else:
+      try:
+        print("Upload to Zabbix Server by ZabbixSender")
+        self.updateItemValue(hostName_zabbixSender,itemKey_zabbixSender,zbx_item_value)
+      except Exception as e:
+        print(e)
+        logger.error('[Zabbix] Unable to request to server')
       
 
   
@@ -262,7 +302,7 @@ class zabbix_Wrapper:
       - getHostParam('DaLat_Tanung_GW0')
     '''
     try:
-        result = self.zabbix_api.do_request('host.get', {'filter': {'host': [hostName]}})
+        result = self.zabbix_api.do_request('host.get', {'search': {'host': [hostName]}})
         if [host['host'] for host in result['result']] == []:
             return False
         else:
@@ -283,12 +323,29 @@ class zabbix_Wrapper:
       - getItemValue('DaLat_Tanung_GW0', "201X0.1.2")
     '''
     try:
-        result = self.zabbix_api.do_request('item.get', {'host': hostName, 'filter': {'name': [itemName]}})
+        result = self.zabbix_api.do_request('item.get', {'host': hostName, 'search': {'name': [itemName]}})
         return result['result'][0]
     except Exception:
         logger.error('[Zabbix] Unable to request to server')
         return False
 
+  def getItemParamByItemKey (self,itemKey):
+    '''
+    - `name`: getItemParamByItemKey
+    - `description`:  Lấy các thông số của item dựa vào itemKey.
+    - `parameters`:
+      - `itemKey`: Key của item.
+    - `return`: Giá trị của item. Dạng dictionary.
+    - `Example`:
+      - getItemParamByItemKey("201X0.1.2")
+    '''
+    try:
+        result = self.zabbix_api.do_request('item.get', {'search': {'key_': [itemKey]}})
+        return result['result'][0]
+    except Exception:
+        logger.error('[Zabbix] Unable to request to server')
+        return False
+      
   def updateItemParam (self,hostName,itemKey, updateParamDict={}):
     '''
     - `name`: updateItemParam
@@ -307,7 +364,7 @@ class zabbix_Wrapper:
         itemId = self.getItemID(hostName,itemKey)
         updateDict = {'itemid': itemId}
         updateDict.update(updateParamDict)
-        self.zabbix_api.do_request('item.update',updateDict)
+        return self.zabbix_api.do_request('item.update',updateDict)
     except Exception:
         logger.error('[Zabbix] Unable to request to server')
         return False
