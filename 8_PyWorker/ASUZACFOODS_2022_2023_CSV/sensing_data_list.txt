@@ -1,0 +1,59 @@
+// Customer : ASUZACFOODS
+// Content : Sensing data backup
+// Period: Sep 1, 2022 to Aug 31, 2023
+// Farms: Greenhouse, Sprout_room, Tanung_Weather_Outdoor
+// Purpose: Easy to track back all sensing data with text files (*.CSV)
+//====================================================================//
+*** Backup data structure ***
+//====================================================================//
+
+ASUZACFOODS_2022_2023_CSV
+├── AF_Greenhouse_Sensor_Node
+│   ├── AF_Gateway_Ping.csv
+│   ├── AF_Greenhouse_Sensor_Node_255_V_HUM.csv
+│   ├── AF_Greenhouse_Sensor_Node_255_V_LEVEL.csv
+│   ├── AF_Greenhouse_Sensor_Node_255_V_PH.csv
+│   ├── AF_Greenhouse_Sensor_Node_255_V_RAIN.csv
+│   ├── AF_Greenhouse_Sensor_Node_255_V_UV.csv
+│   ├── AF_Greenhouse_Sensor_Node_255_V_VOLTAGE.csv
+│   ├── AF_Greenhouse_Sensor_Node_air_temperature__SenSu_.csv
+│   ├── AF_Greenhouse_Sensor_Node_co2_concentration.csv
+│   ├── AF_Greenhouse_Sensor_Node_filtered_illuminance.csv
+│   ├── AF_Greenhouse_Sensor_Node_illuminance.csv
+│   ├── AF_Greenhouse_Sensor_Node_pH_channel_1_OMI_1301N05Y.csv
+│   ├── AF_Greenhouse_Sensor_Node_pH_channel_2_SET_1331N05Y.csv
+│   ├── AF_Greenhouse_Sensor_Node_pH_vout_channel_1.csv
+│   ├── AF_Greenhouse_Sensor_Node_pH_vout_channel_2.csv
+│   ├── AF_Greenhouse_Sensor_Node_rainfall__SenSu_.csv
+│   ├── AF_Greenhouse_Sensor_Node_relative_humidity__SenSu_.csv
+│   ├── AF_Greenhouse_Sensor_Node_SENSU_1502_Data_Validity__for_Developer_.csv
+│   ├── AF_Greenhouse_Sensor_Node_sht_humidity.csv
+│   ├── AF_Greenhouse_Sensor_Node_sht_temperature.csv
+│   ├── AF_Greenhouse_Sensor_Node_uv_intensity__SenSu_.csv
+│   ├── AF_Greenhouse_Sensor_Node_vcc24__for_developer_.csv
+│   ├── AF_Greenhouse_Sensor_Node_wind_direction__SenSu_.csv
+│   └── AF_Greenhouse_Sensor_Node_wind_speed__SenSu_.csv
+├── AF_Repeater_Node (Greenhouse)
+│   ├── AF_Repeater_Node_255_V_EC.csv
+│   ├── AF_Repeater_Node_Relative_Humidity__REPEATER_Box_Inside_.csv
+│   ├── AF_Repeater_Node_Temperature__REPEATER_Box_Inside_.csv
+│   ├── AF_Repeater_Node_Water_TDS.csv
+│   └── AF_Repeater_Node_Water_Temperature.csv
+├── AF_Sprout_room_Sensor_Node
+│   ├── AF_Sprout_room_Sensor_Node_255_V_LEVEL.csv
+│   ├── AF_Sprout_room_Sensor_Node_3_V_CURRENT.csv
+│   ├── AF_Sprout_room_Sensor_Node_3_V_IR_SEND.csv
+│   ├── AF_Sprout_room_Sensor_Node_co2_concentration.csv
+│   ├── AF_Sprout_room_Sensor_Node_ethylene_concentration.csv
+│   ├── AF_Sprout_room_Sensor_Node_ethylene_voltage_out.csv
+│   └── AF_Sprout_room_Sensor_Node_vcc24v.csv
+└── AF_Tanung_Weather_Outdoor
+    ├── AF_Tanung_Weather_Outdoor_air_temperature__SenSu_.csv
+    ├── AF_Tanung_Weather_Outdoor_illuminance__Sensu_.csv
+    ├── AF_Tanung_Weather_Outdoor_ping.csv
+    ├── AF_Tanung_Weather_Outdoor_rainfall__SenSu_.csv
+    ├── AF_Tanung_Weather_Outdoor_relative_humidity__SenSu_.csv
+    ├── AF_Tanung_Weather_Outdoor_SENSU_1502_Data_Validity__for_Developer_.csv
+    ├── AF_Tanung_Weather_Outdoor_uv_intensity__SenSu_.csv
+    ├── AF_Tanung_Weather_Outdoor_wind_direction__SenSu_.csv
+    └── AF_Tanung_Weather_Outdoor_wind_speed__SenSu_.csv

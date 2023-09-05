@@ -20,7 +20,7 @@ ZABBIX_PORT     = 10051
 ZABBIX_USER     = 'Admin'
 ZABBIX_PASS     = 'CMEV12345'
 ZABBIX_URL      = 'http://'+ZABBIX_SERVER+'/zabbix/'
-zabbix = ZABBIX_LIB(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS, ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=True)
+zabbix = ZABBIX_LIB(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS, ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=False)
 
 ###############################################
 epochStartTime = int(time.mktime(time.strptime(startTime, "%Y/%m/%d %H:%M:%S")))
@@ -56,7 +56,7 @@ for host in hostList:
     itemValueType = item["value_type"]
     itemList.append({"itemName":str(itemName),"itemKey":str(itemKey),"itemUnit":str(itemUnit),"itemid":str(itemid),"itemValueType":str(itemValueType)})
     # MAKE CSV FILE
-    fileName = str(hostName+"_"+itemName).replace(" ","_").replace("-","_").replace("/","_").replace("(","_").replace(")","_").replace(".","_").replace(",","_").replace(":","_")+".csv"
+    fileName = str(hostName+"_"+itemName).replace(" ","_").replace("-","_").replace("/","_").replace("(","_").replace(")","_").replace(".","_").replace(",","_").replace(":","_").replace("___","_").replace("__","_")+".csv"
     print(datetime.datetime.now().strftime("[🕔 %H:%M:%S]")+" "+fileName)
     with open(fileName, "w") as f:
       f.write('"DateTime","Value","Unit"\n')
