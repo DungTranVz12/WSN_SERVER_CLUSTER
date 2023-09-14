@@ -49,7 +49,8 @@ def subcribeFilter(msg):
     pass
     
 
-#Subscribe all accept topic
+#Subscribe all accepted topic
+MQTT.subscribe("ZABBIX_AGENT_PUBLISH") #Subscribe to Zabbix Agent
 for gateway in ACCEPT_LIST_OF_GATEWAY:
   for acceptTopic in ACCEPT_LIST_OF_TOPIC:
     if acceptTopic == "WEB.SCAN_PROBLEM":

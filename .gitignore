@@ -11,3 +11,4 @@ __pycache__/
 8_PyWorker/Conf/__pycache__/
 8_PyWorker/Library/A6_Zabbix/__pycache__/
 8_PyWorker/Library/A9_MQTT/__pycache__/
+8_PyWorker/Application/Logs/
