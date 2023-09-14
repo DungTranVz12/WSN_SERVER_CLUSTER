@@ -20,72 +20,6 @@ import time
 # C. ZABBIX PART
 #########################################################################################
 zabbix = ZABBIX_LIB(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS, ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=True)
-# while True:
-#   print(">>> Update value to 10 <<<")
-#   # hostGroupName   = "SeasideConsulting_GW_TEST" 
-#   # hostName        = "TEMP_NODE_1"
-#   # itemName        = "INSEN.02.1 - Internal battery percent"
-#   # itemKey         = "INSEN.02.1"
-#   # #2. Tạo Hostgroup
-#   # zabbix.createHostgroup(hostGroupName)
-#   # #3. Tạo Host
-#   # zabbix.createHost(hostGroupName, hostName)
-#   # #4. Tạo Item
-#   # zabbix.createItem(hostName,itemKey,itemName)
-
-#   # problemHostQuerry = {
-#   #     "method": "host.get",
-#   #     "params": {
-#   #         "groupids": hostGroupId,
-#   #         "severities": [2, 5] # 0: not classified; 1: information; 2: warning; 3: average; 4: high; 5: disaster
-#   #     },
-#   #     "id": 1
-#   # }
-#   import pprint
-#   import time
-#   # result = zabbix.zabbix_api.do_request('host.get', {'filter': {'host': [hostName]}})
-#   while True:
-#     print(">>> Update value to 10 <<<")
-
-#     # itemId  = zabbix.getItemID("436730_NODE","01C821.436730.INSEN.02.1")
-#     # zabbix.updateItemValueMySqlOrSender(itemId,112,time.time())
-    
-#     hostName = "436730_NODE"
-#     itemKey  = "01C821.436730.INSEN.02.1"
-#     zabbix.updateItemValue (hostName, itemKey, 10)
-
-#     itemId  = zabbix.getItemID(hostName, itemKey)
-#     zabbix.updateItemValueMySqlOrSender(itemId_MySql=itemId, zbx_item_value= 20)
-    
-#     # hostName = "TestHost"
-#     # itemKey  = "TestUid.Test.1"
-#     # zabbix.updateItemValue (hostName, itemKey, 50)
-    
-#     print()
-#     print()
-#     time.sleep(10000)
-  
-#   problemHostQuerry= {
-#     "jsonrpc": "2.0",
-#     "method": "item.update",
-#     "params": {
-#         "key_": "01C821.436730.INSEN.02.1",
-#         "lastvalue": "200"
-#     },
-#     "id": 1
-#   }
-#   problemHostResult = zabbix.zabbix_api.do_request(problemHostQuerry["method"], problemHostQuerry["params"])["result"]
-#   print(problemHostResult)
-
-
-#   hostName = "436730_TEMP_NODE_1"       # Seaside Consulting Temperature Node 1
-#   itemKey  = "01C821.436730.INSEN.02.1" # Seaside Consulting Battery Percent
-#   zabbix.updateItemValue (hostName, itemKey, 10)
-  
-#   hostName = "TestHost"
-#   itemKey  = "TestUid.Test.1"
-#   zabbix.updateItemValue (hostName, itemKey, 10)
-#   sleep(2)
 
 #########################################################################################
 # B. MQTT PART
@@ -130,24 +64,24 @@ def subcribeFilter(msg):
     if "mail.send" == jsonData["message"]["method"]:  #METHOD = "mail.send"
       params = jsonData["message"]["params"]
       #1. META DATA
-      sendTo = params["sendTo"]
-      subject = params["subject"]
-      mailTemplate = params["body"]["MAIL.TEMPLATE"]
-      date = params["body"]["DATE"]
-      time = params["body"]["TIME"]
-      eventId = params["body"]["EVENT.ID"]
-      eventName = params["body"]["EVENT.NAME"]
-      eventSeverity = params["body"]["EVENT.SEVERITY"]
-      eventStatus = params["body"]["EVENT.STATUS"]
-      hostGroupName = params["body"]["TRIGGER.HOSTGROUP.NAME"]
-      hostName = params["body"]["HOST.NAME"]
-      hostId = params["body"]["HOST.ID"]
-      itemId = params["body"]["ITEM.ID"]
-      itemName = params["body"]["ITEM.NAME"]
-      itemKey = params["body"]["ITEM.KEY"]
-      itemLastValue = params["body"]["ITEM.LASTVALUE"]
-      itemValue = params["body"]["ITEM.VALUE"]
-      itemValueType = params["body"]["ITEM.VALUETYPE"]
+      sendTo = str(params["sendTo"]).strip()
+      subject = str(params["subject"]).strip()
+      mailTemplate = str(params["body"]["MAIL.TEMPLATE"]).strip()
+      date = str(params["body"]["DATE"]).strip()
+      time = str(params["body"]["TIME"]).strip()
+      eventId = str(params["body"]["EVENT.ID"]).strip()
+      eventName = str(params["body"]["EVENT.NAME"]).strip()
+      eventSeverity = str(params["body"]["EVENT.SEVERITY"]).strip()
+      eventStatus = str(params["body"]["EVENT.STATUS"]).strip()
+      hostGroupName = str(params["body"]["TRIGGER.HOSTGROUP.NAME"]).strip()
+      hostName = str(params["body"]["HOST.NAME"]).strip()
+      hostId = str(params["body"]["HOST.ID"]).strip()
+      itemId = str(params["body"]["ITEM.ID"]).strip()
+      itemName = str(params["body"]["ITEM.NAME"]).strip()
+      itemKey = str(params["body"]["ITEM.KEY"]).strip()
+      itemLastValue = str(params["body"]["ITEM.LASTVALUE"]).strip()
+      itemValue = str(params["body"]["ITEM.VALUE"]).strip()
+      itemValueType = str(params["body"]["ITEM.VALUETYPE"]).strip()
       
       #Convert sendTo to list
       SIB_SEND_TO = list()
@@ -155,7 +89,9 @@ def subcribeFilter(msg):
       for sendPerson in sendList:
          SIB_SEND_TO.append({"email":sendPerson})
       
-      #2. Prepare mail content
+      ###########################################################
+      #2. Prepare mail content                                  #
+      ###########################################################
       if mailTemplate == "Temp_01":
         #2.1 load template to content
         with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_01.html", "r") as f:
@@ -197,9 +133,74 @@ def subcribeFilter(msg):
         mailConfig.html_content = content
         mailConfig.attachment = [{'content':battPercentChartB64, 'name':'BatteryPercent.png'},
                                  {'content':battVoltageChartB64, 'name':'BatteryVoltage.png'}]
-        SIB.sendMail(mailConfig)
-        pass
-    
+        try:
+          SIB.sendMail(mailConfig)
+        except:
+          SIB.sendMail(mailConfig)
+        print("====> send mail success!")
+
+      if mailTemplate == "Temp_02":
+        #2.1 load template to content
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_02.html", "r") as f:
+          content = f.read()
+          
+        #2.2 Get Chart
+        noDataKey = itemKey
+        try:
+          noDataKeyParams = zabbix.getItemParamByItemKey(noDataKey)
+          noDataKeyId = noDataKeyParams["itemid"]
+        except Exception as e:
+          print("ERROR: "+str(e))
+          noDataKeyId = "N/A"
+        noDataChartB64,noDataChartLink = downloadBase64ZabbixChart(date,time,noDataKeyId)
+        
+        #2.3 Replace content
+        content = content.replace("{{NO_DATA_GRAPH}}", noDataChartB64)
+        content = content.replace("{{NO_DATA_GRAPH_LINK}}", noDataChartLink)
+
+        #2.4 SendMail
+        mailConfig.to = SIB_SEND_TO
+        mailConfig.subject = subject
+        mailConfig.content_mode = class_contentMode.HTML_CONTENT
+        mailConfig.html_content = content
+        mailConfig.attachment = [{'content':noDataChartB64, 'name':'noDataGraph.png'}]
+        try:
+          SIB.sendMail(mailConfig)
+        except:
+          SIB.sendMail(mailConfig)
+        print("====> send mail success!")
+
+      if mailTemplate == "Temp_03":
+        #2.1 load template to content
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_03.html", "r") as f:
+          content = f.read()
+          
+        #2.2 Get Chart
+        noDataKey = itemKey
+        try:
+          noDataKeyParams = zabbix.getItemParamByItemKey(noDataKey)
+          noDataKeyId = noDataKeyParams["itemid"]
+        except Exception as e:
+          print("ERROR: "+str(e))
+          noDataKeyId = "N/A"
+        noDataChartB64,noDataChartLink = downloadBase64ZabbixChart(date,time,noDataKeyId)
+        
+        #2.3 Replace content
+        content = content.replace("{{NO_DATA_GRAPH}}", noDataChartB64)
+        content = content.replace("{{NO_DATA_GRAPH_LINK}}", noDataChartLink)
+
+        #2.4 SendMail
+        mailConfig.to = SIB_SEND_TO
+        mailConfig.subject = subject
+        mailConfig.content_mode = class_contentMode.HTML_CONTENT
+        mailConfig.html_content = content
+        mailConfig.attachment = [{'content':noDataChartB64, 'name':'noDataGraph.png'}]
+        try:
+          SIB.sendMail(mailConfig)
+        except:
+          SIB.sendMail(mailConfig)
+        print("====> send mail success!")
+        
   except Exception as e:
     print("ERROR: "+str(e))
     pass

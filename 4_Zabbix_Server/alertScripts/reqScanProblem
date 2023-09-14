@@ -1,0 +1,54 @@
+#!/bin/sh
+#get sendTo, subject, body from zabbix
+sendTo=$1
+subject=$2
+body=$3
+#send mail
+message='{
+  "uid": "SIO_EXCTL_'${RANDOM}'",
+  "message": {
+    "method": "problem.get",
+    "params": {
+      "sendTo": "'${sendTo}'",
+      "subject": "'${subject}'",
+      "body": "'${body}'"
+    }
+  }
+}'
+#Body = {
+#   "hostgroupName": "'${hostname}'",
+#   "topic": "'${topic}'"
+# }
+topic2=`echo $message | sed -n 's/.*"topic": "\(.*\)".*/\1/p'`
+
+mosquitto_pub -h wsnCluster_mqtt -p 1885 -u mqtt_broker -P !Da#ImU%VuF3V -t "ZABBIX_AGENT_PUBLISH" -m "$message"
+
+
+#!/bin/sh
+#get sendTo, subject, body from zabbix
+topic=$2    #From Subject. Ex: "WSN_GW_01C821.WEB.SCAN_PROBLEM"
+hostname=$3 #From body. Ex: "SeasideConsulting_GW01C821"
+
+topic="WSN_GW_01C821.WEB.SCAN_PROBLEM"
+hostname="SeasideConsulting_GW01C821"
+
+#send mail
+message='
+{
+  "uid": "SIO_EXCTL_'${RANDOM}'",
+  "message": {
+    "method": "problem.get",
+    "params": {
+      "hostgroupName": "'${hostname}'",
+      "topic": "'${topic}'"
+    }
+  }
+}'
+#extract topic from message
+topic2=`echo $message | sed -n 's/.*"topic": "\(.*\)".*/\1/p'`
+
+echo $topic2
+# echo $message
+# mosquitto_pub -h wsnCluster_mqtt -p 1885 -u mqtt_broker -P !Da#ImU%VuF3V -t "$topic" -m "$message"
+
+

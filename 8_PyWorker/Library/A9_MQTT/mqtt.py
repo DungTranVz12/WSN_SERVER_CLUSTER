@@ -19,7 +19,7 @@ class mqttClass ():
         pass
 
     def on_message(self, client, userdata, msg):
-        # print(f"MQTT received `{msg.payload.decode()}` from `{msg.topic}` topic.")
+        print(f"MQTT received `{msg.payload.decode()}` from `{msg.topic}` topic.")
         self.msgRcvFilter(msg)
 
     def on_connect(self, client, userdata, flags, rc):
@@ -32,9 +32,10 @@ class mqttClass ():
         print("Disconnected from MQTT Broker.")
         while True:
             try:
-                print("Reconnect every 5 seconds...")
-                self.client.reconnect()
-                break
+                if self.client.is_connected() == False:
+                    print("Reconnect every 5 seconds...")
+                    self.client.reconnect()
+                    break
             except:
                 pass
             time.sleep(5)

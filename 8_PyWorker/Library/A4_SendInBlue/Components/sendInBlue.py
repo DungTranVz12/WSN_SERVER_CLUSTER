@@ -1,4 +1,3 @@
-from __future__ import print_function
 import __init
 from Conf.loggingSetup import *
 import sib_api_v3_sdk

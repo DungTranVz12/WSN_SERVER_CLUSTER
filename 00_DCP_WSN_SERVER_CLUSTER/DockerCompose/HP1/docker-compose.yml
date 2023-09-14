@@ -182,8 +182,8 @@ services:
                          pip install sib_api_v3_sdk &&
                          pip install mysql-connector-python==8.0.29 &&
                          sleep 5 &&
-                         screen -dmS PyWorker python3 /AppDir/Application/scanZabbixProblem.py &&
-                         screen -dmS genTestSignal python3 /AppDir/Application/genItemValueForTest.py &&
+                         screen -dmS scanProblem python3 /AppDir/Application/scanZabbixProblem.py &&
+                         screen -dmS sendMail python3 /AppDir/Application/sendMail.py &&
                          tail -f /dev/null" #Sleep 5 giây đợi SocketIO Server và Web server khởi động xong.
     # command: "python3 /AppDir/Application/scanZabbixProblem.py"
     # command: /bin/sh -c "pip install py-zabbix &&

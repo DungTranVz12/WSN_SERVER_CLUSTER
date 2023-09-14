@@ -23,13 +23,13 @@ ZABBIX_USER     = 'Admin'
 ZABBIX_PASS     = 'zabbix'
 ZABBIX_URL      = 'http://'+ZABBIX_WEB_IP+':'+ZABBIX_WEB_PORT
 
-hostGroupName   = "TestHostGroup" 
-hostName        = "TestHost"
-itemName        = "TestItem"
-itemUID         = "TestUid.Test.1"
+hostGroupName   = "SeasideConsulting_GW01C821" 
+hostName        = "436730_NODE"
+itemName        = "INSEN.02.1 - Internal battery percent"
+itemUID         = "01C821.436730.INSEN.02.1"
 
 #1. Khởi tạo Zabbix
-zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=True)
+zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=False)
 #2. Tạo Hostgroup
 zabbix.createHostgroup(hostGroupName)
 #3. Tạo Host
@@ -48,17 +48,16 @@ STEP_DELAY_SEC = 0.5
 
 print("\n=== START TEST ===")
 while True:
-  for i in range(MIN_VALUE,MAX_VALUE,STEP_VALUE):
-    print("Upload value: ", str(i))
-    itemId  = zabbix.getItemID(hostName, itemUID)
-    zabbix.updateItemValue(hostName, itemUID,i)
-    sleep(STEP_DELAY_SEC)
   for i in range(MAX_VALUE,MIN_VALUE,-STEP_VALUE):
     print("Upload value: ", str(i))
     itemId  = zabbix.getItemID(hostName, itemUID)
     zabbix.updateItemValue(hostName, itemUID,i)
     sleep(STEP_DELAY_SEC)
-
+  for i in range(MIN_VALUE,MAX_VALUE,STEP_VALUE):
+    print("Upload value: ", str(i))
+    itemId  = zabbix.getItemID(hostName, itemUID)
+    zabbix.updateItemValue(hostName, itemUID,i)
+    sleep(STEP_DELAY_SEC)
 
     
 
