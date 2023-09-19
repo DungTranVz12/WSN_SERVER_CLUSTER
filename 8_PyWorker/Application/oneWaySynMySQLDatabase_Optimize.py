@@ -15,7 +15,7 @@ SRC_MYSQL_DOCKER_CONTAINER_NAME="mysql-server"
 DES_MYSQL_TABLE_LIST=["history","history_log","history_str","history_text","history_uint"]
 DES_MYSQL_DATABASE="zabbix"
 DES_MYSQL_DOCKER_CONTAINER_NAME="wsnCluster_zabbix-mysql-server"
-DES_DOCKER_EXEC = "docker exec -i "+DES_MYSQL_DOCKER_CONTAINER_NAME+" mysql -u root -proot_pwd "+DES_MYSQL_DATABASE+" < ./history.sql"
+DES_DOCKER_EXEC = "docker exec -i "+DES_MYSQL_DOCKER_CONTAINER_NAME+" mysql -u root -proot_pwd "+DES_MYSQL_DATABASE+" < /root/history.sql"
 
 #########################################
 # 1. Build docker exec for backup MySQL database command
@@ -38,7 +38,7 @@ os.system(MERGE_COMMAND)
 TIME = "\x1b[48;5;51m["+str(datetime.datetime.now())+"]\x1b[0m"
 print(f'{TIME} ===> START DOWNLOAD DATABASE...')
 SRC_FILE_PATH = "/history.tar.gz"
-DES_FILE_PATH = "history.tar.gz"
+DES_FILE_PATH = "/root/history.tar.gz"
 SCP_DOWNLOAD_CMD = f'scp -P {SRC_HOST_PORT} {SRC_HOST_USER}@{SRC_HOST_IP}:{SRC_FILE_PATH} {DES_FILE_PATH}'
 os.system(SCP_DOWNLOAD_CMD)
 
@@ -53,6 +53,7 @@ TIME = "\x1b[48;5;51m["+str(datetime.datetime.now())+"]\x1b[0m"
 print(f'{TIME} ===> START UNZIP DATABASE...')
 DES_UNZIP_CMD = f'tar -xzvf {DES_FILE_PATH}'
 os.system(DES_UNZIP_CMD)
+os.system("mv history.sql /root/history.sql")
 
 # 5. Xóa file backup trên máy local
 TIME = "\x1b[48;5;51m["+str(datetime.datetime.now())+"]\x1b[0m"
