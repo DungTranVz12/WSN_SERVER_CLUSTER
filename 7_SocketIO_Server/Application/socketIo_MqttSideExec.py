@@ -3,7 +3,7 @@ import __init
 import os,time
 import re
 time.sleep(1) #Chờ cho server khởi động và copy file cloneMyConfig.py vào /AppDir/cloneMyConfig.py
-if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
+if os.path.exists("/myConfigWSN.py"): #Mapped from host to container
   from cloneMyConfig import *
 else:
   from Application.parameter import *

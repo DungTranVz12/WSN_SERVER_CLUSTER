@@ -24,6 +24,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root_pwd   #Nếu load dữ liệu từ file backup thì password này phải giống với password của user zabbix trong file backup
       - TZ=Asia/Saigon                 #Set time zone cho MySQL server
     volumes:
+      - /myConfigWSN.py:/myConfigWSN.py
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/2_MySQL:/AppDir
@@ -61,6 +62,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root_pwd 
       - ZBX_JAVAGATEWAY=wsnCluster_zabbix-java-gateway
     volumes:
+      - /myConfigWSN.py:/myConfigWSN.py
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/AppDir
       - /root/0_GIT_WSN_SERVER_CLUSTER/4_Zabbix_Server:/var/lib/zabbix/shareFolder
@@ -91,6 +93,7 @@ services:
       - MYSQL_PASSWORD=zabbix_pwd
       - MYSQL_ROOT_PASSWORD=root_pwd
     volumes:
+      - /myConfigWSN.py:/myConfigWSN.py
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/AppDir
@@ -117,6 +120,7 @@ services:
     user: root
     restart: always
     volumes:
+      - /myConfigWSN.py:/myConfigWSN.py
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/6_MQTT_Broker:/AppDir
@@ -142,6 +146,7 @@ services:
     ports:
       - 10005:5000
     volumes:
+      - /myConfigWSN.py:/myConfigWSN.py
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/7_SocketIO_Server:/AppDir
@@ -168,6 +173,7 @@ services:
       wsn_net: #external network
         ipv4_address: '200.200.200.8'
     volumes:
+      - /myConfigWSN.py:/myConfigWSN.py
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir

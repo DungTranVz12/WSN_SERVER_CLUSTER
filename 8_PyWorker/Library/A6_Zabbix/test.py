@@ -1,7 +1,7 @@
 import __init
 ############ IMPORT PARAMETER ############
 import sys,os
-if os.path.exists("/0_SHARE/myConfiguration.py"): #Mapped from host to container
+if os.path.exists("/myConfigWSN.py"): #Mapped from host to container
   MAIN_WORKDIR = sys.path[0]
   os.system("cp /0_SHARE/myConfiguration.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
   from cloneMyConfig import *
