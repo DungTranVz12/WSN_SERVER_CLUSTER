@@ -1,6 +1,10 @@
 import __init
 import os,datetime
 ############# USER DEFINE #############
+BACKUP_ALL_DATABASE_FLAG = True  #Backup toàn bộ database bao gồm: các config và history.
+BACKUP_HISTORY_ONLY_FLAG = False #Chỉ backup history liên quan đến giá trị sensor.
+
+
 ### SOURCE HOST ###
 # mysqldump -u root -proot_pwd zabbix history history_log history_str history_text history_uint > ./history.sql
 SRC_HOST_IP="157.65.24.169" # SERVER ZABBIX JAPAN
@@ -21,7 +25,10 @@ DES_DOCKER_EXEC = "docker exec -i "+DES_MYSQL_DOCKER_CONTAINER_NAME+" mysql -u r
 # 1. Build docker exec for backup MySQL database command
 TIME = "\x1b[48;5;51m["+str(datetime.datetime.now())+"]\x1b[0m"
 print(f'{TIME} ===> START BACKUP DATABASE...')
-SRC_TABLE_LIST = " ".join(SRC_MYSQL_TABLE_LIST)
+if BACKUP_HISTORY_ONLY_FLAG == False and BACKUP_ALL_DATABASE_FLAG == True:
+  SRC_TABLE_LIST = ""
+if BACKUP_HISTORY_ONLY_FLAG == True and BACKUP_ALL_DATABASE_FLAG == False:
+  SRC_TABLE_LIST = " ".join(SRC_MYSQL_TABLE_LIST)
 SRC_SSH_CMD=f'ssh -p {SRC_HOST_PORT} {SRC_HOST_USER}@{SRC_HOST_IP}'
 
 COMMAND_1 = f'docker exec -i {SRC_MYSQL_DOCKER_CONTAINER_NAME} mysqldump -u root -proot_pwd {SRC_MYSQL_DATABASE} {SRC_TABLE_LIST} > /history.sql'
@@ -68,6 +75,7 @@ os.system(DES_DOCKER_EXEC)
 TIME = "\x1b[48;5;51m["+str(datetime.datetime.now())+"]\x1b[0m"
 print(f'{TIME} === DONE ===')
 
+print(DES_DOCKER_EXEC)
 
 
 
