@@ -1,8 +1,8 @@
 import __init
 import os,datetime
 ############# USER DEFINE #############
-BACKUP_ALL_DATABASE_FLAG = True  #Backup toàn bộ database bao gồm: các config và history.
-BACKUP_HISTORY_ONLY_FLAG = False #Chỉ backup history liên quan đến giá trị sensor.
+BACKUP_ALL_DATABASE_FLAG = False  #Backup toàn bộ database bao gồm: các config và history.
+BACKUP_HISTORY_ONLY_FLAG = True   #Chỉ backup history liên quan đến giá trị sensor.
 
 
 ### SOURCE HOST ###

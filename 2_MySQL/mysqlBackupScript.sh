@@ -3,7 +3,7 @@ BACKUP_DIR="/mySqlBackupDir"
 #Run every day at 11:59 PM
 while true
 do
-  if [ `date +%H` -eq 23 ] && [ `date +%M` -eq 59 ]
+  if [ `date +%H` -eq 23 ] && [ `date +%M` -eq 58 ]
   then
     DATE=$(date +%d-%m-%Y__%Hh%M)
     mysqldump -u root -p'!Da#ImU%VuF3V' --all-databases > backup_$DATE.sql
