@@ -4,47 +4,77 @@ from time import sleep
 from pprint import *
 from Library.A6_Zabbix.Zabbix_Wrap import zabbix_Wrapper as ZABBIX
 import time
-############ IMPORT PARAMETER ############
 import sys,os
-if os.path.exists("/myConfig/myConfigWSN.py"): #Mapped from host to container
-  MAIN_WORKDIR = sys.path[0]
-  os.system("cp /myConfig/myConfigWSN.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
-  from cloneMyConfig import *
+devPcName = os.uname()[1]
+############ IMPORT PARAMETER ############
+if devPcName == "lotushp1":
+  if os.path.exists("/root/myConfig/myConfigWSN.py"): #Mapped from host to container
+    MAIN_WORKDIR = sys.path[0]
+    os.system("cp /root/myConfig/myConfigWSN.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+    from cloneMyConfig import *
+  else:
+    from Application.parameter import *
 else:
-  from Application.parameter import *
+  if os.path.exists("/myConfig/myConfigWSN.py"): #Mapped from host to container
+    MAIN_WORKDIR = sys.path[0]
+    os.system("cp /myConfig/myConfigWSN.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+    from cloneMyConfig import *
+  else:
+    from Application.parameter import *
 ##########################################
 
 ################## TESTING #######################
-ZABBIX_SERVER   = 'wsnCluster_zabbix-server-agent'
-ZABBIX_WEB_IP   = 'wsnCluster_zabbix-web-nginx-mysql'
-ZABBIX_WEB_PORT = '8080'
-ZABBIX_PORT     = 10051
-ZABBIX_USER     = 'Admin'
-ZABBIX_PASS     = 'zabbix'
-ZABBIX_URL      = 'http://'+ZABBIX_WEB_IP+':'+ZABBIX_WEB_PORT
-gatewayName     = "01C821_GATEWAY_NODE"
-devTrigCode     = "01C821.DEV_TRIG_CODE"
-# hostGroupName   = "SeasideConsulting_GW01C821" 
-# hostName        = "01C821_GATEWAY_NODE"
-# itemName        = "DEV_TRIG_CODE"
-# itemUID         = "01C821.DEV_TRIG_CODE"
+#print dev PC Name
+
+if devPcName == "lotushp1":
+  print("Running on LotusHP1")
+  ZABBIX_SERVER   = 'lotus1104.synology.me'
+  ZABBIX_WEB_IP   = 'lotus1104.synology.me'
+  ZABBIX_WEB_PORT = '10002'
+  ZABBIX_PORT     = 10001
+  ZABBIX_USER     = 'Admin'
+  ZABBIX_PASS     = 'zabbix'
+  ZABBIX_URL      = 'http://'+ZABBIX_WEB_IP+':'+ZABBIX_WEB_PORT
+else:
+  print("Running on Docker")
+  ZABBIX_SERVER   = 'wsnCluster_zabbix-server-agent'
+  ZABBIX_WEB_IP   = 'wsnCluster_zabbix-web-nginx-mysql'
+  ZABBIX_WEB_PORT = '8080'
+  ZABBIX_PORT     = 10051
+  ZABBIX_USER     = 'Admin'
+  ZABBIX_PASS     = 'zabbix'
+  ZABBIX_URL      = 'http://'+ZABBIX_WEB_IP+':'+ZABBIX_WEB_PORT
+gatewayName       = "01C821_GATEWAY_NODE"
+devTrigCode       = "01C821.DEV_TRIG_CODE"
 
 zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=False)
+
+# hostGroupName     = "SeasideConsulting_GW01C821" 
+# hostName          = "01C821_GATEWAY_NODE"
+# itemName          = "TEST"
+# itemUID           = "01C821.TEST"
+
 # zabbix.createHostgroup(hostGroupName)
 # #3. Tạo Host
 # zabbix.createHost(hostGroupName, hostName)
 # #4. Tạo Item
 # zabbix.createItem(hostName,itemUID,itemName)
+# #5. Update Item Value
+# zabbix.updateItemValue(hostName,itemUID,0)
+# zabbix.updateItemValue(hostName,itemUID,10)
+# zabbix.updateItemValue(hostName,itemUID,20)
+# zabbix.updateItemValue(hostName,itemUID,30)
+# exit(0)
 
 ###################################################################
 # LOW BATTERY TRIGGER                                             #
 ###################################################################
-# ##### TEMP NODE: 1 #####
-hostName        = "436730_NODE"
-itemUID         = "01C821.436730.INSEN.02.1"
-zabbix.updateItemValue(hostName,itemUID,100)
-# zabbix.updateItemValue(hostName,itemUID,10) ;
-# zabbix.updateItemValue(hostName,itemUID,100);
+# # ##### TEMP NODE: 1 #####
+# hostName        = "436730_NODE"
+# itemUID         = "01C821.436730.INSEN.02.1"
+# zabbix.updateItemValue(hostName,itemUID,100)
+# zabbix.updateItemValue(hostName,itemUID,10)
+# zabbix.updateItemValue(hostName,itemUID,100)
 
 # ##### TEMP NODE: 2 #####
 # hostName        = "C8DB2C_NODE"
@@ -130,7 +160,7 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 
 #############################################################
 # # # ##### SENSOR NODE: 1 - Node no data #####
-# triggerId       = 23005
+# triggerId       = 22998
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # sleep(1)
@@ -157,9 +187,9 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 # # ##### SENSOR NODE: 2 - pH no data #####
-triggerId       = 23002
-zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+# triggerId       = 23002
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 
 ###################################################################
 # THRESHOLD TRIGGER                                               #
