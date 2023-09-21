@@ -1,6 +1,6 @@
 import datetime
 #https://app.brevo.com/settings/keys/api
-DEFAULT_API_KEY  = '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'
+DEFAULT_API_KEY  = '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'
 DEFAULT_SENDER   = {"email":"wsn_system@cmengineering.com","name":"WSN System"}
 DEFAULT_TO       = [{"email":'tran.dung@cmengineering.com.vn',"name":"Tran Dung"}]
 DEFAULT_CC       = None # [{"email":"example2@example2.com","name":"Janice Doe"}]

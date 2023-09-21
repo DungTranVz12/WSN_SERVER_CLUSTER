@@ -160,9 +160,9 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 
 #############################################################
 # # # ##### SENSOR NODE: 1 - Node no data #####
-# triggerId       = 22998
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+triggerId       = 22988
+zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # sleep(1)
 # # ##### SENSOR NODE: 1 - DO no data #####
 # triggerId       = 22998
