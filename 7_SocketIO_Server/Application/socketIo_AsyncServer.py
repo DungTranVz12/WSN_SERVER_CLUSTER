@@ -2,11 +2,12 @@ import __init
 ############ IMPORT PARAMETER ############
 import sys,os
 import re
-if os.path.exists("/myConfigWSN.py"): #Mapped from host to container
+if os.path.exists("/myConfig/myConfigWSN.py"): #Mapped from host to container
   MAIN_WORKDIR = sys.path[0]
-  os.system("cp /0_SHARE/myConfigWSN.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
+  print(MAIN_WORKDIR)
+  os.system("cp /myConfig/myConfigWSN.py "+MAIN_WORKDIR+"/cloneMyConfig.py")
   os.system("touch "+MAIN_WORKDIR+"/cloneMyConfig.py")
-  os.system("touch /0_SHARE/myConfigWSN.py")
+  os.system("touch /myConfig/myConfigWSN.py")
   from cloneMyConfig import *
 else:
   from Application.parameter import *
@@ -219,8 +220,8 @@ app.router.add_get('/ZBProblem_01C821', ZBProblem_01C821)
 #Check update myConfigWSN.py to reboot container
 # def checkUpdateMyConfigurationFileToRebootContainer():
 #   while True:
-#     if os.path.exists("/myConfigWSN.py") and os.path.exists("/AppDir/cloneMyConfig.py"):
-#       if os.path.getmtime("/myConfigWSN.py") > os.path.getmtime("/AppDir/cloneMyConfig.py"):
+#     if os.path.exists("/myConfig/myConfigWSN.py") and os.path.exists("/AppDir/cloneMyConfig.py"):
+#       if os.path.getmtime("/myConfig/myConfigWSN.py") > os.path.getmtime("/AppDir/cloneMyConfig.py"):
 #         print ("myConfigWSN.py updated. Rebooting container...")
 #         os.system("reboot")
 #     time.sleep(5)
