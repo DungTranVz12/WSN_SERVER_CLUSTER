@@ -186,6 +186,7 @@ services:
     #   - wsnCluster_socketio
     command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime &&
                          pip install sib_api_v3_sdk &&
+                         pip install rsa &&
                          pip install mysql-connector-python==8.0.29 &&
                          sleep 5 &&
                          screen -dmS scanProblem python3 /AppDir/Application/scanZabbixProblem.py &&
