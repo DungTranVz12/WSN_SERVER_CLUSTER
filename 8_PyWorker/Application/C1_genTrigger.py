@@ -69,7 +69,7 @@ zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,
 ###################################################################
 # LOW BATTERY TRIGGER                                             #
 ###################################################################
-# # ##### TEMP NODE: 1 #####
+# ##### TEMP NODE: 1 #####
 # hostName        = "436730_NODE"
 # itemUID         = "01C821.436730.INSEN.02.1"
 # zabbix.updateItemValue(hostName,itemUID,100)

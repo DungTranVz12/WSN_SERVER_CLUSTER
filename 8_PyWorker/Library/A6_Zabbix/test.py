@@ -154,7 +154,7 @@ def subcribeFilter(msg):
       #2. Prepare mail content
       if mailTemplate == "Temp_01":
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_01.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_01.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart

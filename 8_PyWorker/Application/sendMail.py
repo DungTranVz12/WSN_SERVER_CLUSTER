@@ -92,9 +92,10 @@ def subcribeFilter(msg):
       ###########################################################
       #2. Prepare mail content                                  #
       ###########################################################
-      if mailTemplate == "Temp_01":
+      #2.1 Low Battery Template
+      if mailTemplate == "Temp_01": #Low Battery Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_01.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_01.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -139,9 +140,10 @@ def subcribeFilter(msg):
           SIB.sendMail(mailConfig)
         print("====> send mail success!")
 
-      if mailTemplate == "Temp_02":
+      #2.2 No Data Template
+      if mailTemplate == "Temp_02": #No Data Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_02.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_02.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -170,9 +172,10 @@ def subcribeFilter(msg):
           SIB.sendMail(mailConfig)
         print("====> send mail success!")
 
-      if mailTemplate == "Temp_03":
+      #2.3 No Data Recovery Template
+      if mailTemplate == "Temp_03": #No Data Recovery Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/3_TempNode/Temp_03.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_03.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -200,6 +203,71 @@ def subcribeFilter(msg):
         except:
           SIB.sendMail(mailConfig)
         print("====> send mail success!")
+        
+      #2.4 Over Threshold Template
+      if mailTemplate == "Temp_04": #Over Threshold Template
+        #2.1 load template to content
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_04.html", "r") as f:
+          content = f.read()
+          
+        #2.2 Get Chart
+        noDataKey = itemKey
+        try:
+          noDataKeyParams = zabbix.getItemParamByItemKey(noDataKey)
+          noDataKeyId = noDataKeyParams["itemid"]
+        except Exception as e:
+          print("ERROR: "+str(e))
+          noDataKeyId = "N/A"
+        noDataChartB64,noDataChartLink = downloadBase64ZabbixChart(date,time,noDataKeyId)
+        
+        #2.3 Replace content
+        content = content.replace("{{NO_DATA_GRAPH}}", noDataChartB64)
+        content = content.replace("{{NO_DATA_GRAPH_LINK}}", noDataChartLink)
+
+        #2.4 SendMail
+        mailConfig.to = SIB_SEND_TO
+        mailConfig.subject = subject
+        mailConfig.content_mode = class_contentMode.HTML_CONTENT
+        mailConfig.html_content = content
+        mailConfig.attachment = [{'content':noDataChartB64, 'name':'noDataGraph.png'}]
+        try:
+          SIB.sendMail(mailConfig)
+        except:
+          SIB.sendMail(mailConfig)
+        print("====> send mail success!")
+        
+      #2.5 Under Threshold Template
+      if mailTemplate == "Temp_05": #Under Threshold Template
+        #2.1 load template to content
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_05.html", "r") as f:
+          content = f.read()
+          
+        #2.2 Get Chart
+        noDataKey = itemKey
+        try:
+          noDataKeyParams = zabbix.getItemParamByItemKey(noDataKey)
+          noDataKeyId = noDataKeyParams["itemid"]
+        except Exception as e:
+          print("ERROR: "+str(e))
+          noDataKeyId = "N/A"
+        noDataChartB64,noDataChartLink = downloadBase64ZabbixChart(date,time,noDataKeyId)
+        
+        #2.3 Replace content
+        content = content.replace("{{NO_DATA_GRAPH}}", noDataChartB64)
+        content = content.replace("{{NO_DATA_GRAPH_LINK}}", noDataChartLink)
+
+        #2.4 SendMail
+        mailConfig.to = SIB_SEND_TO
+        mailConfig.subject = subject
+        mailConfig.content_mode = class_contentMode.HTML_CONTENT
+        mailConfig.html_content = content
+        mailConfig.attachment = [{'content':noDataChartB64, 'name':'noDataGraph.png'}]
+        try:
+          SIB.sendMail(mailConfig)
+        except:
+          SIB.sendMail(mailConfig)
+        print("====> send mail success!")
+        
         
   except Exception as e:
     print("ERROR: "+str(e))

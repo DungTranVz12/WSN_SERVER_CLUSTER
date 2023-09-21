@@ -3,8 +3,12 @@
 sendTo=$1
 subject=$2
 body=$3
-topic=`echo $body | sed -n 's/.*"topic": "\([^"]*\)".*/\1/p'`
-hostgroupName=`echo $body | sed -n 's/.*"hostgroupName": "\([^"]*\)".*/\1/p'`
+# {'hostgroupName': 'SeasideConsulting_GW01C821', 'topic': 'WSN_GW_01C821.WEB.SCAN_PROBLEM'}}
+hostgroupName=`echo $body | sed -n 's/.*"hostgroupName".*"\([^"]*\)".*/\1/p'`
+#Extract topic from hostgroupName
+GWUID=`echo $hostgroupName | sed -n 's/.*_GW\(.*\)/\1/p'`
+#Generate topic from GWUID
+topic="WSN_GW_${GWUID}.WEB.SCAN_PROBLEM"
 
 #send mail
 message='{
@@ -13,7 +17,8 @@ message='{
     "method": "problem.get",
     "params": {
       "topic": "'${topic}'",
-      "hostgroupName": "'${hostgroupName}'"
+      "hostgroupName": "'${hostgroupName}'",
+      "body": '${body}'
     }
   }
 }'

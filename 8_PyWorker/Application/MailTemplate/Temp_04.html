@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://fontawesome.com/v4/assets/font-awesome/css/font-awesome.css">
+  <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="/docs/5.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="mystyle.css">
+  <link rel="stylesheet" id="lowBat" href="lowbattery.svg">
+  <script>
+    //const imageContainer = document.getElementById('image-container');
+    const imageContainer = document.getElementsByTagName('a');
+    const tooltip = document.getElementById('tooltip');
+    const hoverImage = document.getElementById('hover-image');
+
+    imageContainer.addEventListener('mousemove', (e) => {
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.clientX + 10) + 'px';
+      tooltip.style.top = (e.clientY + 10) + 'px';
+    });
+
+    imageContainer.addEventListener('mouseout', () => {
+      tooltip.style.display = 'none';
+    });
+  </script>
+
+  <style>
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 300;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsiH0B4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 500;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0B4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 600;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1x4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 700;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1x4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 800;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgshZ1x4gaVc.ttf) format('truetype');
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Open Sans", sans-serif;
+      font-size: 14px;
+      color: #2d3a51;
+      line-height: 1.4;
+      padding: 0.5rem;
+    }
+    .alert {
+      position: relative;
+      padding: 0;
+      min-width: 250px;
+    }
+    .alert button.close {
+      margin: 0.45rem 1rem;
+      opacity: 0.75;
+    }
+    .alert button.close:hover {
+      opacity: 1;
+    }
+    .alert-icon,
+    .alert-text {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    .alert-icon {
+      min-width: 40px;
+      text-align: center;
+      font-size: 2.2rem;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.25);
+      padding: 1rem;
+    }
+    .alert-text {
+      color: #2d3a51;
+      padding: 2.4rem;
+      width: 100%;
+    }
+    .alert-text > h5 {
+      margin-top: 0;
+      font-weight: 600;
+    }
+    .alert .alert-link {
+      font-weight: normal;
+      color: #4790e6;
+    }
+    .alert ul {
+      margin: 0;
+    }
+    .alert ul li {
+      margin-bottom: 0.2rem;
+    }
+    .alert ul li:last-child {
+      margin-bottom: 0;
+    }
+    .alert-warning {
+      background-color: #fff8f5;
+      border-color: #ffccb3;
+    }
+    .alert-warning .alert-text h5 {
+      color: #ff5400;
+    }
+    .alert-warning button.close {
+      color: #ff5400;
+    }
+    .alert-warning .alert-icon {
+      background-color: #ff5400;
+    }
+    #image-container {
+      position: relative;
+      display: inline-block;
+    }
+    #tooltip {
+      display: none;
+      position: absolute;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 5px;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+
+  <svg style='display: none'>
+    <defs>
+      <!-- all your icon definitions -->
+      <symbol id='icon_warning' viewBox="0 0 512 512"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32z"/></svg>
+    </defs>
+  </svg>
+  
+
+</head>
+
+<body>
+
+
+  <div class="container alert alert-warning" style="width: 90%; margin-top: 20px;" >
+    <div class="row ">
+      <div class="col-sm-3" >
+        <div style="background-color: #ff5400; height: 100%; width: 100%;">
+          <div class="alert-icon" style="background-color: #ff5400; height: 100%; width: 100%;">
+            <svg class='svg-icon' style="width: 50%; fill:white;"><use xlink:href='#icon_warning'></use></svg>
+            <h5>WARNING</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-7 ">
+        <div class="alert-text">
+          <h5>OVER THRESHOLD</h5>
+          <h5>Value is over threshold.</h5>
+          <h5>Please check it.</h5>
+          <br>
+        </div>
+      </div>
+
+      <div class="col-sm-2 text-center">
+        <img style="width: 100%; padding: 10px 20px; " src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARQAAAEACAMAAABF6XnGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEFUExURfTfv+3Gj+e2b9V+ANqOH/fnz/LXr+q+f9eGD/rv3+KmT92WL+WuX9+eP+/On/////3l5M7o43ytnkuYgyyVfgCpjw+ulj6wnG7DtK/k3M/v6l/JuU/Esp/f1b/p4z+7px+znW/OwJReTMFIOO4xJO/6+I/ZzkqEbg6iiVl8Z985Kx2agi+5pA+tlXdtWvFXTP7y8fzY1u87Lu84LB2dhTuOeNBAMfvOy+89MWh1YD++q3/Ux7JPPw6mjg6ki67b0vR+diyag/mxrfehmw6jiQ+sk6NXRk/AriyTe9/08V2yoA+pkQAAANzHwfvLyPzf3fzV0k60ocbo69nw8szq7cDl6QAAAJ6tpAoAAABXdFJOU///////////////////////////////////////////////////////////////////////////////////////////////////////////////////AL5jNeMAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAt9SURBVHhe7Z1pmxvFEYBly2CbawmhlayOYWQvCjjChJALKQRIIGGTsOSA/f8/JdUzJc1VLc30VFW3nvT7wU/v7GgtvdNdXV1zaHKf6JCkECQpBEkKQZJCkKQQJCkESQpBkkKQpBAkKQQXJGXyABviXI6Uh9Ppo1ewLczFSHl1CjzCH4S5GCmPrJTpY/xJlkuR8rhwMn3yFH8W5UKkPC2dTKev4QZRLkTKa+hkOtV4w5chZYJGgNdxkySXIaWMsiUK2cpFSMEoW/IENwpyCVKePkEfJW/gZjkuQcobaOOA+Hu+ACm1KFvyJv5CjAuQ8jq6qHgLfyNF/FIeoIka0rE2finNKFvyEH8nRPRSMMpeITg7y9YQYpdyiLLo5CBFNtbGLuXNUkJbimysjVzKW+igI0W03BS5lGOURSdHKaLlprilPEQDhJSpYLkpaimv4OcH0ElNimCsjVrKIcoC6KQmZfoq7sVPzFKKAj6CTupS5GJtzFLqpSV0UpciF2sjllL//KQUsdJ+vFKOBfwCdNKQIlbaj1dKLcoC6KQpRarcFK2UVmkJnbSkCMXaaKXUoyyATlpShEr7sUpp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">
+      </div>
+    </div>
+  </div>
+
+  <div class="container alert alert-warning" style="width: 90%; margin-top: 20px;" >
+
+        <div class="alert-text">
+          <h5>GRAPH DISPLAY</h5>
+          <br>
+          <a href="{{NO_DATA_GRAPH_LINK}}"><img src='data:image/png;base64,{{NO_DATA_GRAPH}}' alt='NoDataGraph.png'></a>
+        </div>
+  </div>
+</body>
+</html>
+
+<!-- Make a bootstrap html file with 2 columns -->
