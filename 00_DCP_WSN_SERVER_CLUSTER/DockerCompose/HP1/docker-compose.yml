@@ -93,7 +93,7 @@ services:
       - MYSQL_PASSWORD=zabbix_pwd
       - MYSQL_ROOT_PASSWORD=root_pwd
     volumes:
-      - /myConfigWSN.py:/myConfigWSN.py
+      - /myConfig:/myConfig
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/vscode_extensions_container:/root/.vscode-server/extensions
       - /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE:/0_SHARE
       - /root/0_GIT_WSN_SERVER_CLUSTER/5_Zabbix_Web:/AppDir
