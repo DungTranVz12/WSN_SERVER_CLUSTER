@@ -93,9 +93,9 @@ def subcribeFilter(msg):
       #2. Prepare mail content                                  #
       ###########################################################
       #2.1 Low Battery Template
-      if mailTemplate == "Temp_01": #Low Battery Template
+      if mailTemplate == "Temp_01" or mailTemplate == "Temp_01_LowBattery": #Low Battery Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_01.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_01_LowBattery.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -141,9 +141,9 @@ def subcribeFilter(msg):
         print("====> send mail success!")
 
       #2.2 No Data Template
-      if mailTemplate == "Temp_02": #No Data Template
+      if mailTemplate == "Temp_02" or mailTemplate == "Temp_02_NoData": #No Data Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_02.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_02_NoData.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -173,9 +173,9 @@ def subcribeFilter(msg):
         print("====> send mail success!")
 
       #2.3 No Data Recovery Template
-      if mailTemplate == "Temp_03": #No Data Recovery Template
+      if mailTemplate == "Temp_03" or mailTemplate == "Temp_03_NoDataRecovery": #No Data Recovery Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_03.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_03_NoDataRecovery.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -205,9 +205,9 @@ def subcribeFilter(msg):
         print("====> send mail success!")
         
       #2.4 Over Threshold Template
-      if mailTemplate == "Temp_04": #Over Threshold Template
+      if mailTemplate == "Temp_04" or mailTemplate == "Temp_04_OverThreshold": #Over Threshold Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_04.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_04_OverThreshold.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -237,9 +237,9 @@ def subcribeFilter(msg):
         print("====> send mail success!")
         
       #2.5 Under Threshold Template
-      if mailTemplate == "Temp_05": #Under Threshold Template
+      if mailTemplate == "Temp_05" or mailTemplate == "Temp_05_UnderThreshold": #Under Threshold Template
         #2.1 load template to content
-        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_05.html", "r") as f:
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_05_UnderThreshold.html", "r") as f:
           content = f.read()
           
         #2.2 Get Chart
@@ -274,19 +274,10 @@ def subcribeFilter(msg):
     pass
       
 
-MQTT.subscribe("WSN_GW_01C823.WEB.TEST")
+# MQTT.subscribe("WSN_GW_01C823.WEB.TEST")
 MQTT.subscribe("ZABBIX_AGENT_PUBLISH")
 MQTT.msgRcvFilter = subcribeFilter
 threading.Thread(target=MQTT.listen).start()
 
 
 ##################################################################################################
-sleep(2)
-print("===== TESTCASE GENERATION =====")
-hostName = "436730_NODE"              # Seaside Consulting Temperature Node 1
-itemKey  = "01C821.436730.INSEN.02.1" # Seaside Consulting Battery Percent
-itemId  = zabbix.getItemID(hostName, itemKey)
-zabbix.updateItemValue (hostName, itemKey, 100)
-sleep(1)
-zabbix.updateItemValue (hostName, itemKey, 10)
-print("===== DONE =====")

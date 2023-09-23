@@ -6,7 +6,7 @@ RSA = RSA_Class()
 MESSAGE = "HELLO LOTUS!"
 print("1. Original message:", MESSAGE)
 #2. Generate key pair 
-RSA.generateKeyPair(filePrefix="rsa",saveDir="./") #generate key pair
+RSA.generateKeyPair(filePrefix="key",saveDir="./") #generate key pair
 print("2. Generate key pair success!")
 #3. Encrypt message
 encryptData = RSA.encrypt(MESSAGE) #encrypt data

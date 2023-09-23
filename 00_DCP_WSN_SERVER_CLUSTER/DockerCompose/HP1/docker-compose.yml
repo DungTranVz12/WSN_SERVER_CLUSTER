@@ -184,12 +184,13 @@ services:
     #   - wsnCluster_zabbix-server-agent
     #   - wsnCluster_mqtt
     #   - wsnCluster_socketio
-    command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime &&
-                         pip install sib_api_v3_sdk &&
-                         pip install rsa &&
-                         pip install mysql-connector-python==8.0.29 &&
-                         sleep 5 &&
+    command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime && sleep 1 &&
+                         pip install sib_api_v3_sdk && sleep 1 &&
+                         pip install rsa && sleep 1 &&
+                         pip install mysql-connector-python==8.0.29 && sleep 1 &&
+                         sleep 10 &&
                          screen -dmS scanProblem python3 /AppDir/Application/scanZabbixProblem.py &&
+                         sleep 5 &&
                          screen -dmS sendMail python3 /AppDir/Application/sendMail.py &&
                          tail -f /dev/null" #Sleep 5 giây đợi SocketIO Server và Web server khởi động xong.
     # command: "python3 /AppDir/Application/scanZabbixProblem.py"
