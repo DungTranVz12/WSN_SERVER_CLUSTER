@@ -70,9 +70,9 @@ zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,
 # LOW BATTERY TRIGGER                                             #
 ###################################################################
 # ##### TEMP NODE: 1 #####
-hostName        = "436730_NODE"
-itemUID         = "01C821.436730.INSEN.02.1"
-zabbix.updateItemValue(hostName,itemUID,100)
+# hostName        = "436730_NODE"
+# itemUID         = "01C821.436730.INSEN.02.1"
+# zabbix.updateItemValue(hostName,itemUID,100)
 # zabbix.updateItemValue(hostName,itemUID,10)
 # zabbix.updateItemValue(hostName,itemUID,100)
 
@@ -136,64 +136,106 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 
 #############################################################
 # # # ##### GATEWAY - No data #####
-# triggerId       = 23004
+# triggerId       = 22992
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 
 #############################################################
 # # # ##### TEMP NODE: 1 - Node no data #####
-# triggerId       = 22993
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# # # ##### TEMP NODE: 2 - Node no data #####
 # triggerId       = 22996
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# # # ##### TEMP NODE: 2 - Node no data #####
+# triggerId       = 22999
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # # # ##### TEMP NODE: 3 - Node no data #####
-# triggerId       = 22994
+# triggerId       = 22997
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # # # ##### TEMP NODE: 4 - Node no data #####
-# triggerId       = 22995
+# triggerId       = 22998
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 
 #############################################################
 # # # ##### SENSOR NODE: 1 - Node no data #####
-triggerId       = 22988
-zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# triggerId       = 22988
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # sleep(1)
 # # ##### SENSOR NODE: 1 - DO no data #####
-# triggerId       = 22998
+# triggerId       = 22990
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 # # ##### SENSOR NODE: 1 - pH no data #####
-# triggerId       = 22997
+# triggerId       = 22989
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 # # ##### SENSOR NODE: 1 - Weather no data #####
-# triggerId       = 22999
+# triggerId       = 22991
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 
 #############################################################
 # # # ##### SENSOR NODE: 2 - Node no data #####
-# triggerId       = 23006
+# triggerId       = 22993
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # # ##### SENSOR NODE: 2 - DO no data #####
-# triggerId       = 23001
+# triggerId       = 22995
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 # # ##### SENSOR NODE: 2 - pH no data #####
-# triggerId       = 23002
+# triggerId       = 22994
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 
 ###################################################################
 # THRESHOLD TRIGGER                                               #
 ###################################################################
-
-
-
+# ##### SENSOR NODE: 1 - pH Sensor Over Threshold #####
+# triggerId       = 23010
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# sleep(1)
+# ##### SENSOR NODE: 1 - pH Sensor Under Threshold #####
+# triggerId       = 23011
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+# ##### SENSOR NODE: 1 - DO Sensor Under Threshold #####
+# triggerId       = 23009
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+# ##### SENSOR NODE: 1 - Water Temperature Over Threshold #####
+# triggerId       = 23012
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# sleep(1)
+# ##### SENSOR NODE: 1 - Water Temperature Over Threshold #####
+# triggerId       = 23013
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+#############################################################
+# ##### SENSOR NODE: 2 - pH Sensor Over Threshold #####
+# triggerId       = 23010
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# sleep(1)
+# ##### SENSOR NODE: 2 - pH Sensor Under Threshold #####
+# triggerId       = 23011
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+# ##### SENSOR NODE: 2 - DO Sensor Under Threshold #####
+# triggerId       = 23009
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+# ##### SENSOR NODE: 2 - Water Temperature Over Threshold #####
+# triggerId       = 23012
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# sleep(1)
+# ##### SENSOR NODE: 2 - Water Temperature Over Threshold #####
+# triggerId       = 23013
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
