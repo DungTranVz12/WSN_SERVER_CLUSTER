@@ -49,6 +49,17 @@ devTrigCode       = "01C821.DEV_TRIG_CODE"
 
 zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=False)
 
+
+
+
+
+###################################################################
+###################################################################
+###################################################################
+# 0. TEST ZABBIX CONNECTION                                       #
+###################################################################
+###################################################################
+###################################################################
 # hostGroupName     = "SeasideConsulting_GW01C821" 
 # hostName          = "01C821_GATEWAY_NODE"
 # itemName          = "TEST"
@@ -66,59 +77,103 @@ zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,
 # zabbix.updateItemValue(hostName,itemUID,30)
 # exit(0)
 
+
+
+
+
 ###################################################################
-# LOW BATTERY TRIGGER                                             #
+###################################################################
+###################################################################
+# 1. LOW BATTERY TRIGGER                                          #
+###################################################################
+###################################################################
 ###################################################################
 # ##### TEMP NODE: 1 #####
 # hostName        = "436730_NODE"
 # itemUID         = "01C821.436730.INSEN.02.1"
-# zabbix.updateItemValue(hostName,itemUID,100)
-# zabbix.updateItemValue(hostName,itemUID,10)
-# zabbix.updateItemValue(hostName,itemUID,100)
+# zabbix.updateItemValue(hostName,itemUID,100)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,25)   #First lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,20)   #Second lower than Threshold (<=30)
+# zabbix.updateItemValue(hostName,itemUID,15)   #Third lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,10)   #Fourth lower than Threshold (<=30)
+# sleep(5) # Wait for 3s to send mail
+# zabbix.updateItemValue(hostName,itemUID,100)  #First Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Second Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Third Recovered
 
 # ##### TEMP NODE: 2 #####
 # hostName        = "C8DB2C_NODE"
 # itemUID         = "01C821.C8DB2C.INSEN.02.1"
-# zabbix.updateItemValue(hostName,itemUID,100);
-# zabbix.updateItemValue(hostName,itemUID,10) ;
-# zabbix.updateItemValue(hostName,itemUID,100);
+# zabbix.updateItemValue(hostName,itemUID,100)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,25)   #First lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,20)   #Second lower than Threshold (<=30)
+# zabbix.updateItemValue(hostName,itemUID,15)   #Third lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,10)   #Fourth lower than Threshold (<=30)
+# sleep(5) # Wait for 3s to send mail
+# zabbix.updateItemValue(hostName,itemUID,100)  #First Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Second Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Third Recovered
 
 # ##### TEMP NODE: 3 #####
 # hostName        = "436774_NODE"
 # itemUID         = "01C821.436774.INSEN.02.1"
-# zabbix.updateItemValue(hostName,itemUID,100);
-# zabbix.updateItemValue(hostName,itemUID,10) ;
-# zabbix.updateItemValue(hostName,itemUID,100);
+# zabbix.updateItemValue(hostName,itemUID,100)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,25)   #First lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,20)   #Second lower than Threshold (<=30)
+# zabbix.updateItemValue(hostName,itemUID,15)   #Third lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,10)   #Fourth lower than Threshold (<=30)
+# sleep(5) # Wait for 3s to send mail
+# zabbix.updateItemValue(hostName,itemUID,100)  #First Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Second Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Third Recovered
 
 # ##### TEMP NODE: 4 #####
 # hostName        = "436874_NODE"
 # itemUID         = "01C821.436874.INSEN.02.1"
-# zabbix.updateItemValue(hostName,itemUID,100);
-# zabbix.updateItemValue(hostName,itemUID,10) ;
-# zabbix.updateItemValue(hostName,itemUID,100);
+# zabbix.updateItemValue(hostName,itemUID,100)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,25)   #First lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,20)   #Second lower than Threshold (<=30)
+# zabbix.updateItemValue(hostName,itemUID,15)   #Third lower than Threshold  (<=30)
+# zabbix.updateItemValue(hostName,itemUID,10)   #Fourth lower than Threshold (<=30)
+# sleep(5) # Wait for 3s to send mail
+# zabbix.updateItemValue(hostName,itemUID,100)  #First Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Second Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Third Recovered
 
 # ##### SENSOR NODE: 1 - Low Internal Battery => Replace #####
 # hostName        = "557E88_NODE"
 # itemUID         = "01C821.557E88.INSEN.03.1"
-# zabbix.updateItemValue(hostName,itemUID,1)
-# zabbix.updateItemValue(hostName,itemUID,1)
-# zabbix.updateItemValue(hostName,itemUID,1)
-# zabbix.updateItemValue(hostName,itemUID,100)
-# zabbix.updateItemValue(hostName,itemUID,100)
-# zabbix.updateItemValue(hostName,itemUID,100)
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,3.0)   #First lower than Threshold  (<=3.5V)
+# zabbix.updateItemValue(hostName,itemUID,2.9)   #Second lower than Threshold (<=3.5V)
+# zabbix.updateItemValue(hostName,itemUID,2.8)   #Third lower than Threshold  (<=3.5V)
+# sleep(5) # Wait for 3s to send mail
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #First Recovered
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #Second Recovered
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #Third Recovered
 
 # ##### SENSOR NODE: 2 - Low Internal Battery => Replace #####
 # hostName        = "557D3C_NODE"
 # itemUID         = "01C821.557D3C.INSEN.03.1"
-# zabbix.updateItemValue(hostName,itemUID,1)
-# zabbix.updateItemValue(hostName,itemUID,1)
-# zabbix.updateItemValue(hostName,itemUID,1)
-# zabbix.updateItemValue(hostName,itemUID,100)
-# zabbix.updateItemValue(hostName,itemUID,100)
-# zabbix.updateItemValue(hostName,itemUID,100)
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,3.0)   #First lower than Threshold  (<=3.5V)
+# zabbix.updateItemValue(hostName,itemUID,2.9)   #Second lower than Threshold (<=3.5V)
+# zabbix.updateItemValue(hostName,itemUID,2.8)   #Third lower than Threshold  (<=3.5V)
+# sleep(5)
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #First Recovered
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #Second Recovered
+# zabbix.updateItemValue(hostName,itemUID,4.25)  #Third Recovered
+
+
+
+
 
 ###################################################################
-# NO DATA TRIGGER                                                 #
+###################################################################
+###################################################################
+# 2. NO DATA TRIGGER                                              #
+###################################################################
+###################################################################
 ###################################################################
 # Clear No Data status
 zabbix.updateItemValue("436730_NODE","01C821.436730.CH0.04.0",100)                 #Temp Node 1
@@ -142,57 +197,65 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 
 #############################################################
 # # # ##### TEMP NODE: 1 - Node no data #####
-# triggerId       = 22996
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# # # ##### TEMP NODE: 2 - Node no data #####
-# triggerId       = 22999
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# # # ##### TEMP NODE: 3 - Node no data #####
 # triggerId       = 22997
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# # # ##### TEMP NODE: 4 - Node no data #####
+# # # ##### TEMP NODE: 2 - Node no data #####
+# triggerId       = 23000
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# # # ##### TEMP NODE: 3 - Node no data #####
 # triggerId       = 22998
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)
+# # # ##### TEMP NODE: 4 - Node no data #####
+# triggerId       = 22999
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 
 #############################################################
 # # # ##### SENSOR NODE: 1 - Node no data #####
-# triggerId       = 22988
+# triggerId       = 22996
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # sleep(1)
 # # ##### SENSOR NODE: 1 - DO no data #####
-# triggerId       = 22990
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
-# # ##### SENSOR NODE: 1 - pH no data #####
 # triggerId       = 22989
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+# # ##### SENSOR NODE: 1 - pH no data #####
+# triggerId       = 23002
+# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
+# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 # # ##### SENSOR NODE: 1 - Weather no data #####
-# triggerId       = 22991
+# triggerId       = 23003
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 
 #############################################################
 # # # ##### SENSOR NODE: 2 - Node no data #####
-# triggerId       = 22993
+# triggerId       = 22995
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)
 # # ##### SENSOR NODE: 2 - DO no data #####
-# triggerId       = 22995
+# triggerId       = 22988
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 # # ##### SENSOR NODE: 2 - pH no data #####
-# triggerId       = 22994
+# triggerId       = 23001
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
 
+
+
+
+
 ###################################################################
-# THRESHOLD TRIGGER                                               #
+###################################################################
+###################################################################
+# 3. THRESHOLD TRIGGER                                            #
+###################################################################
+###################################################################
 ###################################################################
 # ##### SENSOR NODE: 1 - pH Sensor Over Threshold #####
 # triggerId       = 23010
@@ -239,3 +302,6 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 # triggerId       = 23013
 # zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
 # zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+
+#Print End Script with Red Ansi Color
+print("\033[1;31;40m===== End SCRIPT =====\033[0m")

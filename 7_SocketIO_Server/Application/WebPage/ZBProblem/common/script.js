@@ -1,6 +1,6 @@
 const socket = io(); // Replace with your actual Socket.io server URL
 let counter = 0; // Khởi tạo biến đếm
-let refreshTime = parseInt(Math.random()*100)*100 + 55000; // Khởi tạo biến ngẫu nhiên từ 55s đến 65s với. Mỗi step 100ms. Tránh trường hợp tất cả các client gửi request cùng lúc.
+let refreshTime = parseInt(Math.random()*100)*200 + 60000; // Khởi tạo biến ngẫu nhiên từ 60s đến 80s với. Mỗi step 1000ms. Tránh trường hợp tất cả các client gửi request cùng lúc.
 console.log("refreshTime: " + refreshTime);
 
 socket.on('connect', () => {
@@ -10,7 +10,10 @@ socket.on('connect', () => {
 });
 
 function resetCounter() {
+  refreshTime = parseInt(Math.random()*100)*200 + 60000;
+  console.log("refreshTime: " + refreshTime);
   counter = 0; // Đặt lại biến đếm về 0
+
 }
 
 function updateHostStatus (message){
@@ -106,20 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHostStatus(message);
   }
 
-  // Periodically send update status request
+  // // Periodically send update status request
   setInterval(() => {
-    remainTime = refreshTime - counter*100;
+    remainTime = refreshTime - counter*1000;
     if (remainTime <= 0) {
       var message = {"method":"problem.get","params":{"hostgroupName":hostgroupName,"topic":topic}};
       socket.emit('SOCKET',{"topic":topic,"message": message});
       console.log("Periodically send update status request");
       counter = 0;
     }
-    if (remainTime % 1000 == 0) {
-      console.log("Remaining time: " + remainTime/1000 + "s");
-    }
+    console.log("Remaining time: " + remainTime/1000 + "s");
     counter = counter + 1;
-  }, 100); // 100ms
+  }, 1000); // 1000ms
 
   
 });

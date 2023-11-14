@@ -268,7 +268,43 @@ def subcribeFilter(msg):
           SIB.sendMail(mailConfig)
         print("====> send mail success!")
         
+      #2.7 Replace Battery Template
+      if mailTemplate == "Temp_07" or mailTemplate == "Temp_07_ReplaceBattery": #Repace Battery Template
+        #2.1 load template to content
+        with open(MAIN_WORKDIR+"/Application/MailTemplate/Temp_07_ReplaceBattery.html", "r") as f:
+          content = f.read()
+          
+        #2.2 Get Chart
+        battVoltageKey = itemKey.rsplit(".",1)[0] + ".1" #Ex: 01C821.557E88.INSEN.03.1 - "INSEN.03.1 - 3.7 Internal battery voltage"
+        try:
+          battVoltageValueParams = zabbix.getItemParamByItemKey(battVoltageKey)
+          battVoltageValue = battVoltageValueParams["lastvalue"]
+          battVoltageId = battVoltageValueParams["itemid"]
+        except Exception as e:
+          print("ERROR: "+str(e))
+          battVoltageValue = "N/A"
+          battVoltageId = "N/A"
+        battVoltageChartB64,battVoltageChartLink = downloadBase64ZabbixChart(date,time,battVoltageId)
         
+        #2.3 Replace content
+        content = content.replace("{{DEVICE_NAME}}" , hostName)
+        content = content.replace("{{BATT_VOLTAGE}}", battVoltageValue)
+        content = content.replace("{{BATT_VOLTAGE_GRAPH}}", battVoltageChartB64)
+        content = content.replace("{{BATT_VOLTAGE_GRAPH_LINK}}", battVoltageChartLink)
+
+        #2.4 SendMail
+        mailConfig.to = SIB_SEND_TO
+        mailConfig.subject = subject
+        mailConfig.content_mode = class_contentMode.HTML_CONTENT
+        mailConfig.html_content = content
+        mailConfig.attachment = [{'content':battVoltageChartB64, 'name':'BatteryVoltage.png'}]
+        try:
+          SIB.sendMail(mailConfig)
+        except:
+          SIB.sendMail(mailConfig)
+        print("====> send mail success!")
+
+
   except Exception as e:
     print("ERROR: "+str(e))
     pass

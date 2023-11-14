@@ -1,3 +1,15 @@
+############################################################
+# Script có chức năng đồng bộ MySQL từ một host source về một host destination.
+# User có thể chọn lựa đồng bộ toàn bộ database hoặc chỉ đồng bộ history liên quan đến giá trị sensor.
+# Script sẽ thực hiện các bước sau:
+# 1. Build docker exec for backup MySQL database command
+# 2. Dùng SCP để tải file backup về máy local
+# 3. Xóa file backup trên host
+# 4. Giải nén file backup trên máy local
+# 5. Xóa file backup trên máy local
+# 6. Restore database from backup file to destination host
+############################################################
+
 import __init
 import os,datetime
 ############# USER DEFINE #############
@@ -25,10 +37,21 @@ DES_DOCKER_EXEC = "docker exec -i "+DES_MYSQL_DOCKER_CONTAINER_NAME+" mysql -u r
 # 1. Build docker exec for backup MySQL database command
 TIME = "\x1b[48;5;51m["+str(datetime.datetime.now())+"]\x1b[0m"
 print(f'{TIME} ===> START BACKUP DATABASE...')
+
 if BACKUP_HISTORY_ONLY_FLAG == False and BACKUP_ALL_DATABASE_FLAG == True:
   SRC_TABLE_LIST = ""
 if BACKUP_HISTORY_ONLY_FLAG == True and BACKUP_ALL_DATABASE_FLAG == False:
   SRC_TABLE_LIST = " ".join(SRC_MYSQL_TABLE_LIST)
+
+if BACKUP_ALL_DATABASE_FLAG == True:
+  SRC_TABLE_LIST = ""
+else:
+  if BACKUP_HISTORY_ONLY_FLAG == True:
+    SRC_TABLE_LIST = " ".join(SRC_MYSQL_TABLE_LIST)
+  else:
+    print("ERROR: Please choose backup mode! (BACKUP_ALL_DATABASE_FLAG/BACKUP_HISTORY_ONLY_FLAG)")
+    exit()
+  
 SRC_SSH_CMD=f'ssh -p {SRC_HOST_PORT} {SRC_HOST_USER}@{SRC_HOST_IP}'
 
 COMMAND_1 = f'docker exec -i {SRC_MYSQL_DOCKER_CONTAINER_NAME} mysqldump -u root -proot_pwd {SRC_MYSQL_DATABASE} {SRC_TABLE_LIST} > /history.sql'
