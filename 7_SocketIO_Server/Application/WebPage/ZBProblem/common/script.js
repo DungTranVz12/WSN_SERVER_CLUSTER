@@ -43,6 +43,14 @@ socket.on(topic, (message) => {
 });
 
 function addNode(nodeName, isActive,node_problemLink) {
+  //0. Add row tr of table
+  var rowElement = document.createElement("tr");
+
+
+  
+  //1. Add DOT status
+  var cellElement = document.createElement("td");
+  cellElement.className = "FirstColumn";
   var nodeElement = document.createElement("div");
   nodeElement.id = nodeName;
   nodeElement.classList.add("status-dot");
@@ -51,8 +59,12 @@ function addNode(nodeName, isActive,node_problemLink) {
   } else {
     nodeElement.classList.add("inactive");
   }
-  document.getElementById("node-container").appendChild(nodeElement);
+  cellElement.appendChild(nodeElement);
+  rowElement.appendChild(cellElement);
 
+  //2. Add node name
+  var cellElement = document.createElement("td");
+  cellElement.className = "SecondColumn";
   var nodeText = document.createElement("b");
   //Chỉ lấy nodeName là Chuỗi ký tự sau dấu "_" đầu tiên tìm thấy
   nodeNameDisp = nodeName.substring(nodeName.indexOf("_") + 1);
@@ -61,23 +73,35 @@ function addNode(nodeName, isActive,node_problemLink) {
   nodeNameDisp = nodeNameDisp.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
   var nodeTextContent = document.createTextNode(nodeNameDisp);
   nodeText.appendChild(nodeTextContent);
-  document.getElementById("node-container").appendChild(nodeText);
+  cellElement.appendChild(nodeText);
+  rowElement.appendChild(cellElement);
 
-  //Add button
+  //3. Add button
+  var cellElement = document.createElement("td");
+  cellElement.className = "ThirdColumn";
   var nodeButton = document.createElement("button");
   // set class cho button
   nodeButton.classList.add("btn");
   nodeButton.classList.add("btn-danger");
   nodeButton.classList.add("problemBtn");
   nodeButton.id = nodeName + "_btn";
-  var nodeButtonText = document.createTextNode("Show Problem");
-  nodeButton.appendChild(nodeButtonText);
-  document.getElementById("node-container").appendChild(nodeButton);
-  document.getElementById(nodeName+"_btn").onclick = () => {
-    window.open(node_problemLink, '_blank');
+
+  //If screen size is small, then set button text to "Show..."
+  if (screen.width < 1920) {
+    var nodeButtonText = document.createTextNode("Show...");
+  } else {
+    var nodeButtonText = document.createTextNode("Show Problem");
   }
-  var newline = document.createElement("br");
-  document.getElementById("node-container").appendChild(newline);
+  nodeButton.appendChild(nodeButtonText);
+  cellElement.appendChild(nodeButton);
+  rowElement.appendChild(cellElement);
+
+
+
+  // document.getElementById(nodeName+"_btn").onclick = () => {
+  //   window.open(node_problemLink, '_blank');
+  // }
+  document.getElementById("node-container").appendChild(rowElement);
   if (isActive) {
     document.getElementById(nodeName+"_btn").style.display = 'none';
   } else {

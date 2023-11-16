@@ -179,15 +179,14 @@ services:
       - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker:/AppDir
       - /root/0_GIT_WSN_SERVER_CLUSTER:/0_GIT_WSN_SERVER_CLUSTER
       - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker/sshKey:/root/.ssh
+      - /root/0_GIT_WSN_SERVER_CLUSTER/8_PyWorker/Application/Others/crontab.txt:/crontab.txt
     working_dir: /AppDir
-    # depends_on:
-    #   - wsnCluster_zabbix-server-agent
-    #   - wsnCluster_mqtt
-    #   - wsnCluster_socketio
     command: /bin/sh -c "apk add tzdata && cp /usr/share/zoneinfo/Asia/Saigon /etc/localtime && sleep 1 &&
                          pip install sib_api_v3_sdk && sleep 1 &&
                          pip install rsa && sleep 1 &&
                          pip install mysql-connector-python==8.0.29 && sleep 1 &&
+                         crontab /crontab.txt &&
+                         crond &&
                          sleep 10 &&
                          screen -dmS scanProblem python3 /AppDir/Application/scanZabbixProblem.py &&
                          sleep 5 &&

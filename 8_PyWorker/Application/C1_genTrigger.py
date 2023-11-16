@@ -48,7 +48,7 @@ gatewayName       = "01C821_GATEWAY_NODE"
 devTrigCode       = "01C821.DEV_TRIG_CODE"
 
 zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,ZABBIX_MYSQL_UPLOAD=False)
-
+# zabbix.updateItemValue(gatewayName,devTrigCode,0) #Clear Trigger
 
 
 
@@ -100,6 +100,7 @@ zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,
 # zabbix.updateItemValue(hostName,itemUID,100)  #First Recovered
 # zabbix.updateItemValue(hostName,itemUID,100)  #Second Recovered
 # zabbix.updateItemValue(hostName,itemUID,100)  #Third Recovered
+# zabbix.updateItemValue(hostName,itemUID,100)  #Fourth Recovered
 
 # ##### TEMP NODE: 2 #####
 # hostName        = "C8DB2C_NODE"
@@ -176,18 +177,18 @@ zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,
 ###################################################################
 ###################################################################
 # Clear No Data status
-zabbix.updateItemValue("436730_NODE","01C821.436730.CH0.04.0",100)                 #Temp Node 1
-zabbix.updateItemValue("C8DB2C_NODE","01C821.C8DB2C.CH0.04.0",100)                 #Temp Node 2
-zabbix.updateItemValue("436774_NODE","01C821.436774.CH0.04.0",100)                 #Temp Node 3
-zabbix.updateItemValue("436874_NODE","01C821.436874.CH0.04.0",100)                 #Temp Node 4
-zabbix.updateItemValue("01C821_GATEWAY_NODE","01C821.01C821_GATEWAY.CPU_TEMP",50)  #Gateway
-zabbix.updateItemValue("557E88_NODE","01C821.557E88.INSEN.03.0",12)                #Sensor Node 1
-zabbix.updateItemValue("557E88_NODE","01C821.557E88.CH0.06.0",7)                   #Sensor Node 1 - pH
-zabbix.updateItemValue("557E88_NODE","01C821.557E88.CH1.02.0",7)                   #Sensor Node 1 - DO
-zabbix.updateItemValue("557E88_NODE","01C821.557E88.CH2.03.0",27)                  #Sensor Node 1 - Weather
-zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.INSEN.03.0",12)                #Sensor Node 2
-zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH0.06.0",7)                   #Sensor Node 2 - pH
-zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                   #Sensor Node 2 - DO
+# zabbix.updateItemValue("436730_NODE","01C821.436730.CH0.04.0",100)                 #Temp Node 1
+# zabbix.updateItemValue("C8DB2C_NODE","01C821.C8DB2C.CH0.04.0",100)                 #Temp Node 2
+# zabbix.updateItemValue("436774_NODE","01C821.436774.CH0.04.0",100)                 #Temp Node 3
+# zabbix.updateItemValue("436874_NODE","01C821.436874.CH0.04.0",100)                 #Temp Node 4
+# zabbix.updateItemValue("01C821_GATEWAY_NODE","01C821.01C821_GATEWAY.CPU_TEMP",50)  #Gateway
+# zabbix.updateItemValue("557E88_NODE","01C821.557E88.INSEN.03.0",12)                #Sensor Node 1
+# zabbix.updateItemValue("557E88_NODE","01C821.557E88.CH0.06.0",7)                   #Sensor Node 1 - pH
+# zabbix.updateItemValue("557E88_NODE","01C821.557E88.CH1.02.0",7)                   #Sensor Node 1 - DO
+# zabbix.updateItemValue("557E88_NODE","01C821.557E88.CH2.03.0",27)                  #Sensor Node 1 - Weather
+# zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.INSEN.03.0",12)                #Sensor Node 2
+# zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH0.06.0",7)                   #Sensor Node 2 - pH
+# zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                   #Sensor Node 2 - DO
 
 #############################################################
 # # # ##### GATEWAY - No data #####
@@ -257,51 +258,131 @@ zabbix.updateItemValue("557D3C_NODE","01C821.557D3C.CH1.02.0",7)                
 ###################################################################
 ###################################################################
 ###################################################################
-# ##### SENSOR NODE: 1 - pH Sensor Over Threshold #####
-# triggerId       = 23010
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# sleep(1)
-# ##### SENSOR NODE: 1 - pH Sensor Under Threshold #####
-# triggerId       = 23011
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
-# ##### SENSOR NODE: 1 - DO Sensor Under Threshold #####
-# triggerId       = 23009
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
-# ##### SENSOR NODE: 1 - Water Temperature Over Threshold #####
-# triggerId       = 23012
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# sleep(1)
-# ##### SENSOR NODE: 1 - Water Temperature Over Threshold #####
-# triggerId       = 23013
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
-#############################################################
-# ##### SENSOR NODE: 2 - pH Sensor Over Threshold #####
-# triggerId       = 23010
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# sleep(1)
-# ##### SENSOR NODE: 2 - pH Sensor Under Threshold #####
-# triggerId       = 23011
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
-# ##### SENSOR NODE: 2 - DO Sensor Under Threshold #####
-# triggerId       = 23009
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
-# ##### SENSOR NODE: 2 - Water Temperature Over Threshold #####
-# triggerId       = 23012
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId)
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)
-# sleep(1)
-# ##### SENSOR NODE: 2 - Water Temperature Over Threshold #####
-# triggerId       = 23013
-# zabbix.updateItemValue(gatewayName,devTrigCode,triggerId) #Trigger
-# zabbix.updateItemValue(gatewayName,devTrigCode,0)         #Clear Trigger
+##### SENSOR NODE: 1 - pH Sensor Over/Under Threshold #####
+hostName        = "557E88_NODE"
+itemUID         = "01C821.557E88.CH0.06.0"
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# Wait until Value.Filtered > Threshold
+
+# # ##### SENSOR NODE: 1 - DO Sensor Under Threshold #####
+hostName        = "557E88_NODE"
+itemUID         = "01C821.557E88.CH1.02.0"
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# Wait until Value.Filtered > Threshold
+
+# # ##### SENSOR NODE: 1 - Water Temperature Over Threshold #####
+# hostName        = "557E88_NODE"
+# itemUID         = "01C821.557E88.CH1.02.1"
+# zabbix.updateItemValue(hostName,itemUID,27)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# Wait until Value.Filtered > Threshold
+
+# # ##### SENSOR NODE: 1 - Water Temperature Under Threshold #####
+# hostName        = "557E88_NODE"
+# itemUID         = "01C821.557E88.CH1.02.1"
+# zabbix.updateItemValue(hostName,itemUID,27)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# Wait until Value.Filtered > Threshold
+  
+# #############################################################
+# # ##### SENSOR NODE: 2 - pH Sensor Over Threshold #####
+# hostName        = "557D3C_NODE"
+# itemUID         = "01C821.557D3C.CH0.06.0"
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+# Wait until Value.Filtered > Threshold
+
+# # ##### SENSOR NODE: 2 - DO Sensor Under Threshold #####
+# hostName        = "557D3C_NODE"
+# itemUID         = "01C821.557D3C.CH1.02.0"
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# Wait until Value.Filtered > Threshold
+
+# # ##### SENSOR NODE: 2 - Water Temperature Over Threshold #####
+# hostName        = "557D3C_NODE"
+# itemUID         = "01C821.557D3C.CH1.02.1"
+# zabbix.updateItemValue(hostName,itemUID,27)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# Wait until Value.Filtered > Threshold
+
+# # ##### SENSOR NODE: 2 - Water Temperature Under Threshold #####
+# hostName        = "557D3C_NODE"
+# itemUID         = "01C821.557D3C.CH1.02.1"
+# zabbix.updateItemValue(hostName,itemUID,27)  #Reset
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+# Wait until Value.Filtered > Threshold
 
 #Print End Script with Red Ansi Color
 print("\033[1;31;40m===== End SCRIPT =====\033[0m")
