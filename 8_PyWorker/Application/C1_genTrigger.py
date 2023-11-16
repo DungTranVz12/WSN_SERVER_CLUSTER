@@ -262,42 +262,42 @@ zabbix = ZABBIX(ZABBIX_SERVER, ZABBIX_PORT, ZABBIX_USER, ZABBIX_PASS,ZABBIX_URL,
 hostName        = "557E88_NODE"
 itemUID         = "01C821.557E88.CH0.06.0"
 # zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
-zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
-zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
-zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
-zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
-zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
+# zabbix.updateItemValue(hostName,itemUID,12) #pH Sensor Over Threshold
 # zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,2)  #pH Sensor Under Threshold
-# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
 # Wait until Value.Filtered > Threshold
 
 # # ##### SENSOR NODE: 1 - DO Sensor Under Threshold #####
 hostName        = "557E88_NODE"
 itemUID         = "01C821.557E88.CH1.02.0"
 # zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
-zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
-zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
-zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
-zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
-zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
-# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
-# zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+# zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
+zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,7)  #DO Sensor Restore value
 # Wait until Value.Filtered > Threshold
 
 # # ##### SENSOR NODE: 1 - Water Temperature Over Threshold #####
-# hostName        = "557E88_NODE"
-# itemUID         = "01C821.557E88.CH1.02.1"
+hostName        = "557E88_NODE"
+itemUID         = "01C821.557E88.CH1.02.1"
 # zabbix.updateItemValue(hostName,itemUID,27)  #Reset
 # zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
 # zabbix.updateItemValue(hostName,itemUID,45)  #Sensor Over Threshold
@@ -316,7 +316,9 @@ zabbix.updateItemValue(hostName,itemUID,2)  #DO Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
 # zabbix.updateItemValue(hostName,itemUID,12)  #Sensor Under Threshold
-# zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
+zabbix.updateItemValue(hostName,itemUID,27)  #Sensor Restore value
 # Wait until Value.Filtered > Threshold
   
 # #############################################################

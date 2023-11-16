@@ -6,14 +6,14 @@
 # * * * * * /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/keepAppRun.sh "sleep.sh" 'sh /root/0_GIT_WSN_SERVER_CLUSTER/0_SHARE/sleep.sh'
 
 DEBUG_LOG_FLAG=1 # 0: Disable, 1: Enable
-#NOTE: Print log to console and log file at: /KeepAppRun_Log.log
+#NOTE: Print log to console and log file at: /KeepAppRun_xxx.log
 
 #Create log file name
 if [ "$#" -gt 1 ]; then
   keyWordInput="$1"
   LOG_FILE=$(echo "KeepAppRun_$keyWordInput" | sed -e 's/[ \/\\]/_/g' | sed -e 's/[^A-Za-z0-9_.-]//g')
 else
-  LOG_FILE="KeepAppRun_Log"
+  LOG_FILE="KeepAppRun_NoArgs"
 fi
 LOG_FILE="/$LOG_FILE.log"
 
