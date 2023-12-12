@@ -214,7 +214,41 @@ async def ZBProblem_01C821(request):
         return web.Response(text=f.read(), content_type='text/html')
 app.router.add_get('/ZBProblem_01C821', ZBProblem_01C821)
 
+# ##############################
+# # WEBPAGE: CONTROLLER NODE   #
+# ##############################
+# #COMMON FILES
+# async def ControllerNode_common_styles(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/common/styles.css') as f:
+#         return web.Response(text=f.read(), content_type='text/css')
+# app.router.add_get('/ControllerNode/commmon/styles.css', ControllerNode_common_styles)
+# async def ControllerNode_common_script(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/common/script.js') as f:
+#         return web.Response(text=f.read(), content_type='application/javascript')
+# app.router.add_get('/ControllerNode/commmon/script.js', ControllerNode_common_script)
+# #1. Controller_AAABBB
+# async def LiveDev(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/LiveDev/index.html') as f:
+#         return web.Response(text=f.read(), content_type='text/html')
+# app.router.add_get('/LiveDev', LiveDev)
 
+##############################
+# WEBPAGE: LIVE CODE         #
+##############################
+#COMMON FILES
+async def LiveDev_common_styles(request):
+    with open('/AppDir/Application/WebPage/0_LiveDev/common/styles.css') as f:
+        return web.Response(text=f.read(), content_type='text/css')
+app.router.add_get('/0_LiveDev/commmon/styles.css', LiveDev_common_styles)
+async def LiveDev_common_script(request):
+    with open('/AppDir/Application/WebPage/0_LiveDev/common/script.js') as f:
+        return web.Response(text=f.read(), content_type='application/javascript')
+app.router.add_get('/0_LiveDev/commmon/script.js', LiveDev_common_script)
+#1. LIVE CODE
+async def LiveDev(request):
+    with open('/AppDir/Application/WebPage/0_LiveDev/DeviceUID1/index.html') as f:
+        return web.Response(text=f.read(), content_type='text/html')
+app.router.add_get('/LiveDev', LiveDev)
 
 ##################################################################################################
 #Check update myConfigWSN.py to reboot container

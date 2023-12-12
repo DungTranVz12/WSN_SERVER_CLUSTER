@@ -278,7 +278,6 @@ zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
 zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
 zabbix.updateItemValue(hostName,itemUID,7)  #pH Sensor Restore value
 # Wait until Value.Filtered > Threshold
-
 # # ##### SENSOR NODE: 1 - DO Sensor Under Threshold #####
 hostName        = "557E88_NODE"
 itemUID         = "01C821.557E88.CH1.02.0"

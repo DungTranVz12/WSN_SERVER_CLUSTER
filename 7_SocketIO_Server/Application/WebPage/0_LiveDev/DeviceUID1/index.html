@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controller Node Interface</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+  }
+  .controller-title {
+    padding: 1px;
+    margin-top: 0px;
+    background-color: #008cff;
+  }
+  #setting-icon {
+    float: right;
+    height: 50px;
+    width: 50px;
+    padding-right: 33px;
+  }
+  h1 {
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bolder;
+  }
+  .channel {
+    display: grid;
+    align-items: center;
+    margin: 10px 0;
+    padding: 0 15px;
+  }
+  .channel label {
+    font-size: 18px;
+    color: #333;
+    font-weight: bolder;
+  }
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    justify-self: end;
+  }
+  .toggle-switch input {
+    display: none;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ff0000;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #008cff;
+  }
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  .slider:active:before {
+    width: 28px;
+  }
+  .locked .toggle-switch .slider {
+    background-color: #808080; /* Gray color */
+  }
+  .lock-icon {
+    font-family: Arial, sans-serif;
+    color: black;
+    font-size: 28px;
+    display: block;
+    text-align: right;
+    align-items: top;
+    align-self: top;
+  }
+  .channelInfo {
+    font-size: 14px;
+    color: #008cff;
+    font-weight: bolder;
+    font-family: Arial, sans-serif;
+    text-align: right;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<script src="/0_LiveDev/commmon/script.js"></script>
+<script>
+  const socket = io();
+  console.log("Console hello");
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const sliders = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
+    sliders.forEach(slider => {
+      slider.addEventListener('change', () => {
+        const sliderId = slider.id; // Lấy ID của slider
+        const sliderStatus = slider.checked; // Lấy trạng thái của slider (true/false)
+        // Gửi ID và trạng thái đến server
+        socket.emit('toggleSlider', { id: sliderId, status: sliderStatus }); 
+        console.log('Slider toggled:', sliderId, 'Status:', sliderStatus);
+
+
+        const channelInfoText = document.getElementById('channel_info_' + sliderId.slice(-1));
+        if (slider.parentNode.classList.contains('locked')) {
+          channelInfoText.textContent = 'Manual';
+        } else {
+          channelInfoText.textContent = '';
+        }
+
+      });
+    });
+  });
+  
+  
+  socket.on('WSN_GW_01C823.WEB.TEST', (msg) => {
+    console.log('Message received:', msg);
+    const channels = document.querySelectorAll('.channel');
+    const channel1 = document.getElementById('channel1');
+    const channel2 = document.getElementById('channel2');
+    const channel3 = document.getElementById('channel3');
+    const channel4 = document.getElementById('channel4');
+    const sliders = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
+    const slider1 = document.getElementById('slider1');
+    const slider2 = document.getElementById('slider2');
+    const slider3 = document.getElementById('slider3');
+    const slider4 = document.getElementById('slider4');
+    const channel_info_1 = document.getElementById('channel_info_1');
+    const channel_info_2 = document.getElementById('channel_info_2');
+    const channel_info_3 = document.getElementById('channel_info_3');
+    const channel_info_4 = document.getElementById('channel_info_4');
+    const lockIcons = document.querySelectorAll('.lock-icon');
+    const lock_icon_1 = document.getElementById('lock_icon_1');
+    const lock_icon_2 = document.getElementById('lock_icon_2');
+    const lock_icon_3 = document.getElementById('lock_icon_3');
+    const lock_icon_4 = document.getElementById('lock_icon_4');
+  
+    if (msg === 'LOCK') {
+      // Handling lock condition
+      channels.forEach(channel => channel.classList.add('locked'));
+      sliders.forEach(slider => {
+        slider.disabled = true;
+        slider.parentNode.classList.add('locked');
+      });
+      lockIcons.forEach(icon => icon.style.display = 'inline');
+      document.querySelectorAll('.channelInfo').forEach(text => text.textContent = 'Manual');
+    } else if (msg === 'UNLOCK') {
+      // Handling unlock condition
+      channels.forEach(channel => channel.classList.remove('locked'));
+      sliders.forEach(slider => {
+        slider.disabled = false;
+        slider.parentNode.classList.remove('locked');
+      });
+      lockIcons.forEach(icon => icon.style.display = 'none');
+      document.querySelectorAll('.channelInfo').forEach(text => text.textContent = '');
+    }
+    ////////////////
+    //Channel 1   //
+    ////////////////
+    if (msg === 'LOCK1') {
+      // Handling lock condition
+      channel1.parentNode.parentNode.classList.add('locked');
+      channel1.parentNode.classList.add('locked');
+      channel1.disabled = true;
+      lock_icon_1.style.display = 'inline';
+      channel_info_1.textContent = 'Manual';
+    } else if (msg === 'UNLOCK1') {
+      // Handling unlock condition
+      channel1.parentNode.parentNode.classList.remove('locked');
+      channel1.parentNode.classList.remove('locked');
+      channel1.disabled = false;
+      lock_icon_1.style.display = 'none';
+      channel_info_1.textContent = '';
+    }
+    ////////////////
+    //Channel 2   //
+    ////////////////
+    if (msg === 'LOCK2') {
+      // Handling lock condition
+      channel2.parentNode.parentNode.classList.add('locked');
+      channel2.parentNode.classList.add('locked');
+      channel2.disabled = true;
+      lock_icon_2.style.display = 'inline';
+      channel_info_2.textContent = 'Manual';
+    } else if (msg === 'UNLOCK2') {
+      // Handling unlock condition
+      channel2.parentNode.parentNode.classList.remove('locked');
+      channel2.parentNode.classList.remove('locked');
+      channel2.disabled = false;
+      lock_icon_2.style.display = 'none';
+      channel_info_2.textContent = '';
+    }
+    ////////////////
+    //Channel 3   //
+    ////////////////
+    if (msg === 'LOCK3') {
+      // Handling lock condition
+      channel3.parentNode.parentNode.classList.add('locked');
+      channel3.parentNode.classList.add('locked');
+      channel3.disabled = true;
+      lock_icon_3.style.display = 'inline';
+      channel_info_3.textContent = 'Manual';
+    } else if (msg === 'UNLOCK3') {
+      // Handling unlock condition
+      channel3.parentNode.parentNode.classList.remove('locked');
+      channel3.parentNode.classList.remove('locked');
+      channel3.disabled = false;
+      lock_icon_3.style.display = 'none';
+      channel_info_3.textContent = '';
+    }
+    ////////////////
+    //Channel 4   //
+    ////////////////
+    if (msg === 'LOCK4') {
+      // Handling lock condition
+      channel4.parentNode.parentNode.classList.add('locked');
+      channel4.parentNode.classList.add('locked');
+      channel4.disabled = true;
+      lock_icon_4.style.display = 'inline';
+      channel_info_4.textContent = 'Manual';
+    } else if (msg === 'UNLOCK4') {
+      // Handling unlock condition
+      channel4.parentNode.parentNode.classList.remove('locked');
+      channel4.parentNode.classList.remove('locked');
+      channel4.disabled = false;
+      lock_icon_4.style.display = 'none';
+      channel_info_4.textContent = '';
+    }
+    
+
+
+
+
+
+  });
+</script>
+</head>
+<body>
+
+<div class="controller-node">
+  <div class="controller-title">
+    <table style="width: 100%; border: none;">
+      <tr>
+        <td style="width: 90%;" >
+          <h1>Controller Node</h1>
+        </td>
+        <td style="width: 10%;">
+          <a href="settings.html">
+            <svg id='setting-icon' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="#ffffff" d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61
+                  l-1.93-3.32c-0.11-0.2-0.37-0.28-0.58-0.17l-2.39,1c-0.49-0.38-1.02-0.7-1.6-0.94l-0.36-2.58c-0.04-0.23-0.25-0.4-0.49-0.4h-4
+                  c-0.24,0-0.45,0.17-0.49,0.4l-0.36,2.58c-0.58,0.24-1.11,0.56-1.6,0.94l-2.39-1c-0.21-0.11-0.47-0.03-0.58,0.17l-1.93,3.32
+                  c-0.11,0.2-0.07,0.47,0.12,0.61l2.03,1.58c-0.04,0.3-0.06,0.61-0.06,0.94s0.02,0.64,0.06,0.94l-2.03,1.58
+                  c-0.18,0.14-0.23,0.41-0.12,0.61l1.93,3.32c0.11,0.2,0.37,0.28,0.58,0.17l2.39-1c0.49,0.38,1.02,0.7,1.6,0.94l0.36,2.58
+                  c0.04,0.23,0.25,0.4,0.49,0.4h4c0.24,0,0.45-0.17,0.49-0.4l0.36-2.58c0.58-0.24,1.11-0.56,1.6-0.94l2.39,1
+                  c0.21,0.11,0.47,0.03,0.58-0.17l1.93-3.32c0.11-0.2,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.5c-1.93,0-3.5-1.57-3.5-3.5
+                  s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.93,15.5,12,15.5z"/>
+            </svg>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="channel">
+    <table style="width: 100%; border: none;" >
+      <!-- Channel 1 -->
+      <tr>
+        <td style="width: 50%;" >
+          <label for="channel1">Channel 1</label>
+        </td>
+        <td class="channelInfo" id="channel_info_1" style="width: 33%;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_1" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel1">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      <!-- Channel 2 -->
+      <tr>
+        <td style="width: 50%;" >
+          <label for="channel2">Channel 2</label>
+        </td>
+        <td class="channelInfo" id="channel_info_2" style="width: 33%;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_2" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel2">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      <!-- Channel 3 -->
+      <tr>
+        <td style="width: 50%;" >
+          <label for="channel3">Channel 3</label>
+        </td>
+        <td class="channelInfo" id="channel_info_3" style="width: 33%;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_3" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel3">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      <!-- Channel 4 -->
+      <tr>
+        <td style="width: 50%;" >
+          <label for="channel3">Channel 4</label>
+        </td>
+        <td class="channelInfo" id="channel_info_4" style="width: 33%;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_4" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel4">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+  </div>
+</div>
+
+</body>
+</html>
