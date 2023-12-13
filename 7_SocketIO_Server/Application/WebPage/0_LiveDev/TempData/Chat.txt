@@ -1,0 +1,15 @@
+Code schedule list của tôi như sau:
+<ScheduleList.html>
+
+Schedule list sẽ có nhiều thẻ schedule. Khi nhấn vào nút cộng màu xanh bên dưới thì ta có thể tạo mới một thẻ schedule.
+Code của một thẻ schedule như sau:
+<test4a.html>
+
+Xin hãy giúp viết một code hoàn chỉnh để:
+1. Khi tôi nhấn vào nút cộng màu xanh bên dưới thì nó sẽ mở ra một popup chứa một form để tạo mới một thẻ schedule.
+2. Các thông tin cấu hình của thẻ sẽ được lưu vào một file json.
+3. Khi tôi nhấn vào nút lưu của popup thì nó sẽ lưu thông tin của thẻ vào file json.
+4. Khi tôi nhấn vào nút xóa của thẻ thì nó sẽ xóa thẻ đó khỏi file json.
+5. Khi tôi nhấn vào nút sửa của thẻ thì nó sẽ mở ra một popup chứa một form để sửa thông tin của thẻ.
+6. Khi trang schedule list được load lên thì nó sẽ đọc file json và hiển thị các thẻ schedule tương ứng.
+

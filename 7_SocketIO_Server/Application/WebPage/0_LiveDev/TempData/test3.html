@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule List Interface</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  .header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .schedule-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px;
+  }
+  .schedule-list li {
+    background: #fff;
+    margin-bottom: 10px;
+    border: 2px solid #2196F3; /* Default blue border */
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+  }
+  .schedule-list li.off {
+    border-color: #f44336; /* Red border for OFF status */
+  }
+  .status {
+    font-weight: bold;
+  }
+  .status.on {
+    color: #4CAF50; /* Green color for ON status */
+  }
+  .status.off {
+    color: #f44336; /* Red color for OFF status */
+  }
+  .add-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 36px;
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  SCHEDULE LIST
+</div>
+
+<ul class="schedule-list">
+  <li>
+    <span class="status on">ON</span> Schedule 1...
+  </li>
+  <li class="off">
+    <span class="status off">OFF</span> Schedule 2...
+  </li>
+  <li>
+    <span class="status on">ON</span> Schedule 3...
+  </li>
+</ul>
+
+<button class="add-btn">+</button>
+
+</body>
+</html>

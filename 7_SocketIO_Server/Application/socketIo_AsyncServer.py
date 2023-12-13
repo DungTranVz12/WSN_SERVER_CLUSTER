@@ -241,14 +241,27 @@ async def LiveDev_common_styles(request):
         return web.Response(text=f.read(), content_type='text/css')
 app.router.add_get('/0_LiveDev/commmon/styles.css', LiveDev_common_styles)
 async def LiveDev_common_script(request):
+  
     with open('/AppDir/Application/WebPage/0_LiveDev/common/script.js') as f:
         return web.Response(text=f.read(), content_type='application/javascript')
 app.router.add_get('/0_LiveDev/commmon/script.js', LiveDev_common_script)
+
 #1. LIVE CODE
-async def LiveDev(request):
-    with open('/AppDir/Application/WebPage/0_LiveDev/DeviceUID1/index.html') as f:
+UID = 'DeviceUID1' #<------ User need to change this UID
+async def LiveDev_scheduleList_common_script(request):
+    with open('/AppDir/Application/WebPage/0_LiveDev/'+UID+'/scheduleList.html') as f:
         return web.Response(text=f.read(), content_type='text/html')
-app.router.add_get('/LiveDev', LiveDev)
+app.router.add_get('/'+UID+'/ScheduleList', LiveDev_scheduleList_common_script)
+
+async def LiveDev_scheduleJson_common_script(request):
+    with open('/AppDir/Application/WebPage/0_LiveDev/'+UID+'/schedules.json') as f:
+        return web.Response(text=f.read(), content_type='application/json')
+app.router.add_get('/'+UID+'/schedules', LiveDev_scheduleJson_common_script)
+
+async def LiveDev(request):
+    with open('/AppDir/Application/WebPage/0_LiveDev/'+UID+'/index.html') as f:
+        return web.Response(text=f.read(), content_type='text/html')
+app.router.add_get('/'+UID+'/LiveDev', LiveDev)
 
 ##################################################################################################
 #Check update myConfigWSN.py to reboot container

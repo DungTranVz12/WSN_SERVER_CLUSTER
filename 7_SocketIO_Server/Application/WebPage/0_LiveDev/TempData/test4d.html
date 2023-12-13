@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add New Schedule</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  .header {
+    background-color: #007BFF;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .form-container {
+    background: #fff;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  input[type="text"],
+  input[type="date"],
+  input[type="time"],
+  .until-date {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  .day-buttons button {
+    padding: 5px 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  .day-buttons button.active {
+    background-color: #007BFF;
+    color: white;
+  }
+  .button-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  .button-container button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .save-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .cancel-btn {
+    background-color: #f44336;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  ADD NEW SCHEDULE
+</div>
+
+<div class="form-container">
+  <form id="schedule-form">
+    <div class="form-group">
+      <label for="title">Add title</label>
+      <input type="text" id="title" placeholder="Enter title here">
+    </div>
+
+    <div class="form-group">
+      <label>From</label>
+      <input type="date" id="date-picker" value="2023-09-01">
+      <input type="time" id="time-picker" value="09:45">
+    </div>
+
+    <div class="form-group">
+      <label>Repeat</label>
+      <div class="day-buttons">
+        <button type="button" class="day-btn">Sun</button>
+        <button type="button" class="day-btn">Mon</button>
+        <button type="button" class="day-btn">Tue</button>
+        <button type="button" class="day-btn">Wed</button>
+        <button type="button" class="day-btn">Thu</button>
+        <button type="button" class="day-btn">Fri</button>
+        <button type="button" class="day-btn">Sat</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Until</label>
+      <input class="until-date" type="date" id="until-date-picker" value="2024-07-01">
+    </div>
+
+    <div class="button-container">
+      <button type="button" class="save-btn">Save</button>
+      <button type="button" class="cancel-btn">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Select the day buttons and toggle the active class on click
+  document.querySelectorAll('.day-btn').forEach(function(dayBtn) {
+    dayBtn.addEventListener('click', function() {
+      dayBtn.classList.toggle('active');
+    });
+  });
+
+  // Implement Save button functionality
+  document.querySelector('.save-btn').addEventListener('click', function() {
+    // Perform form submission here
+    console.log('Form submitted');
+  });
+
+  // Implement Cancel button functionality
+  document.querySelector('.cancel-btn').addEventListener('click', function() {
+    // Perform form reset or cancel action here
+    document.getElementById('schedule-form').reset();
+  });
+</script>
+
+</body>
+</html>
