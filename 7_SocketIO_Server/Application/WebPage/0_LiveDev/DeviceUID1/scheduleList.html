@@ -93,7 +93,7 @@
     text-decoration: none;
     cursor: pointer;
   }
-  /*CONTENT */
+  /*CSS FOR POPUP */
   .header {
     background-color: #007BFF;
     color: white;
@@ -189,9 +189,9 @@
     justify-content: space-between;
     margin: 20px 0;
   }
-  .radio-group input[type="radio"] {
-    display: none; /* Hide the default radio button */
-  }
+  /*.radio-group input[type="radio"] {
+    display: none; / Hide the default radio button
+  }*/
   .radio-group label {
     padding: 10px 20px;
     border: 1px solid #ddd;
@@ -265,24 +265,28 @@
         <div class="form-group">
           <label>Action</label>
           <div class="toggle-switch">
-            <input type="checkbox" id="action-toggle" checked>
+            <input type="checkbox" id="action-toggle">
             <span class="slider"></span>
           </div>
         </div>
         
         <div class="form-group">
           <label>Channel</label>
-          <div class="channel-buttons">
-            <button type="button" class="channel-btn active">1</button>
-            <button type="button" class="channel-btn">2</button>
-            <button type="button" class="channel-btn">3</button>
-            <button type="button" class="channel-btn">4</button>
+          <div class="radio-group channel-buttons">
+            <input type="radio" id="channel1" name="channel1" value="1" checked>
+            <label>1</label>
+            <input type="radio" id="channel2" name="channel2" value="2">
+            <label>2</label>
+            <input type="radio" id="channel3" name="channel3" value="3">
+            <label>3</label>
+            <input type="radio" id="channel4" name="channel4" value="4">
+            <label>4</label>
           </div>
         </div>
         
         <div class="form-group">
           <label>Repeat</label>
-          <div class="radio-group">
+          <div class="radio-group repeat-buttons">
             <input type="radio" id="once" name="repeat" value="once">
             <label for="once">Once</label>
             <input type="radio" id="weekdays" name="repeat" value="weekdays" checked>
@@ -290,14 +294,14 @@
             <input type="radio" id="monthly" name="repeat" value="monthly">
             <label for="monthly">Monthly</label>
           </div>
-          <div class="day-buttons">
-            <button type="button" class="day-btn">Sun</button>
-            <button type="button" class="day-btn active">Mon</button>
-            <button type="button" class="day-btn active">Tue</button>
-            <button type="button" class="day-btn active">Wed</button>
-            <button type="button" class="day-btn active">Thu</button>
-            <button type="button" class="day-btn active">Fri</button>
-            <button type="button" class="day-btn">Sat</button>
+          <div class="radio-group day-buttons">
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Sun">Sun</label>
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Mon" checked>Mon</label>
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Tue">Tue</label>
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Wed">Wed</label>
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Thu">Thu</label>
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Fri">Fri</label>
+            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Sat">Sat</label>
           </div>
         </div>
         
@@ -360,8 +364,46 @@
           // Lưu trữ thông tin của schedule đang được chỉnh sửa
           editingSchedule = schedeleListData[index];
           // Hiển thị thông tin của schedule trong popup
-          const titleInput = document.getElementById('title');
-          titleInput.value = editingSchedule.title;
+
+//TAMBO          document.getElementById('title').value = editingSchedule.title;
+//TAMBO          document.getElementById('date-picker').value = editingSchedule.fromDate;
+//TAMBO          document.getElementById('time-picker').value = editingSchedule.fromTime;
+//TAMBO          document.getElementById('action-toggle').checked = editingSchedule.action === 'on';
+//TAMBO          //Check the node of channel button which has the same value with editingSchedule.channel
+//TAMBO          //uncheck the other nodes of channel button
+//TAMBO          const channelRadios = document.querySelectorAll('.channel-buttons input[type="radio"]');
+//TAMBO          channelRadios.forEach((channelRadioButton, index) => {
+//TAMBO            if (channelRadioButton.value == editingSchedule.channel) {
+//TAMBO              channelRadioButton.checked = true;
+//TAMBO            } else {
+//TAMBO              channelRadioButton.checked = false;
+//TAMBO            }
+//TAMBO          });
+//TAMBO          //Active the node of repeat radio button which has the same value with editingSchedule.repeat
+//TAMBO          //Deactive the other nodes of repeat radio button
+//TAMBO          const repeatRadioButtons = document.querySelectorAll('.repeat-buttons input[type="radio"]');
+//TAMBO          repeatRadioButtons.forEach((repeatRadioButton, index) => {
+//TAMBO            if (repeatRadioButton.value == editingSchedule.repeat) {
+//TAMBO              repeatRadioButton.checked = true;
+//TAMBO            } else {
+//TAMBO              repeatRadioButton.checked = false;
+//TAMBO            }
+//TAMBO          });
+//TAMBO          //Active the node of day button which has the same value with editingSchedule.daysOfWeek
+//TAMBO          //Deactive the other nodes of day button
+//TAMBO          const dayRadios = document.querySelectorAll('.day-buttons input[type="radio"]');
+//TAMBO          dayRadios.forEach((radio) => {
+//TAMBO            radio.addEventListener('change', () => {
+//TAMBO              // Thực hiện xử lý khi radio button daysOfWeek thay đổi
+//TAMBO              console.log('Day changed:', radio.value);
+//TAMBO            });
+//TAMBO          });
+//TAMBO          //document.querySelector('input[name="channel"]:checked').value = editingSchedule.channel;
+//TAMBO          //document.querySelector('input[name="repeat"]:checked').value = editingSchedule.repeat;
+//TAMBO          //document.querySelector('input[name="daysOfWeek"]:checked').value = editingSchedule.daysOfWeek;
+//TAMBO          document.getElementById('until-date-picker').value = editingSchedule.untilDate;
+
+
           // Hiển thị popup
           document.getElementById('schedulePopup').style.display = 'block';
         });
@@ -386,15 +428,11 @@
     }
   }
 
-  // Thực hiện kiểm tra giá trị của debug sau mỗi 1200ms (1.5 giây)
-  const waitInterval = setInterval(addHandleEventToEditDelButtons, 1500);
-
-  // Nếu bạn muốn ngừng chờ sau một khoảng thời gian nhất định (ví dụ: 10 giây)
-  // Bạn có thể sử dụng setTimeout như sau:
-  // setTimeout(() => clearInterval(waitInterval), 10000);
+  // Thực hiện kiểm tra giá trị của debug sau mỗi 1000ms (1 giây)
+  const waitInterval = setInterval(addHandleEventToEditDelButtons, 1000);
 
 
-  //2. Handle form submission
+  //2. The configuration of schedule will be sent to server when user click on Save button
   document.getElementById('scheduleForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -423,7 +461,6 @@
   document.getElementsByClassName("close")[0].onclick = function() {
     document.getElementById("schedulePopup").style.display = "none";
   };
-
 
 </script>
 

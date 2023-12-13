@@ -7,7 +7,7 @@
       "fromTime": "09:45",
       "action": "on",
       "channel": 1,
-      "repeat": "weekdays",
+      "repeat": "once",
       "daysOfWeek": [
         "Mon",
         "Tue",
@@ -27,9 +27,6 @@
       "repeat": "weekdays",
       "daysOfWeek": [
         "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
         "Fri"
       ],
       "untilDate": "2024-07-01"
