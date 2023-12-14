@@ -172,14 +172,13 @@
     ////////////////
     //Channel 1   //
     ////////////////
-    if (msg === 'LOCK1') {
+    if (msg === 'ON1' || msg === 'OFF1') {
       // Handling lock condition
       channel1.parentNode.parentNode.classList.add('locked');
       channel1.parentNode.classList.add('locked');
       channel1.disabled = true;
       lock_icon_1.style.display = 'inline';
-      channel_info_1.textContent = 'Manual';
-    } else if (msg === 'UNLOCK1') {
+    } else if (msg === 'AUTO1') {
       // Handling unlock condition
       channel1.parentNode.parentNode.classList.remove('locked');
       channel1.parentNode.classList.remove('locked');
@@ -187,17 +186,24 @@
       lock_icon_1.style.display = 'none';
       channel_info_1.textContent = '';
     }
+    if (msg === 'ON1') {
+      channel1.checked = true;
+      channel_info_1.textContent = 'Manual ON';
+    }
+    if (msg === 'OFF1') {
+      channel1.checked = false;
+      channel_info_1.textContent = 'Manual OFF';
+    }
     ////////////////
     //Channel 2   //
     ////////////////
-    if (msg === 'LOCK2') {
+    if (msg === 'ON2' || msg === 'OFF2') {
       // Handling lock condition
       channel2.parentNode.parentNode.classList.add('locked');
       channel2.parentNode.classList.add('locked');
       channel2.disabled = true;
       lock_icon_2.style.display = 'inline';
-      channel_info_2.textContent = 'Manual';
-    } else if (msg === 'UNLOCK2') {
+    } else if (msg === 'AUTO2') {
       // Handling unlock condition
       channel2.parentNode.parentNode.classList.remove('locked');
       channel2.parentNode.classList.remove('locked');
@@ -205,17 +211,24 @@
       lock_icon_2.style.display = 'none';
       channel_info_2.textContent = '';
     }
+    if (msg === 'ON2') {
+      channel2.checked = true;
+      channel_info_2.textContent = 'Manual ON';
+    }
+    if (msg === 'OFF2') {
+      channel2.checked = false;
+      channel_info_2.textContent = 'Manual OFF';
+    }
     ////////////////
     //Channel 3   //
     ////////////////
-    if (msg === 'LOCK3') {
+    if (msg === 'ON3' || msg === 'OFF3') {
       // Handling lock condition
       channel3.parentNode.parentNode.classList.add('locked');
       channel3.parentNode.classList.add('locked');
       channel3.disabled = true;
       lock_icon_3.style.display = 'inline';
-      channel_info_3.textContent = 'Manual';
-    } else if (msg === 'UNLOCK3') {
+    } else if (msg === 'AUTO3') {
       // Handling unlock condition
       channel3.parentNode.parentNode.classList.remove('locked');
       channel3.parentNode.classList.remove('locked');
@@ -223,17 +236,24 @@
       lock_icon_3.style.display = 'none';
       channel_info_3.textContent = '';
     }
+    if (msg === 'ON3') {
+      channel3.checked = true;
+      channel_info_3.textContent = 'Manual ON';
+    }
+    if (msg === 'OFF3') {
+      channel3.checked = false;
+      channel_info_3.textContent = 'Manual OFF';
+    }
     ////////////////
     //Channel 4   //
     ////////////////
-    if (msg === 'LOCK4') {
+    if (msg === 'ON4' || msg === 'OFF4') {
       // Handling lock condition
       channel4.parentNode.parentNode.classList.add('locked');
       channel4.parentNode.classList.add('locked');
       channel4.disabled = true;
       lock_icon_4.style.display = 'inline';
-      channel_info_4.textContent = 'Manual';
-    } else if (msg === 'UNLOCK4') {
+    } else if (msg === 'AUTO4') {
       // Handling unlock condition
       channel4.parentNode.parentNode.classList.remove('locked');
       channel4.parentNode.classList.remove('locked');
@@ -241,12 +261,14 @@
       lock_icon_4.style.display = 'none';
       channel_info_4.textContent = '';
     }
-    
-
-
-
-
-
+    if (msg === 'ON4') {
+      channel4.checked = true;
+      channel_info_4.textContent = 'Manual ON';
+    }
+    if (msg === 'OFF4') {
+      channel4.checked = false;
+      channel_info_4.textContent = 'Manual OFF';
+    }
   });
 </script>
 </head>
@@ -280,10 +302,10 @@
     <table style="width: 100%; border: none;" >
       <!-- Channel 1 -->
       <tr>
-        <td style="width: 50%;" >
+        <td style="width: 50%;padding-top:10px;" >
           <label for="channel1">Channel 1</label>
         </td>
-        <td class="channelInfo" id="channel_info_1" style="width: 33%;" >
+        <td class="channelInfo" id="channel_info_1" style="width: 33%;padding-top:10px;" >
         </td>
         <td style="width: 7%;text-align: right;">
           <span class="lock-icon" id="lock_icon_1" style="display:none;"> 🔒</span>
@@ -297,10 +319,10 @@
       </tr>
       <!-- Channel 2 -->
       <tr>
-        <td style="width: 50%;" >
+        <td style="width: 50%;padding-top:10px;" >
           <label for="channel2">Channel 2</label>
         </td>
-        <td class="channelInfo" id="channel_info_2" style="width: 33%;" >
+        <td class="channelInfo" id="channel_info_2" style="width: 33%;padding-top:10px;" >
         </td>
         <td style="width: 7%;text-align: right;">
           <span class="lock-icon" id="lock_icon_2" style="display:none;"> 🔒</span>
@@ -314,10 +336,10 @@
       </tr>
       <!-- Channel 3 -->
       <tr>
-        <td style="width: 50%;" >
+        <td style="width: 50%;padding-top:10px;" >
           <label for="channel3">Channel 3</label>
         </td>
-        <td class="channelInfo" id="channel_info_3" style="width: 33%;" >
+        <td class="channelInfo" id="channel_info_3" style="width: 33%;padding-top:10px;" >
         </td>
         <td style="width: 7%;text-align: right;">
           <span class="lock-icon" id="lock_icon_3" style="display:none;"> 🔒</span>
@@ -331,10 +353,10 @@
       </tr>
       <!-- Channel 4 -->
       <tr>
-        <td style="width: 50%;" >
+        <td style="width: 50%;padding-top:10px;" >
           <label for="channel3">Channel 4</label>
         </td>
-        <td class="channelInfo" id="channel_info_4" style="width: 33%;" >
+        <td class="channelInfo" id="channel_info_4" style="width: 33%;padding-top:10px;" >
         </td>
         <td style="width: 7%;text-align: right;">
           <span class="lock-icon" id="lock_icon_4" style="display:none;"> 🔒</span>

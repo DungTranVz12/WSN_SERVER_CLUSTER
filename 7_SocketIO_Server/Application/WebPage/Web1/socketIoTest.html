@@ -1,46 +1,152 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Socket.IO Example</title>
+    <title>Client Send...</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <!-- bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Socket Client Send/Get</h1>
-    <input type="text" id="messageInput" placeholder="Type your message">
-    <button id="sendButton">Send</button>
-    <ul id="messages"></ul>
+    <h3 style="padding: 10px 45px;">CONTROLLER NODE TEST</h3>
+    <br>
 
+
+    <!-- CHANNEL 1 -->
+    <label for="formRange" class="form-label" style="font-size: larger;font-weight: bolder; margin: 0px 50px;"  >Channel 1</label>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio1" id="ch1radio1" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch1radio1">ON</label>
+      
+        <input type="radio" class="btn-check" name="btnradio1" id="ch1radio2" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch1radio2">OFF</label>
+      
+        <input type="radio" class="btn-check" name="btnradio1" id="ch1radio3" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="ch1radio3">AUTO</label>
+    </div>
+    <br><p></p>
+
+    <!-- CHANNEL 2 -->
+    <label for="formRange" class="form-label" style="font-size: larger;font-weight: bolder; margin: 0px 50px;"  >Channel 2</label>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio2" id="ch2radio1" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch2radio1">ON</label>
+      
+        <input type="radio" class="btn-check" name="btnradio2" id="ch2radio2" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch2radio2">OFF</label>
+      
+        <input type="radio" class="btn-check" name="btnradio2" id="ch2radio3" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="ch2radio3">AUTO</label>
+    </div>
+    <br><p></p>
+
+    <!-- CHANNEL 2 -->
+    <label for="formRange" class="form-label" style="font-size: larger;font-weight: bolder; margin: 0px 50px;"  >Channel 3</label>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio3" id="ch3radio1" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch3radio1">ON</label>
+      
+        <input type="radio" class="btn-check" name="btnradio3" id="ch3radio2" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch3radio2">OFF</label>
+      
+        <input type="radio" class="btn-check" name="btnradio3" id="ch3radio3" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="ch3radio3">AUTO</label>
+    </div>
+    <br><p></p>
+
+    <!-- CHANNEL 4 -->
+    <label for="formRange" class="form-label" style="font-size: larger;font-weight: bolder; margin: 0px 50px;"  >Channel 4</label>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio4" id="ch4radio1" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch4radio1">ON</label>
+      
+        <input type="radio" class="btn-check" name="btnradio4" id="ch4radio2" autocomplete="off">
+        <label class="btn btn-outline-primary" for="ch4radio2">OFF</label>
+      
+        <input type="radio" class="btn-check" name="btnradio4" id="ch4radio3" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="ch4radio3">AUTO</label>
+    </div>
+    <br><p></p>
+
+    <!-- Embeb an image -->
+    <div>
+        <img src="https://phukiendien.com.vn/wp-content/uploads/2021/10/0x3-cong-tac-xoay-la-phi-22mm-0902603617-phu-kien-dien-cong-nghiep__6__7fe5bd92c9f64e76a37daf0206fa3649_grande.jpg" alt="Tri-State Switch" width="400">
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     <script>
         // Kết nối đến máy chủ Socket.IO
         const socket = io();
 
-        // Lấy các phần tử DOM cần thao tác
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const messagesList = document.getElementById('messages');
-
-        // Xử lý khi nhấn nút "Send"
-        sendButton.addEventListener('click', () => {
-            const message = messageInput.value;
-            if (message) {
-                socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":message});
-                messageInput.value = '';
-            }
+        //Channel 1
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON1"}); nếu Radio ON được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF1"}); nếu Radio OFF được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO1"}); nếu Radio AUTO được chọn
+        document.getElementById("ch1radio1").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON1"});
+        });
+        document.getElementById("ch1radio2").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF1"});
+        });
+        document.getElementById("ch1radio3").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO1"});
         });
 
-        
-        // Xử lý khi nhận tin nhắn mới từ máy chủ
-        socket.connect('WSN_GW_01C823.WEB.TEST', (message) => {
-            const li = document.createElement('li');
-            li.textContent = message;
-            messagesList.appendChild(li);
+        //Channel 2
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON2"}); nếu Radio ON được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF2"}); nếu Radio OFF được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO2"}); nếu Radio AUTO được chọn
+        document.getElementById("ch2radio1").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON2"});
+        });
+        document.getElementById("ch2radio2").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF2"});
+        });
+        document.getElementById("ch2radio3").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO2"});
         });
 
-        // Xử lý khi nhận tin nhắn mới từ máy chủ
-        socket.on('WSN_GW_01C823.WEB.TEST', (message) => {
-            const li = document.createElement('li');
-            li.textContent = message;
-            messagesList.appendChild(li);
+        //Channel 3
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON3"}); nếu Radio ON được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF3"}); nếu Radio OFF được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO3"}); nếu Radio AUTO được chọn
+        document.getElementById("ch3radio1").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON3"});
+        });
+        document.getElementById("ch3radio2").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF3"});
+        });
+        document.getElementById("ch3radio3").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO3"});
+        });
+
+        //Channel 4
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON4"}); nếu Radio ON được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF4"}); nếu Radio OFF được chọn
+        //socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO4"}); nếu Radio AUTO được chọn
+        document.getElementById("ch4radio1").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"ON4"});
+        });
+        document.getElementById("ch4radio2").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"OFF4"});
+        });
+        document.getElementById("ch4radio3").addEventListener("click", function(){
+            socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":"AUTO4"});
         });
     </script>
 </body>

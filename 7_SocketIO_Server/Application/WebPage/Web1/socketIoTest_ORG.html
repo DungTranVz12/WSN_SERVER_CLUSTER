@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client Send...</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+</head>
+<body>
+    <h1>Client Send...</h1>
+    <input type="text" id="messageInput" placeholder="Type your message">
+    <button id="sendButton">Send</button>
+    <h3>Message history</h3>
+    <div>
+        <ul id="messages"></ul>
+    </div>
+
+    <script>
+        // Kết nối đến máy chủ Socket.IO
+        const socket = io();
+
+        // Lấy các phần tử DOM cần thao tác
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const messagesList = document.getElementById('messages');
+        
+        // Lưu trữ lịch sử tin nhắn
+        const messageHistory = [];
+
+        // Hàm gửi tin nhắn
+        const sendMessage = () => {
+            const message = messageInput.value;
+            if (message) {
+                socket.emit('SOCKET', {"topic":"WSN_GW_01C823.WEB.TEST","message":message});
+                messageInput.value = '';
+                messageHistory.push(message); // Thêm tin nhắn vào lịch sử
+                displayMessageHistory(); // Hiển thị lịch sử
+            }
+        };
+
+        // Xử lý khi nhấn nút "Send"
+        sendButton.addEventListener('click', sendMessage);
+
+        // Xử lý khi nhận tin nhắn mới từ máy chủ
+        socket.on('WSN_GW_01C823.WEB.TEST', (message) => {
+            const li = document.createElement('li');
+            li.textContent = message;
+            messagesList.appendChild(li);
+        });
+
+        // Lắng nghe sự kiện "keypress" trên trường nhập liệu
+        messageInput.addEventListener('keypress', (event) => {
+            // Kiểm tra xem phím Enter có được nhấn không (mã ASCII 13)
+            if (event.key === 'Enter') {
+                sendMessage(); // Gọi hàm gửi tin nhắn
+            }
+        });
+
+        // Hiển thị lịch sử tin nhắn
+        const displayMessageHistory = () => {
+            messagesList.innerHTML = ''; // Xóa nội dung hiện tại của danh sách
+            for (const message of messageHistory) {
+                const li = document.createElement('li');
+                li.textContent = message;
+                messagesList.appendChild(li);
+            }
+        };
+    </script>
+</body>
+</html>

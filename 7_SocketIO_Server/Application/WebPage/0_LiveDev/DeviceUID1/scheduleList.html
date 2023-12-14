@@ -4,20 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schedule List Interface</title>
+<script>
+  var deviceUID = 'DeviceUID1';  //<-------------- USER MUST CHANGE THIS
+</script>
 <style>
   body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
-  }
-  .header {
-    background-color: #4CAF50;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-size: 24px;
-    font-weight: bold;
   }
   .schedule-list {
     list-style: none;
@@ -27,10 +22,10 @@
   .schedule-list li {
     background: #fff;
     margin-bottom: 10px;
-    border: 2px solid #2196F3; /* Default blue border */
+    border: 3px solid #2196F3; /* Default blue border */
     padding: 10px 20px;
     font-size: 18px;
-    border-radius: 5px;
+    border-radius: 40px;
   }
   .schedule-list li.off {
     border-color: #f44336; /* Red border for OFF status */
@@ -39,29 +34,39 @@
     font-weight: bold;
   }
   .status.on {
-    color: #4CAF50; /* Green color for ON status */
+    color: #007BFF; /* Green color for ON status */
+    font-size: larger;
+    font-weight: bold;
+    margin-right: 10px;
   }
   .status.off {
     color: #f44336; /* Red color for OFF status */
+    font-size: larger;
+    font-weight: bold;
+    margin-right: 10px;
   }
   .add-btn {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #4CAF50; /* Green background */
+    bottom: 32px;
+    right: 30px;
+    background-color: #007BFF; /* Green background */
     color: white;
     border: none;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    font-size: 36px;
+    width: 80px;
+    height: 80px;
+    font-size: 50px;
+    font-weight: bold;
     line-height: 60px;
     text-align: center;
     cursor: pointer;
+    padding-bottom: 10px;
   }
+</style>
 
-
-
+<!-- ==================================================================== -->
+<!-- CSS FOR POPUP  -->
+<style>
   /* Styles for Popup */
   .popup {
     display: none;
@@ -76,10 +81,10 @@
   }
   .popup-content {
     background-color: #fefefe;
-    margin: 2% auto;
+    margin: 1% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 30%;
+    width: 40%;
   }
   .close {
     color: #aaa;
@@ -93,7 +98,7 @@
     text-decoration: none;
     cursor: pointer;
   }
-  /*CSS FOR POPUP */
+
   .header {
     background-color: #007BFF;
     color: white;
@@ -107,6 +112,7 @@
     margin: 20px;
     padding: 20px;
     border-radius: 10px;
+    padding: 0px;
   }
   .form-group {
     margin-bottom: 15px;
@@ -131,6 +137,7 @@
     display: inline-block;
     width: 60px;
     height: 34px;
+    margin-left: 10px;
   }
   .toggle-switch input {
     opacity: 0;
@@ -172,6 +179,9 @@
     display: flex;
     justify-content: space-between;
   }
+  .channel-btn{
+    font-weight: bold;
+  }
   .channel-buttons button {
     flex: 1;
     padding: 10px;
@@ -189,9 +199,9 @@
     justify-content: space-between;
     margin: 20px 0;
   }
-  /*.radio-group input[type="radio"] {
-    display: none; / Hide the default radio button
-  }*/
+  .radio-group input[type="radio"] {
+    display: none; /* Hide the default radio button */
+  }
   .radio-group label {
     padding: 10px 20px;
     border: 1px solid #ddd;
@@ -222,220 +232,278 @@
     width: auto;
     display: inline-block;
   }
+
 </style>
+<!-- <script src="/0_LiveDev/commmon/script.js"></script>
+<link rel="stylesheet" href="/0_LiveDev/commmon/styles.css"> -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
-<script>
-  const socket = io();
-</script>
+<script>const socket = io();</script>
 </head>
 <body>
-
-<div class="header">
-  SCHEDULE LIST
-</div>
-
+<!-- ==================================================================== -->
+<!-- 1.  SCHEDULE LIST -->
+<div class="header">SCHEDULE LIST</div>
 <ul class="schedule-list">
   <!-- Schedule items will be added here -->
 </ul>
-
 <button class="add-btn" id="addBtn">+</button>
 
-<!-- Popup Form -->
+<!-- ==================================================================== -->
+<!-- 2. Popup Form -->
 <div id="schedulePopup" class="popup">
   <div class="popup-content">
     <span class="close">&times;</span>
     <form id="scheduleForm">
 
-      <div class="header">
+      <div class="header addEditSchedule">
         ADD NEW SCHEDULE
       </div>
       
       <div class="form-container">
         <div class="form-group">
-          <label for="title">Add title</label>
+          <label for="title" style="font-weight: bold;">Add title</label>
           <input type="text" id="title" placeholder="Enter title here">
         </div>
         
         <div class="form-group">
-          <label>From</label>
+          <label style="font-weight: bold;">From</label>
           <input type="date" id="date-picker" value="2023-09-01">
           <input type="time" id="time-picker" value="09:45">
         </div>
         
         <div class="form-group">
-          <label>Action</label>
-          <div class="toggle-switch">
-            <input type="checkbox" id="action-toggle">
+          <label style="font-weight: bold;">Action</label>
+          <div class="toggle-switch" onclick="toggleAction()">
+            <input type="checkbox" id="action-toggle" checked>
             <span class="slider"></span>
           </div>
         </div>
         
         <div class="form-group">
-          <label>Channel</label>
-          <div class="radio-group channel-buttons">
-            <input type="radio" id="channel1" name="channel1" value="1" checked>
-            <label>1</label>
-            <input type="radio" id="channel2" name="channel2" value="2">
-            <label>2</label>
-            <input type="radio" id="channel3" name="channel3" value="3">
-            <label>3</label>
-            <input type="radio" id="channel4" name="channel4" value="4">
-            <label>4</label>
+          <label style="font-weight: bold;">Channel</label>
+          <div class="channel-buttons">
+            <button type="button" class="channel-btn active" onclick="selectChannel(1)">CHANNEL 1</button>
+            <button type="button" class="channel-btn"        onclick="selectChannel(2)">CHANNEL 2</button>
+            <button type="button" class="channel-btn"        onclick="selectChannel(3)">CHANNEL 3</button>
+            <button type="button" class="channel-btn"        onclick="selectChannel(4)">CHANNEL 4</button>
           </div>
         </div>
         
         <div class="form-group">
-          <label>Repeat</label>
-          <div class="radio-group repeat-buttons">
-            <input type="radio" id="once" name="repeat" value="once">
-            <label for="once">Once</label>
-            <input type="radio" id="weekdays" name="repeat" value="weekdays" checked>
-            <label for="weekdays">Weekdays</label>
-            <input type="radio" id="monthly" name="repeat" value="monthly">
-            <label for="monthly">Monthly</label>
+          <label style="font-weight: bold;">Repeat</label>
+          <div class="channel-buttons repeat-buttons">
+            <button type="button" id="norepeat" class="repeat-btn active" onclick="selectRepeat('NoRepeat')">No Repeat</button>
+            <button type="button" id="daily"    class="repeat-btn"        onclick="selectRepeat('Daily')">Daily</button>
+            <button type="button" id="weekdays" class="repeat-btn"        onclick="selectRepeat('Weekdays')">Weekdays</button>
+            <button type="button" id="monthly"  class="repeat-btn"        onclick="selectRepeat('Monthly')">Monthly</button>
           </div>
-          <div class="radio-group day-buttons">
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Sun">Sun</label>
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Mon" checked>Mon</label>
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Tue">Tue</label>
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Wed">Wed</label>
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Thu">Thu</label>
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Fri">Fri</label>
-            <label><input type="radio" class="day-radio" name="daysOfWeek" value="Sat">Sat</label>
+          <div class="channel-buttons day-buttons">
+            <button type="button" class="day-btn" onclick="selectDay('Sun')" disabled>Sun</button>
+            <button type="button" class="day-btn" onclick="selectDay('Mon')" disabled>Mon</button>
+            <button type="button" class="day-btn" onclick="selectDay('Tue')" disabled>Tue</button>
+            <button type="button" class="day-btn" onclick="selectDay('Wed')" disabled>Wed</button>
+            <button type="button" class="day-btn" onclick="selectDay('Thu')" disabled>Thu</button>
+            <button type="button" class="day-btn" onclick="selectDay('Fri')" disabled>Fri</button>
+            <button type="button" class="day-btn" onclick="selectDay('Sat')" disabled>Sat</button>
           </div>
         </div>
         
         <div class="form-group">
-          <label>Until</label>
+          <label style="font-weight: bold;">Until</label>
           <input class="until-date" type="date" id="until-date-picker" value="2024-07-01">
         </div>
-        
+        <br>
+        <div class="form-group" style="text-align: center;">
+          <button type="submit" class="btn btn-primary" onclick="saveSchedule()" style="font-weight: bold;">SAVE</button>
+          <button type="button" class="btn btn-secondary" onclick="closePopup()" style="font-weight: bold;">CANCEL</button>
+        </div>
       </div>
-
-
-
-
-
-      <button type="submit">Save</button>
     </form>
   </div>
 </div>
 
+
+
+
+
+
+<!-- ==================================================================== -->
+<!-- ==================================================================== -->
+<!-- ==================================================================== -->
+<!-- ==================================================================== -->
+<!-- 1. SCHEDULE LIST SCRIPT -->
 <script>
-  var scheduleListLoadedFlag = false;
-  var schedeleListData = null;
-  // 1. Load schedules from JSON file
+  var schedeleListData = null; // Lưu trữ danh sách các schedule
+  var refreshScheduleListRequestFlag = false;
+  var modifyScheduleRequestFlag = false;
+  var modifyScheduleIndex = -1;
+  // 1. Load schedules from Local storage
+  function __addHandleEventToEditDelButtons() {
+    // Sử dụng một biến để lưu trữ thông tin của schedule đang được chỉnh sửa
+    let editingSchedule = null;
+
+    // Thêm sự kiện click cho nút "Edit" trên mỗi thẻ schedule
+    const editButtons = document.querySelectorAll('.edit-btn');
+    editButtons.forEach((editButton, index) => {
+      editButton.addEventListener('click', () => {
+        // Change the title of popup "ADD NEW SCHEDULE" to "EDIT SCHEDULE"
+        document.querySelector('.addEditSchedule').textContent = 'EDIT SCHEDULE';
+        // Lưu trữ thông tin của schedule đang được chỉnh sửa
+        editingSchedule = schedeleListData[index];
+        // Hiển thị thông tin của schedule trong popup
+
+        document.getElementById('title').value = editingSchedule.title;
+        document.getElementById('date-picker').value = editingSchedule.fromDate;
+        document.getElementById('time-picker').value = editingSchedule.fromTime;
+        document.getElementById('action-toggle').checked = editingSchedule.action === 'on';
+        //Check the node of channel button which has the same value with editingSchedule.channel
+        //uncheck the other nodes of channel button
+        const channelButtons = document.querySelectorAll('.channel-buttons button');
+        channelButtons.forEach((channelButton, index) => {
+          if (index + 1 == editingSchedule.channel) {
+            channelButton.classList.add('active');
+          } else {
+            channelButton.classList.remove('active');
+          }
+        });
+        //Active the node of repeat button which has the same value with editingSchedule.repeat
+        //Deactive the other nodes of repeat button
+        const repeatButtons = document.querySelectorAll('.repeat-buttons button');
+        repeatButtons.forEach((repeatButton) => {
+          repeatButton.classList.remove('active');
+        });
+        repeatButtons.forEach((repeatButton) => {
+          if (repeatButton.textContent == editingSchedule.repeat) {
+            repeatButton.classList.add('active');
+          }
+        });
+        //Active the node of day button which has the same value with editingSchedule.daysOfWeek
+        //Deactive the other nodes of day button
+        const dayButtons = document.querySelectorAll('.day-buttons button');
+        if (editingSchedule.repeat === 'weekdays') {
+          dayButtons.forEach((dayButton) => {
+            dayButton.removeAttribute("disabled");
+            dayButton.classList.remove('active');
+            dayButton.style.borderColor = "#007BFF"; //Change border color of weekdays buttons to blue
+          });
+        }
+        else if (editingSchedule.repeat === 'daily') {
+          dayButtons.forEach((dayButton) => {
+            dayButton.classList.add('active');
+          });
+        }
+        else {
+          dayButtons.forEach((dayButton) => {
+            dayButton.setAttribute("disabled", "disabled");
+            dayButton.classList.remove('active');
+            dayButton.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+          });
+        }
+        dayButtons.forEach((dayButton) => {
+          dayButton.classList.remove('active');
+        });
+        editingSchedule.daysOfWeek.forEach((day) => {
+          document.querySelector('.day-buttons button:nth-child(' + (["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day) + 1) + ')').classList.add('active');
+        });
+        document.getElementById('until-date-picker').value = editingSchedule.untilDate;
+
+        // Hiển thị popup
+        modifyScheduleRequestFlag = true; // Yêu cầu cập nhật lại danh sách schedule
+        modifyScheduleIndex = index;
+        document.getElementById('schedulePopup').style.display = 'block';
+
+      });
+    });
+    // Thêm sự kiện click cho nút "Xóa" trên mỗi thẻ schedule. Nếu nhấn nút thì xóa schedule đó và lưu lại vào local storage.
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    deleteButtons.forEach((deleteButton, index) => {
+      deleteButton.addEventListener('click', () => {
+        // Show the popup to confirm delete
+        if (!confirm('Are you sure to delete this schedule?')) return;
+        schedeleListData.splice(index, 1); // Xóa schedule khỏi danh sách
+        localStorage.setItem("LOCAL_STORE_SCHEDULE_LIST_"+deviceUID, JSON.stringify(schedeleListData)); // Lưu lại vào local storage
+        // emit to server to delete schedule
+        socket.emit('SOCKET', {action: 'delete', index: index});  // <----------------------- CẬP NHẬT LẠI
+        refreshScheduleListRequestFlag = true; // Yêu cầu cập nhật lại danh sách schedule
+      });
+    });
+  }
+
   function loadSchedules() {
     console.log('Loading schedules...');
-    fetch('schedules')
-      .then(response => response.json())
-      .then(jsondata => {
-        const scheduleList = document.querySelector('.schedule-list');
-        scheduleList.innerHTML = ''; // Xóa nội dung hiện tại
-        schedeleListData = jsondata.schedules;
-        schedeleListData.forEach(schedule => {
-          const scheduleItem = document.createElement('li');
-          scheduleItem.className = schedule.action === 'on' ? '' : 'off';
-          scheduleItem.innerHTML = `
-          <span class="status ${schedule.action}">${schedule.action.toUpperCase()}</span> ${schedule.title} - ${schedule.fromDate} ${schedule.fromTime} - Channel ${schedule.channel} - ${schedule.repeat} - ${schedule.daysOfWeek.join(', ')} - ${schedule.untilDate} 
-          <button class="edit-btn">Edit</button>
-          <button class="delete-btn">Delete</button>
-          `;
-          // Thêm các thành phần khác của schedule vào đây nếu cần
-          scheduleList.appendChild(scheduleItem);
-        });
-      })
-      .catch(error => console.error('Error loading schedules:', error));
-      scheduleListLoadedFlag = true;
+    const scheduleList = document.querySelector('.schedule-list');
+    scheduleList.innerHTML = ''; // Xóa nội dung hiện tại
+    schedeleListData = JSON.parse(localStorage.getItem("LOCAL_STORE_SCHEDULE_LIST_"+deviceUID)); // Load from local storage
+    schedeleListData.forEach(schedule => {
+      const scheduleItem = document.createElement('li');
+      scheduleItem.className = schedule.action === 'on' ? '' : 'off';
+      if (schedule.repeat === 'Weekdays') {
+        scheduleItem.innerHTML = `
+        <span class="status ${schedule.action}">${schedule.action.toUpperCase()}</span> ${schedule.title}  Channel ${schedule.channel} - From: ${schedule.fromDate} ${schedule.fromTime} - Repeat: ${schedule.repeat} - ${schedule.daysOfWeek.join(', ')} - Until: ${schedule.untilDate} 
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+        `;
+      }
+      else {
+        scheduleItem.innerHTML = `
+        <span class="status ${schedule.action}">${schedule.action.toUpperCase()}</span> ${schedule.title}  Channel ${schedule.channel} - From: ${schedule.fromDate} ${schedule.fromTime} - Repeat: ${schedule.repeat} - Until: ${schedule.untilDate} 
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+        `;
+      }
+
+      // Thêm các thành phần khác của schedule vào đây nếu cần
+      scheduleList.appendChild(scheduleItem);
+    });
+    __addHandleEventToEditDelButtons(); //Add handle event to edit and delete buttons
   }
   document.addEventListener('DOMContentLoaded', loadSchedules);
 
-  //2. Handle Edit and Delete buttons
-  //setInterval(function(){ console.log('debug = ' + debug); }, 1000);
-  function addHandleEventToEditDelButtons() {
-    if (scheduleListLoadedFlag == true) {
-      // Sử dụng một biến để lưu trữ thông tin của schedule đang được chỉnh sửa
-      let editingSchedule = null;
 
-      // Thêm sự kiện click cho nút "Edit" trên mỗi thẻ schedule
-      const editButtons = document.querySelectorAll('.edit-btn');
-      editButtons.forEach((editButton, index) => {
-        editButton.addEventListener('click', () => {
-          // Lưu trữ thông tin của schedule đang được chỉnh sửa
-          editingSchedule = schedeleListData[index];
-          // Hiển thị thông tin của schedule trong popup
-
-//TAMBO          document.getElementById('title').value = editingSchedule.title;
-//TAMBO          document.getElementById('date-picker').value = editingSchedule.fromDate;
-//TAMBO          document.getElementById('time-picker').value = editingSchedule.fromTime;
-//TAMBO          document.getElementById('action-toggle').checked = editingSchedule.action === 'on';
-//TAMBO          //Check the node of channel button which has the same value with editingSchedule.channel
-//TAMBO          //uncheck the other nodes of channel button
-//TAMBO          const channelRadios = document.querySelectorAll('.channel-buttons input[type="radio"]');
-//TAMBO          channelRadios.forEach((channelRadioButton, index) => {
-//TAMBO            if (channelRadioButton.value == editingSchedule.channel) {
-//TAMBO              channelRadioButton.checked = true;
-//TAMBO            } else {
-//TAMBO              channelRadioButton.checked = false;
-//TAMBO            }
-//TAMBO          });
-//TAMBO          //Active the node of repeat radio button which has the same value with editingSchedule.repeat
-//TAMBO          //Deactive the other nodes of repeat radio button
-//TAMBO          const repeatRadioButtons = document.querySelectorAll('.repeat-buttons input[type="radio"]');
-//TAMBO          repeatRadioButtons.forEach((repeatRadioButton, index) => {
-//TAMBO            if (repeatRadioButton.value == editingSchedule.repeat) {
-//TAMBO              repeatRadioButton.checked = true;
-//TAMBO            } else {
-//TAMBO              repeatRadioButton.checked = false;
-//TAMBO            }
-//TAMBO          });
-//TAMBO          //Active the node of day button which has the same value with editingSchedule.daysOfWeek
-//TAMBO          //Deactive the other nodes of day button
-//TAMBO          const dayRadios = document.querySelectorAll('.day-buttons input[type="radio"]');
-//TAMBO          dayRadios.forEach((radio) => {
-//TAMBO            radio.addEventListener('change', () => {
-//TAMBO              // Thực hiện xử lý khi radio button daysOfWeek thay đổi
-//TAMBO              console.log('Day changed:', radio.value);
-//TAMBO            });
-//TAMBO          });
-//TAMBO          //document.querySelector('input[name="channel"]:checked').value = editingSchedule.channel;
-//TAMBO          //document.querySelector('input[name="repeat"]:checked').value = editingSchedule.repeat;
-//TAMBO          //document.querySelector('input[name="daysOfWeek"]:checked').value = editingSchedule.daysOfWeek;
-//TAMBO          document.getElementById('until-date-picker').value = editingSchedule.untilDate;
-
-
-          // Hiển thị popup
-          document.getElementById('schedulePopup').style.display = 'block';
-        });
-      });
-
-      // Thêm sự kiện click cho nút "Xóa" trên mỗi thẻ schedule
-      const deleteButtons = document.querySelectorAll('.delete-btn');
-      deleteButtons.forEach((deleteButton, index) => {
-        deleteButton.addEventListener('click', () => {
-          // Hiển thị xác nhận xóa và không có header
-          const confirmDelete = confirm('Are you sure you want to delete this schedule?');
-          if (confirmDelete) {
-            // Xóa schedule nếu được xác nhận
-            schedeleListData.splice(index, 1);
-            // In ra mảng scheduleListData để kiểm tra
-            console.log(schedeleListData);
-            // Cập nhật giao diện
-            loadSchedules();
-          }
-        });
-      });
+  //2. Check refreshScheduleListRequestFlag to refresh schedule list every 0.1s
+  setInterval(function() {
+    if (refreshScheduleListRequestFlag) {
+      console.log('INVERVAL: Refreshing schedule list...');
+      loadSchedules();
+      refreshScheduleListRequestFlag = false;
     }
+  }, 100);
+</script>
+<!-- ==================================================================== -->
+<!-- 2. Popup Script -->
+<script>
+  //JavaScript for Popup
+  modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
+  //1. Edit button to open popup
+  document.getElementById("addBtn").onclick = function() {
+    document.querySelector('.addEditSchedule').textContent = 'ADD NEW SCHEDULE';
+    // Reset form
+    document.getElementById('title').value = '';
+    document.getElementById('date-picker').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('time-picker').value = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+    document.getElementById('action-toggle').checked = true;
+    selectChannel(1);
+    selectRepeat('NoRepeat');
+    var untilDate = new Date();
+    untilDate.setFullYear(untilDate.getFullYear() + 1);
+    document.getElementById('until-date-picker').value = untilDate.toISOString().slice(0, 10);
+    // Display popup
+    document.getElementById("schedulePopup").style.display = "block";
+  };
+  document.getElementsByClassName("close")[0].onclick = function() {
+    modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
+    document.getElementById("schedulePopup").style.display = "none";
+  };
+  function closePopup() {
+    modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
+    document.getElementById("schedulePopup").style.display = "none";
   }
 
-  // Thực hiện kiểm tra giá trị của debug sau mỗi 1000ms (1 giây)
-  const waitInterval = setInterval(addHandleEventToEditDelButtons, 1000);
-
-
-  //2. The configuration of schedule will be sent to server when user click on Save button
-  document.getElementById('scheduleForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
+  //2. Save button in popup
+  function saveSchedule() {
+    event.preventDefault(); // Ngăn chặn load lại trang khi nhấn nút Save
+    // Lấy thông tin từ form
     const scheduleData = {
       title: document.getElementById('title').value,
       fromDate: document.getElementById('date-picker').value,
@@ -443,25 +511,92 @@
       action: document.getElementById('action-toggle').checked ? 'on' : 'off',
       channel: Array.from(document.querySelectorAll('.channel-buttons button'))
                     .findIndex(button => button.classList.contains('active')) + 1,
-      repeat: document.querySelector('input[name="repeat"]:checked').value,
+      repeat: document.querySelector('.repeat-buttons button.active').textContent,
       daysOfWeek: Array.from(document.querySelectorAll('.day-buttons button.active'))
                         .map(button => button.textContent),
       untilDate: document.getElementById('until-date-picker').value
     };
-    socket.emit('SOCKET', scheduleData); // Gửi dữ liệu lên server
+    socket.emit('SOCKET', scheduleData); // Gửi dữ liệu lên server // <----------- CẬP NHẬT LẠI
+    console.log('Schedule data:', scheduleData);
+    // Store to local storage
+    // If modifyScheduleRequestFlag is true, modify the schedule in schedeleListData
+    // Else, add new schedule to schedeleListData
+    if (modifyScheduleRequestFlag) {
+      schedeleListData[modifyScheduleIndex] = scheduleData; // Modify schedule in schedeleListData
+      modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
+    }
+    else {
+      schedeleListData.push(scheduleData);
+    }
+    localStorage.setItem("LOCAL_STORE_SCHEDULE_LIST_"+deviceUID, JSON.stringify(schedeleListData));
+    document.getElementById('schedulePopup').style.display = 'none'; // Ẩn popup sau khi xử lý xong
+    refreshScheduleListRequestFlag = true; // Yêu cầu cập nhật lại danh sách schedule
+  }
 
-    // Ẩn popup sau khi xử lý xong
-    document.getElementById('schedulePopup').style.display = 'none';
-  });
+  //3. Reactive button in popup
+  function toggleAction() {
+    var actionToggle = document.getElementById("action-toggle");
+    actionToggle.checked = !actionToggle.checked;
+  }
 
-  //3. JavaScript for Popup
-  document.getElementById("addBtn").onclick = function() {
-    document.getElementById("schedulePopup").style.display = "block";
-  };
-  document.getElementsByClassName("close")[0].onclick = function() {
-    document.getElementById("schedulePopup").style.display = "none";
-  };
+  function selectChannel(channelNumber) {
+    var channelButtons = document.querySelectorAll(".channel-btn");
+    channelButtons.forEach(function(button, index) {
+      if (index + 1 === channelNumber) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    });
+  }
 
+  function selectRepeat(repeatType) {
+    var repeatButtons = document.querySelectorAll(".repeat-btn");
+    repeatButtons.forEach(function(button) {
+      button.classList.remove("active");
+    });
+
+    var weekdaysButtons = document.querySelectorAll(".day-buttons button");
+    weekdaysButtons.forEach(function(button) {
+      button.classList.remove("active");
+      button.setAttribute("disabled", "disabled");
+    });
+
+    if (repeatType === 'Daily') {
+      // Select all weekdays
+      weekdaysButtons.forEach(function(button) {
+        button.classList.add("active");
+        //button.style.fontWeight = "bold";
+      });
+    }
+    else if (repeatType === 'Weekdays') {
+      weekdaysButtons.forEach(function(button) {
+        button.removeAttribute("disabled");
+        button.classList.remove("active");
+        button.style.borderColor = "#007BFF"; //Change border color of weekdays buttons to blue
+      });
+    }
+    else {
+      weekdaysButtons.forEach(function(button) {
+        button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+      });
+    }
+
+    var selectedRepeatButton = document.getElementById(repeatType.toLowerCase());
+    selectedRepeatButton.classList.add("active");
+  }
+
+  function selectDay(day) {
+    var weekdaysRadio = document.getElementById("weekdays");
+    var dayButton = document.querySelector(".day-buttons button:nth-child(" + (["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day) + 1) + ")");
+    
+    if (weekdaysRadio.classList.contains("active")) {
+      var isActive = dayButton.classList.contains("active");
+      dayButton.classList.toggle("active", !isActive);
+    } else {
+      dayButton.classList.toggle("active");
+    }
+  }
 </script>
 
 </body>

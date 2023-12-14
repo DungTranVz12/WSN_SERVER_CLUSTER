@@ -4,29 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Add New Schedule</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
-<style>
-  /* Your previous styles go here */
-
-  /* Additional styles for the datepicker and timepicker */
-  .ui-datepicker {
-    font-size: 16px; /* Adjust the size of the datepicker */
-  }
-</style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script>
-$(document).ready(function() {
-  // Use jQuery UI Datepicker for the date input
-  $("#date-picker").datepicker({
-    showAnim: "slideDown", // Animation effect
-    dateFormat: "mm/dd/yy" // Date format
-  });
-
-  // Use any Timepicker plugin if needed for the time input (not included in jQuery UI)
-  // For example, you might include a third-party timepicker library and initialize it here
-});
-</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -112,6 +90,9 @@ $(document).ready(function() {
     display: flex;
     justify-content: space-between;
   }
+  .channel-btn{
+    font-weight: bold;
+  }
   .channel-buttons button {
     flex: 1;
     padding: 10px;
@@ -184,7 +165,7 @@ $(document).ready(function() {
   
   <div class="form-group">
     <label>Action</label>
-    <div class="toggle-switch">
+    <div class="toggle-switch" onclick="toggleAction()">
       <input type="checkbox" id="action-toggle" checked>
       <span class="slider"></span>
     </div>
@@ -193,31 +174,29 @@ $(document).ready(function() {
   <div class="form-group">
     <label>Channel</label>
     <div class="channel-buttons">
-      <button type="button" class="channel-btn active">1</button>
-      <button type="button" class="channel-btn">2</button>
-      <button type="button" class="channel-btn">3</button>
-      <button type="button" class="channel-btn">4</button>
+      <button type="button" class="channel-btn active" onclick="selectChannel(1)">CHANNEL 1</button>
+      <button type="button" class="channel-btn" onclick="selectChannel(2)">CHANNEL 2</button>
+      <button type="button" class="channel-btn" onclick="selectChannel(3)">CHANNEL 3</button>
+      <button type="button" class="channel-btn" onclick="selectChannel(4)">CHANNEL 4</button>
     </div>
   </div>
   
   <div class="form-group">
     <label>Repeat</label>
-    <div class="radio-group">
-      <input type="radio" id="once" name="repeat" value="once">
-      <label for="once">Once</label>
-      <input type="radio" id="weekdays" name="repeat" value="weekdays" checked>
-      <label for="weekdays">Weekdays</label>
-      <input type="radio" id="monthly" name="repeat" value="monthly">
-      <label for="monthly">Monthly</label>
+    <div class="channel-buttons repeat-buttons">
+      <button type="button" id="norepeat" class="repeat-btn active" onclick="selectRepeat('NoRepeat')">No Repeat</button>
+      <button type="button" id="daily"    class="repeat-btn" onclick="selectRepeat('Daily')">Daily</button>
+      <button type="button" id="weekdays" class="repeat-btn" onclick="selectRepeat('Weekdays')">Weekdays</button>
+      <button type="button" id="monthly"  class="repeat-btn" onclick="selectRepeat('Monthly')">Monthly</button>
     </div>
-    <div class="day-buttons">
-      <button type="button" class="day-btn">Sun</button>
-      <button type="button" class="day-btn active">Mon</button>
-      <button type="button" class="day-btn active">Tue</button>
-      <button type="button" class="day-btn active">Wed</button>
-      <button type="button" class="day-btn active">Thu</button>
-      <button type="button" class="day-btn active">Fri</button>
-      <button type="button" class="day-btn">Sat</button>
+    <div class="channel-buttons day-buttons">
+      <button type="button" class="day-btn" onclick="selectDay('Sun')" disabled>Sun</button>
+      <button type="button" class="day-btn" onclick="selectDay('Mon')" disabled>Mon</button>
+      <button type="button" class="day-btn" onclick="selectDay('Tue')" disabled>Tue</button>
+      <button type="button" class="day-btn" onclick="selectDay('Wed')" disabled>Wed</button>
+      <button type="button" class="day-btn" onclick="selectDay('Thu')" disabled>Thu</button>
+      <button type="button" class="day-btn" onclick="selectDay('Fri')" disabled>Fri</button>
+      <button type="button" class="day-btn" onclick="selectDay('Sat')" disabled>Sat</button>
     </div>
   </div>
   
@@ -225,8 +204,97 @@ $(document).ready(function() {
     <label>Until</label>
     <input class="until-date" type="date" id="until-date-picker" value="2024-07-01">
   </div>
-  
+
+  <div class="form-group">
+    <button type="button" class="btn btn-primary " onclick="saveSchedule()" style="font-weight: bold;">SAVE</button>
+    <button type="button" class="btn btn-secondary" onclick="cancelSchedule()" style="font-weight: bold;">CANCEL</button>
+  </div>
+
 </div>
+
+
+<script>
+  function toggleAction() {
+    var actionToggle = document.getElementById("action-toggle");
+    actionToggle.checked = !actionToggle.checked;
+  }
+
+  function selectChannel(channelNumber) {
+    var channelButtons = document.querySelectorAll(".channel-btn");
+    channelButtons.forEach(function(button, index) {
+      if (index + 1 === channelNumber) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    });
+  }
+
+  function selectRepeat(repeatType) {
+    var repeatButtons = document.querySelectorAll(".repeat-btn");
+    repeatButtons.forEach(function(button) {
+      button.classList.remove("active");
+    });
+
+    var weekdaysButtons = document.querySelectorAll(".day-buttons button");
+    weekdaysButtons.forEach(function(button) {
+      button.classList.remove("active");
+      button.setAttribute("disabled", "disabled");
+    });
+
+    if (repeatType === 'Daily') {
+      // Select all weekdays
+      weekdaysButtons.forEach(function(button) {
+        button.classList.add("active");
+        //button.style.fontWeight = "bold";
+      });
+    }
+    else if (repeatType === 'Weekdays') {
+      weekdaysButtons.forEach(function(button) {
+        button.removeAttribute("disabled");
+        button.classList.remove("active");
+        button.style.borderColor = "#007BFF"; //Change border color of weekdays buttons to blue
+      });
+    }
+    else {
+      weekdaysButtons.forEach(function(button) {
+        button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+      });
+    }
+
+    var selectedRepeatButton = document.getElementById(repeatType.toLowerCase());
+    selectedRepeatButton.classList.add("active");
+  }
+
+  function selectDay(day) {
+    var weekdaysRadio = document.getElementById("weekdays");
+    var dayButton = document.querySelector(".day-buttons button:nth-child(" + (["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day) + 1) + ")");
+    
+    if (weekdaysRadio.classList.contains("active")) {
+      var isActive = dayButton.classList.contains("active");
+      dayButton.classList.toggle("active", !isActive);
+    } else {
+      dayButton.classList.toggle("active");
+    }
+  }
+
+  //Caculate the next schedule based on the information above and update it to the next-schedule span
+</script>
+
+
+<script>
+  // Bổ sung các hàm saveSchedule và cancelSchedule
+
+  function saveSchedule() {
+    // Thêm logic lưu lịch trình vào đây
+    alert('Schedule saved!');
+  }
+
+  function cancelSchedule() {
+    // Thêm logic hủy lịch trình vào đây
+    alert('Schedule cancelled!');
+  }
+</script>
 
 </body>
 </html>
