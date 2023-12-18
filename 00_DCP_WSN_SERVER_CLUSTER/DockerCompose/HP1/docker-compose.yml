@@ -214,3 +214,5 @@ services:
     networks:
       wsn_net:
         ipv4_address: '200.200.200.9'
+
+

@@ -1,4 +1,5 @@
 const socket = io();
+const topic = "WSN_GW_"+gatewayUID+".WEB.SCAN_PROBLEM";
 let counter = 0; // Khởi tạo biến đếm
 let refreshTime = parseInt(Math.random()*100)*200 + 60000; // Khởi tạo biến ngẫu nhiên từ 60s đến 80s với. Mỗi step 1000ms. Tránh trường hợp tất cả các client gửi request cùng lúc.
 console.log("refreshTime: " + refreshTime);

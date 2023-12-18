@@ -1,0 +1,30 @@
+
+
+
+
+{
+"uid": <MQTT_CLIENT_ID>,
+"message":{
+            "method": "problem.get", // method name + get/post
+            "params": {              //free style params
+             
+            }
+          }
+};
+
+
+
+{
+  "topic": <MQTT_TOPIC>,
+  "message":{
+              "method": "problem.get", // method name + get/post
+              "params": {              //free style params
+               
+              }
+            }
+}
+
+
+
+
+

@@ -27,31 +27,42 @@ MQTT_CLIENT_ID  = f'MQTT_CLENT_JP_'+str(random.randint(0, 10000))
 MQTT_TOPIC      = "WSN_SVR_JP_REQ" 
 
 ################### SOCKETIO #######################
-EXPORT_LICENSE_TO_MQTT_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
-EXPORT_LICENSE_TO_MQTT_TOPIC_LIST.append(".*WEB.*")  #Regex pattern
-MQTT_CLIENT_SIO_EXCTL_ID       = f'SIO_EXCTL_'+str(random.randint(0, 10000))
+# LICENSE TO EXPORT TO MQTT NETWORK
+MQTT_CLIENT_SIO_EXCTL_ID       = f'SIO_EXCTL_'+str(random.randint(0, 10000)) #NOTE: DO NOT CHANGE THIS ID
+EXPORT_LICENSE_TO_MQTT_TOPIC_LIST = list()  #List of TOPICs licensed to publish to the MQTT network.
+EXPORT_LICENSE_TO_MQTT_TOPIC_LIST.append(".*WEB.*")  #Regex pattern. Allowing all topic include WEB in the topic name.
 
-EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST = list()  #Danh sách các TOPIC có giấy phép để publish đến mạng MQTT.
-EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append(".*WEB.*")  #Regex pattern
-EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append(".*GATEWAY\.CONTROL.*")  #Regex pattern
-MQTT_CLIENT_MQTT_EXCTL_ID          = f'MQTT_EXCTL_'+str(random.randint(0, 10000))
+
+# LICENSE TO EXPORT TO SOCKETIO NETWORK
+MQTT_CLIENT_MQTT_EXCTL_ID          = f'MQTT_EXCTL_'+str(random.randint(0, 10000)) #NOTE: DO NOT CHANGE THIS ID
+EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST = list()  #List of TOPICs licensed to publish to the SOCKETIO network.
+EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append(".*WEB.*")  #Regex pattern. Allowing all topic include WEB in the topic name.
+EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append(".*GATEWAY\.CONTROL.*")  #Regex pattern. Allowing all topic include GATEWAY.CONTROL in the topic name.
+
 
 SOCKETIO_URL = f'http://wsnCluster_socketio:5000' # EX: "http://lotus1104.synology.me:83"
 
-
 ################## ACCEPT LIST OF GATEWAY & TOPIC #######################
-# MỤC ĐÍCH: Tạo ra một danh sách các Gateway và Topic mà Client MQTT có thể subscribe
-# 1. ACCEPT LIST OF GATEWAY
+# PURPOSE: Create a list of Gateways and Topics that the MQTT Client can subscribe to
+ACCEPT_LIST_OF_TOPIC = list()
+#===============================================================================
+# 1. ACCEPT LIST OF TOPIC    #<------ DEVELOPER ADD THE NEW TOPIC HERE
+#===============================================================================
+# 1.1 WEB.xxx topic: the request issued from the web
+ACCEPT_LIST_OF_TOPIC.append("WEB.SCAN_PROBLEM")  #Topic use for scan problem
+ACCEPT_LIST_OF_TOPIC.append("WEB.SCAN_REDTIDE")  #Topic use for scan redtide
+ACCEPT_LIST_OF_TOPIC.append("WEB.CONTROL")       #Topic use for control controller node (issue from web)
+ACCEPT_LIST_OF_TOPIC.append("WEB.TEST")          #Topic use for testing
+
+# 1.2 GATEWAY.xxx topic: the request issued from the gateway
+ACCEPT_LIST_OF_TOPIC.append("GATEWAY.CONTROL")   #Topic use for update control status to web (issue from gateway)
+
+#===============================================================================
+# 2. ACCEPT LIST OF GATEWAY    #<------ ADD THE NEW GATEWAY HERE
+#===============================================================================
 ACCEPT_LIST_OF_GATEWAY = list()
 ACCEPT_LIST_OF_GATEWAY.append("WSN_GW_01C823")
-ACCEPT_LIST_OF_GATEWAY.append("WSN_GW_01C821")
-ACCEPT_LIST_OF_GATEWAY.append("WSN_GW_018F1A")
+ACCEPT_LIST_OF_GATEWAY.append("WSN_GW_01C821") #Seaside Consulting customer
+ACCEPT_LIST_OF_GATEWAY.append("WSN_GW_018F1A") #Sugaya customer
+ACCEPT_LIST_OF_GATEWAY.append("WSN_GW_320DED") #CMEV office test
 
-# 2. ACCEPT LIST OF TOPIC
-ACCEPT_LIST_OF_TOPIC = list()
-ACCEPT_LIST_OF_TOPIC.append("WEB.SCAN_PROBLEM")
-ACCEPT_LIST_OF_TOPIC.append("WEB.SCAN_REDTIDE")
-ACCEPT_LIST_OF_TOPIC.append("WEB.CONTROL")
-ACCEPT_LIST_OF_TOPIC.append("WEB.TEST")
-# ACCEPT_LIST_OF_TOPIC.append("GATEWAY.DATA") <--- KHÔNG CẦN VÌ KHÔNG GỬI DATA VỀ WEB
-ACCEPT_LIST_OF_TOPIC.append("GATEWAY.CONTROL")
