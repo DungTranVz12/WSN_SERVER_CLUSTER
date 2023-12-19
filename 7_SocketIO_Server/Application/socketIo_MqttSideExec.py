@@ -13,6 +13,8 @@ from Library.A9_MQTT.mqtt import mqttClass #pip install paho-mqtt
 import threading
 import time
 
+messageNum = 0
+
 while True:
   try:
     ############################################################
@@ -20,9 +22,12 @@ while True:
     ############################################################
     MQTT = mqttClass(MQTT_BROKER_IP, MQTT_PORT, MQTT_CLIENT_MQTT_EXCTL_ID, MQTT_USERNAME, MQTT_PASSWORD)
     def subcribeFilter(msg):
+      global messageNum 
       jsonData = eval(msg.payload.decode())
       #Check sender uid
-      print (jsonData["uid"])
+      messageNum += 1
+      print (f"\n[Num: {str(messageNum)}][UID: {jsonData['uid']}]\x1b[48;5;1m[TOPIC: {msg.topic}]\x1b[0m MQTT received:\x1b[38;5;3m {msg.payload.decode()}\x1b[0m")
+      
       if "SIO_EXCTL" in jsonData["uid"]: return #SOCKETIO_EXPORT_CONTROL
       #CHECK LICENSE
       for regex in EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST:

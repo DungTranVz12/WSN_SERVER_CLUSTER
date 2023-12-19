@@ -1,0 +1,44 @@
+{
+    "//nodeName": "Name of node",
+    "nodeName": "General Sensor Node",
+    "//nodeFwVer": "Firmware version of node",
+    "nodeFwVer": "1.0",
+    "A0": {
+        "name": "A0A0A0",
+        "rollno": 56,
+        "cgpa": 8.6,
+        "phonenumber": "9976770500"
+    },
+    "B0": {
+        "B1": {
+            "name": "B1B1B1",
+            "rollno": 56,
+            "cgpa": 8.6,
+            "phonenumber": "9976770500",
+            "New Key": "ADD NEW KEY!!!",
+            "B2": {
+                "New Branch KEY": "NEW BRANCH & NEW KEY"
+            }
+        },
+        "B2": {
+            "name": "MODIFIED NAME!!!",
+            "rollno": 56,
+            "cgpa": 8.6,
+            "phonenumber": "9976770500"
+        }
+    },
+    "C0": [
+        {
+            "name": "B1B1B1",
+            "rollno": 56,
+            "cgpa": 8.6,
+            "phonenumber": "9976770500"
+        },
+        {
+            "name": "MODIFIED IN ARRAY[1]!!!",
+            "rollno": 56,
+            "cgpa": 8.6,
+            "phonenumber": "9976770500"
+        }
+    ]
+}

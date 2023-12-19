@@ -385,11 +385,19 @@
   //   None.
   //===========================================================================
   socket.on(topic, (serverMessage) => {
-    console.log("Received message from server");
+    serverMessage = serverMessage.replace(/'/g, '"'); //replace ' with " in serverMessage
+    //Convert serverMessage to JSON
+    serverMessage = JSON.parse(serverMessage);
+    console.log("Received message from server: " + JSON.stringify(serverMessage));
     __updateHostStatus(serverMessage); // Update host status based on server message.
     __resetCounter(); // Reset counter to 0 when receiving message from server.
+    if (serverMessage.method == "control.schedule.loadAll") {
+      console.log("Save message to local storage");
+      //Save message to local storage
+      localStorage.setItem("LOCAL_STORE_SCHEDULE_LIST_"+deviceUID, JSON.stringify(serverMessage));
+    }
     //Save message to local storage
-    localStorage.setItem("LOCAL_STORE_SCHEDULE_LIST_"+deviceUID, JSON.stringify(serverMessage));
+    
   });
 
   // 3. Load initial status from local storage and periodically send update status request
@@ -456,12 +464,10 @@
     document.getElementById("schedulePopup").style.display = "block";
   };
   document.getElementsByClassName("close")[0].onclick = function() {
-    modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
     modifyOnUid = -1; // Reset modifyOnUid
     document.getElementById("schedulePopup").style.display = "none";
   };
   function closePopup() {
-    modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
     modifyOnUid = -1; // Reset modifyOnUid
     document.getElementById("schedulePopup").style.display = "none";
   }
@@ -500,11 +506,9 @@
     // Store to local storage
     // If modifyScheduleRequestFlag is true, modify the schedule in schedeleListData
     // Else, add new schedule to schedeleListData
-    modifyScheduleIndex = schedeleListData.params.scheduleList.findIndex(schedule => schedule.scheduleUid === modifyOnUid);
     if (modifyScheduleRequestFlag) {
+      modifyScheduleIndex = schedeleListData.params.scheduleList.findIndex(schedule => schedule.scheduleUid === modifyOnUid);
       schedeleListData.params.scheduleList[modifyScheduleIndex] = scheduleData;
-      modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
-      modifyOnUid = -1; // Reset modifyOnUid
     }
     else {
       // Add new schedule to schedeleList
@@ -524,6 +528,8 @@
 
     document.getElementById('schedulePopup').style.display = 'none'; // Ẩn popup sau khi xử lý xong
     __updateHostStatus();
+    modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
+    modifyOnUid = -1; // Reset modifyOnUid
   }
 
   //3. Reactive button in popup
@@ -600,7 +606,6 @@
   //The counter variable is set to 0.
   //===========================================================================
   function __resetCounter() {
-    //localStorage.setItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID, JSON.stringify(""));
     refreshTime = parseInt(Math.random()*100)*200 + 60000;
     console.log("refreshTime: " + refreshTime);
     counter = 0; // Đặt lại biến đếm về 0
@@ -610,6 +615,7 @@
     const scheduleList = document.querySelector('.schedule-list');
     scheduleList.innerHTML = ''; // Xóa nội dung hiện tại
     schedeleListData = JSON.parse(localStorage.getItem("LOCAL_STORE_SCHEDULE_LIST_"+deviceUID)); // Load from local storage
+    //Replace ' by " in schedeleListData
     //{"scheduleUid": 1,
     // "channel": 1,
     // "title": "Schedule 1",
@@ -620,6 +626,13 @@
     // "daysOfWeek": ["Mon", "Tue", "Wed", "Thu", "Fri"],
     // "untilDate": "2021-12-31"
     //}
+    //If schedeleListData is null, return
+    console.log('DEBUG Schedule list: ' + JSON.stringify(schedeleListData));
+    if (schedeleListData == null) return;
+    if (schedeleListData.params == null) return;
+    if (schedeleListData.params.scheduleList == null) return;
+    if (schedeleListData.params.scheduleList.length === 0) return;
+    //console.log('DEBUG Schedule list: ' + JSON.stringify(schedeleListData.params.scheduleList));
     schedeleListData.params.scheduleList.forEach(schedule => {
       const scheduleItem = document.createElement('li');
       scheduleItem.className = schedule.action === 'on' ? '' : 'off';
@@ -627,8 +640,8 @@
         scheduleItem.innerHTML = `
         ${schedule.scheduleUid} || 
         <span class="status ${schedule.action}">${schedule.action.toUpperCase()}</span> ${schedule.title}  Channel ${schedule.channel} - From: ${schedule.fromDate} ${schedule.fromTime} - Repeat: ${schedule.repeat} - ${schedule.daysOfWeek.join(', ')} - Until: ${schedule.untilDate} 
-        <button class="edit-btn"  onclick="editSchedule(${schedule.scheduleUid})">Edit</button>
-        <button class="delete-btn onclick="removeSchedule(${schedule.scheduleUid})">Delete</button>
+        <button class="edit-btn"  onclick="__editSchedule(${schedule.scheduleUid})">Edit</button>
+        <button class="delete-btn onclick="__removeSchedule(${schedule.scheduleUid})">Delete</button>
         `;
       }
       else {

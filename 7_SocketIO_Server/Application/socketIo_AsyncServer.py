@@ -20,6 +20,7 @@ from Library.A9_MQTT.mqtt import mqttClass #pip install paho-mqtt
 import threading
 import random
 import json
+messageNum = 0
 
 class NamespaceConnectionManager:
     def __init__(self):
@@ -106,7 +107,7 @@ async def rootMessageFilter (topic,message,sid,namespace='Root'):
   if type(message) is not dict:
     await sio.emit(topic,message,skip_sid=sid) #Send message to all clients except sender
     dateTime = datetime.datetime.now().strftime("%H:%M:%S")
-    await sio.emit('SERVER_LISTEN',f'[{dateTime}]🟢[Root][{topic}] {message}',namespace='/SERVER_LISTEN')
+    await sio.emit('SERVER_LISTEN',f'[{dateTime}]🟢[Namespace: Root][Event: {topic}][Message▶️] {message}',namespace='/SERVER_LISTEN')
   else:
     if 'method' in message: method = message['method']
     if 'params' in message: params = message['params']
@@ -117,17 +118,19 @@ async def rootMessageFilter (topic,message,sid,namespace='Root'):
     if method == 'problem.get':
       await sio.emit('SOCKET',message,skip_sid=sid,namespace='/ZABBIX') #Send message to all clients except sender
       dateTime = datetime.datetime.now().strftime("%H:%M:%S")
-      await sio.emit('SERVER_LISTEN',f'[{dateTime}]🟢[ZABBIX][SOCKET] {message}',namespace='/SERVER_LISTEN')
+      await sio.emit('SERVER_LISTEN',f'[{dateTime}]🟢[Namespace: ZABBIX][Event: SOCKET][Message▶️] {message}',namespace='/SERVER_LISTEN')
 
 
 
 
 @sio.event(namespace="/") #Namespace = "/"
 async def SOCKET(sid, data:dict):
+    global messageNum
+    messageNum += 1
     #Forward message to SERVER_LISTEN #
     namespace = connection_manager.get_namespace(sid)
     dateTime = datetime.datetime.now().strftime("%H:%M:%S")
-    await sio.emit('SERVER_LISTEN',"["+dateTime+"]🔴["+namespace+"][SOCKET] "+str(data),namespace='/SERVER_LISTEN') #Forward message to SERVER_LISTEN
+    await sio.emit('SERVER_LISTEN',"["+dateTime+"]🔴[Namespace: "+namespace+"][Event: SOCKET][Message▶️] "+str(data),namespace='/SERVER_LISTEN') #Forward message to SERVER_LISTEN
     
     #1.Convert data to JSON
     if type(data) == str:
@@ -138,25 +141,28 @@ async def SOCKET(sid, data:dict):
       print("[SOCKET] Received message is not string or dict => Skip message")
       return
     #2.Lan truyền gói tin cho các client khác
-    # print(f'[SOCKET] Received message from {sid}: {message}')
-    print(f'\n[SOCKET] Received message from {sid}')
     topic   = str(jsonData['topic'])
     message = str(jsonData['message'])
+    print(f'\n\n\x1b[48;5;1m <<<<< Received message [Num: {messageNum}]\x1b[48;5;2m[Namespace: {namespace}]\x1b[48;5;1m[Event: SOCKET]\x1b[48;5;21m[TOPIC: {topic}]\x1b[0m[ClientID: {sid}]\n\x1b[48;5;1m[Message] \x1b[0m\x1b[38;5;3m {message}\x1b[0m')
     await rootMessageFilter(topic,message,sid,namespace) #Filter message
     #CHECK LICENSE
     #Compare topic with Regex EXPORT_LICENSE_TO_MQTT_TOPIC_LIST
     for regex in EXPORT_LICENSE_TO_MQTT_TOPIC_LIST:
       if re.search(regex, topic):
         #SEND TO MQTT BROKER
+        print(f'\x1b[48;5;22m >>>>> Transfer to MQTT \x1b[48;5;21m[TOPIC: {topic}]\x1b[0m\n\x1b[48;5;22m[Message]\x1b[0m\x1b[38;5;3m{message}\x1b[0m')
         MQTT.publish(topic=topic, msg=str({"uid": MQTT_CLIENT_SIO_EXCTL_ID,"message":message})) #Send message to MQTT Broker
-      
+        await sio.emit('SERVER_LISTEN',f'[{dateTime}]🟢 Transfer to MQTT [Topic: {topic}][Message▶️] {message}',namespace='/SERVER_LISTEN')
+        
 @sio.event(namespace="/MQTT")
 @sio.event(namespace="/ZABBIX")
 async def SOCKET(sid, data:dict):
+    global messageNum
+    messageNum += 1
     #Forward message to SERVER_LISTEN #
     namespace = connection_manager.get_namespace(sid)
     dateTime = datetime.datetime.now().strftime("%H:%M:%S")
-    await sio.emit('SERVER_LISTEN',"["+dateTime+"]🔴["+namespace+"][SOCKET] "+str(data),namespace='/SERVER_LISTEN') #Forward message to SERVER_LISTEN
+    await sio.emit('SERVER_LISTEN',"["+dateTime+"]🔴[Namespace: "+namespace+"][Event: SOCKET][Message▶️] "+str(data),namespace='/SERVER_LISTEN') #Forward message to SERVER_LISTEN
     
     #1.Convert data to JSON
     if type(data) == str:
@@ -167,11 +173,12 @@ async def SOCKET(sid, data:dict):
       print("[SOCKET] Received message is not string or dict => Skip message")
       return
     #2.Lan truyền gói tin cho các client khác
-    # print(f'[SOCKET] Received message from {sid}: {message}')
-    print(f'\n[SOCKET] Received message from {sid}')
     topic   = str(jsonData['topic'])
     message = str(jsonData['message'])
+    print(f'\n\n\x1b[48;5;1m <<<<< Received message [Num: {messageNum}]\x1b[48;5;2m[Namespace: {namespace}]\x1b[48;5;1m[Event: SOCKET]\x1b[48;5;21m[TOPIC: {topic}]\x1b[0m[ClientID: {sid}]\n\x1b[48;5;1m[Message] \x1b[0m\x1b[38;5;3m {message}\x1b[0m')
+    print(f'\x1b[48;5;22m >>>>> Transfer to SocketIO network \x1b[48;5;2m[Namespace: Root]\x1b[48;5;1m[Event: {topic}]\x1b[0m\n\x1b[48;5;22m[Message]\x1b[0m\x1b[38;5;3m{message}\x1b[0m')
     await sio.emit(topic,message,skip_sid=sid) #Send message to all clients except sender
+    await sio.emit('SERVER_LISTEN',f'[{dateTime}]🟢[Namespace: Root][Event: {topic}][Message▶️] {message}',namespace='/SERVER_LISTEN')
           
 ##################################################################################################
 #Bước 3: Cấu hình cho ứng dụng web
