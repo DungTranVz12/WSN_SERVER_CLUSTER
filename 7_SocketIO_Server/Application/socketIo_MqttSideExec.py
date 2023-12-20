@@ -26,9 +26,11 @@ while True:
       jsonData = eval(msg.payload.decode())
       #Check sender uid
       messageNum += 1
-      print (f"\n[Num: {str(messageNum)}][UID: {jsonData['uid']}]\x1b[48;5;1m[TOPIC: {msg.topic}]\x1b[0m MQTT received:\x1b[38;5;3m {msg.payload.decode()}\x1b[0m")
+      print (f"\n[Num: {str(messageNum)}]\x1b[48;5;1m[TOPIC: {msg.topic}]\x1b[0m MQTT received:\x1b[38;5;3m {msg.payload.decode()}\x1b[0m")
       
-      if "SIO_EXCTL" in jsonData["uid"]: return #SOCKETIO_EXPORT_CONTROL
+      if "uid" in jsonData and "SIO_EXCTL" in jsonData["uid"]:
+        return #Ignore message from SOCKETIO to avoid loop
+      
       #CHECK LICENSE
       for regex in EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST:
         if re.search(regex, msg.topic):

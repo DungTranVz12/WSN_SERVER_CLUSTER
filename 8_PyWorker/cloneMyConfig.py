@@ -32,17 +32,14 @@ MQTT_CLIENT_SIO_EXCTL_ID       = f'SIO_EXCTL_'+str(random.randint(0, 10000)) #NO
 EXPORT_LICENSE_TO_MQTT_TOPIC_LIST = list()  #List of TOPICs licensed to publish to the MQTT network.
 EXPORT_LICENSE_TO_MQTT_TOPIC_LIST.append(".*WEB.*")  #Regex pattern. Allowing all topic include WEB in the topic name.
 
-
 # LICENSE TO EXPORT TO SOCKETIO NETWORK
 MQTT_CLIENT_MQTT_EXCTL_ID          = f'MQTT_EXCTL_'+str(random.randint(0, 10000)) #NOTE: DO NOT CHANGE THIS ID
 EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST = list()  #List of TOPICs licensed to publish to the SOCKETIO network.
 EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append(".*WEB.*")  #Regex pattern. Allowing all topic include WEB in the topic name.
-EXPORT_LICENSE_TO_SOCKETIO_TOPIC_LIST.append(".*GATEWAY\.CONTROL.*")  #Regex pattern. Allowing all topic include GATEWAY.CONTROL in the topic name.
-
 
 SOCKETIO_URL = f'http://wsnCluster_socketio:5000' # EX: "http://lotus1104.synology.me:83"
 
-################## ACCEPT LIST OF GATEWAY & TOPIC #######################
+################## ACCEPT LIST OF GATEWAY & MQTT TOPIC #######################
 # PURPOSE: Create a list of Gateways and Topics that the MQTT Client can subscribe to
 # NOTE: MQTT TOPIC FORMAT: <GATEWAY_ID>.<TOPIC>
 # EX: WSN_GW_01C823.WEB.SCAN_PROBLEM

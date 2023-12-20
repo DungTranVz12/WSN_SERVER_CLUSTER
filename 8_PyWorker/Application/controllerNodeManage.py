@@ -81,12 +81,20 @@ MQTT = mqttClass(MQTT_BROKER_IP, MQTT_PORT, MQTT_CLIENT_ID, MQTT_USERNAME, MQTT_
 def subcribeFilter(msg):
   global messageNum
   messageNum += 1
+  networkType = ""
   try:
     topic = str(msg.topic)
     jsonData = eval(str(msg.payload.decode()))
-    fullMessage = eval(str(jsonData["message"]))
-    # print(jsonData)
-    if "SIO_EXCTL" in jsonData["uid"]:
+    
+    if "uid" in jsonData and "SIO_EXCTL" in jsonData["uid"]: #Message in socketio network
+      fullMessage = eval(str(jsonData["message"]))
+      networkType = "SOCKETIO"
+    else:
+      fullMessage = jsonData #Message in mqtt network only
+      networkType = "MQTT"
+    
+    ### MESSAGE IN SOCKETIO NETWORK ####
+    if networkType == "SOCKETIO":
       ########################
       ### MESSAGE CHECKING ###
       ########################
@@ -96,11 +104,7 @@ def subcribeFilter(msg):
         controllerUid = fullMessage["params"]["controllerUid"]
         print("\n\n\x1b[48;5;18m\x1b[38;5;3mGet request \x1b[48;5;1m\"control.get\"\x1b[48;5;18m\x1b[38;5;3m from Socket for Controller: "+str(controllerUid)+"\x1b[0m")
         __checkExistProfile(controllerUid) #Check controllerUid exist in nodeManJson or not. If not, create new profile.
-        
-        messageContent = nodeManJson["NODE_"+controllerUid]["info"]
-        responseMessage = {"uid": str(MQTT_CLIENT_ID), "message": {"method": "control.get", "params": messageContent}}
-        print(f'\x1b[48;5;2m >>>>> Publish MQTT [Num: {messageNum}]\x1b[48;5;21m[TOPIC: {topic}]\n\x1b[48;5;2m[Message]\x1b[0m\x1b[0m\x1b[38;5;3m {responseMessage}\x1b[0m')
-        MQTT.publish(str(topic), str(responseMessage))
+        __sendAllChannelStatus(controllerUid,topic) #Sync to every web clients
         
       #A2. Update channel status from WEB GUI
       if "control.post" in fullMessage["method"]:
@@ -111,11 +115,7 @@ def subcribeFilter(msg):
         #Update control management
         nodeManJson["NODE_"+controllerUid]["info"] = fullMessage["params"]
         print(f'\x1b[48;5;1m <<<<< Receive Updated Status[Num: {messageNum}]\x1b[48;5;21m[TOPIC: {topic}]\n\x1b[48;5;1m[Message]\x1b[0m\x1b[0m\x1b[38;5;3m {fullMessage}\x1b[0m')
-        #Sync to every web clients
-        messageContent = nodeManJson["NODE_"+controllerUid]["info"]
-        responseMessage = {"uid": str(MQTT_CLIENT_ID), "message": {"method": "control.get", "params": messageContent}}
-        print(f'\x1b[48;5;2m >>>>> Publish MQTT [Num: {messageNum}]\x1b[48;5;21m[TOPIC: {topic}]\n\x1b[48;5;2m[Message]\x1b[0m\x1b[0m\x1b[38;5;3m {responseMessage}\x1b[0m')
-        MQTT.publish(str(topic), str(responseMessage))
+        __sendAllChannelStatus(controllerUid,topic) #Sync to every web clients
         #Update to file
         NODE_MAN.syncToJsonFile(fileName=NODE_MANAGER_FILE, profileManager=nodeManJson)
       
@@ -125,7 +125,6 @@ def subcribeFilter(msg):
         controllerUid = fullMessage["params"]["controllerUid"]
         print("\n\n\x1b[48;5;18m\x1b[38;5;3mGet request \x1b[48;5;1m\"control.schedule.loadAll\"\x1b[48;5;18m\x1b[38;5;3m from Socket for Controller: "+str(controllerUid)+"\x1b[0m")
         __checkExistProfile(controllerUid) #Check controllerUid exist in nodeManJson or not. If not, create new profile.
-        #Send all schedule list to web client
         __sendAllScheduleList(controllerUid,topic) #Send all schedule list to web client
 
       #A2. Add new schedule
@@ -175,12 +174,6 @@ def subcribeFilter(msg):
         #Send all schedule list to web client
         __sendAllScheduleList(controllerUid,topic) #Send all schedule list to web client
       
-      
-      
-      
-      
-      
-      
       #### C. FROM GATEWAY ####
       #C1. Gateway update controller status as MANUAL ON
       
@@ -188,7 +181,33 @@ def subcribeFilter(msg):
       
       #C3. Gateway update controller status as AUTO - Control AUTO_ON/OFF base on schedule
       
+    ### MESSAGE IN MQTT NETWORK ONLY ####
+    if networkType == "MQTT":
+      if "GATEWAY.CONTROL" in topic: #Message from gateway to update the controller node status on web
+        #TOPIC: WSN_GW_01C823.GATEWAY.CONTROL
+        #MESSAGE: {"gatewayUID": "01C823", "controllerUid": "DeviceUID1", "channelNum": 1, "swithStatus": "AUTO"}
+        print(f'Get request from Gateway to update controller status on web.\n[Topic: {topic}][Message] {fullMessage}')
+        controllerUid = fullMessage["controllerUid"]
+        __checkExistProfile(controllerUid) #Check controllerUid exist in nodeManJson or not. If not, create new profile.
+        #Update control management
+        if fullMessage["swithStatus"] == "ON":
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])] = "MANUAL_ON"
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])+"_info"] = "MANUAL ON"
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])+"_lock"] = "locked"
+        elif fullMessage["swithStatus"] == "OFF":
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])] = "MANUAL_OFF"
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])+"_info"] = "MANUAL OFF"
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])+"_lock"] = "locked"
+        elif fullMessage["swithStatus"] == "AUTO":
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])] = "AUTO_OFF"
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])+"_info"] = ""
+          nodeManJson["NODE_"+controllerUid]["info"]["channel"+str(fullMessage["channelNum"])+"_lock"] = ""
 
+        #Send all schedule list to web client
+        __sendAllChannelStatus(controllerUid,topic.replace("GATEWAY","WEB")) #Sync to every web clients
+        #Update to file
+        NODE_MAN.syncToJsonFile(fileName=NODE_MANAGER_FILE, profileManager=nodeManJson)
+        
       
 #      and "problem.get" in fullMessage["method"]:
 #      print("\nGet request SCAN_PROBLEM from Socket for HostGroup: "+fullMessage["params"]["hostgroupName"])
@@ -224,6 +243,13 @@ def __checkExistProfile(controllerUid=""):
     #Update to file
     NODE_MAN.syncToJsonFile(fileName=NODE_MANAGER_FILE, profileManager=nodeManJson)
 
+def __sendAllChannelStatus(controllerUid="", topic=""):
+  #Sync to every web clients
+  messageContent = nodeManJson["NODE_"+controllerUid]["info"]
+  responseMessage = {"uid": str(MQTT_CLIENT_ID), "message": {"method": "control.get", "params": messageContent}}
+  print(f'\x1b[48;5;2m >>>>> Publish MQTT [Num: {messageNum}]\x1b[48;5;21m[TOPIC: {topic}]\n\x1b[48;5;2m[Message]\x1b[0m\x1b[0m\x1b[38;5;3m {responseMessage}\x1b[0m')
+  MQTT.publish(str(topic), str(responseMessage))
+        
 def __sendAllScheduleList(controllerUid="", topic=""):
   messageContent = nodeManJson["NODE_"+controllerUid]["scheduleList"]
   responseMessage = {"uid": str(MQTT_CLIENT_ID), "message": {"method": "control.schedule.loadAll", "params": {"scheduleList":messageContent}}}
