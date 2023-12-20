@@ -299,12 +299,11 @@
             </tr>
             <tr>
               <td>From</td>
-              <td style="text-align: center;"><input type="time" id="time-picker" value="09:45"></td>
+              <td style="text-align: center;"><input type="time" id="fromTime" value="09:45"></td>
               <td style="text-align: center; padding: 0px 10px;">To</td>
-              <td style="text-align: center;"><input type="time" id="time-picker" value="09:45"></td>
+              <td style="text-align: center;"><input type="time" id="toTime" value="09:45"></td>
             </tr>
           </table>
-          <!-- <input type="time" id="time-picker" value="09:45"> -->
         </div>
         
         <div class="form-group">
@@ -346,7 +345,7 @@
           </div>
 
           <!-- Add a bootstrap square checkbox -->
-          <input type="checkbox" class="untilCheckbox" id="untilCheckbox" disabled style="transform: scale(2); margin: 20px 10px 10px 10px">
+          <input type="checkbox" class="untilCheckbox" id="untilCheckbox" onclick="selectRepeatUntil()" style="transform: scale(2); margin: 20px 10px 10px 10px">
           <label >Repeat Until</label>
           <input class="until-date" type="date" id="until-date-picker" disabled value="2024-07-01">
         </div>
@@ -501,13 +500,21 @@
     // Reset form
     document.getElementById('title').value = '';
     document.getElementById('date-picker').value = new Date().toISOString().slice(0, 10);
-    document.getElementById('time-picker').value = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+    document.getElementById('fromTime').value = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+    var toTime = new Date();
+    toTime.setHours(toTime.getHours() + 1);
+    document.getElementById('toTime').value = toTime.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
     document.getElementById('action-toggle').checked = true;
     selectChannel(1);
-    selectRepeat('NoRepeat');
+    selectRepeat('norepeat');
+    document.getElementById('untilCheckbox').checked = false;
+    document.getElementById('untilCheckbox').setAttribute('disabled', 'disabled');
     var untilDate = new Date();
     untilDate.setFullYear(untilDate.getFullYear() + 1);
     document.getElementById('until-date-picker').value = untilDate.toISOString().slice(0, 10);
+    document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
+
+
     // Display popup
     document.getElementById("schedulePopup").style.display = "block";
   };
@@ -532,12 +539,14 @@
       title: document.getElementById('title').value,
       action: document.getElementById('action-toggle').checked ? 'on' : 'off',
       fromDate: document.getElementById('date-picker').value,
-      fromTime: document.getElementById('time-picker').value,
+      fromTime: document.getElementById('fromTime').value,
+      toTime: document.getElementById('toTime').value,
       //id vaue of repeat button
       repeat: Array.from(document.querySelectorAll('.repeat-buttons button'))
                     .find(button => button.classList.contains('active')).id,
       daysOfWeek: Array.from(document.querySelectorAll('.day-buttons button.active'))
                         .map(button => button.textContent),
+      repeatUntilFlag: document.getElementById('untilCheckbox').checked ? 1 : 0,
       untilDate: document.getElementById('until-date-picker').value
     };
     //{"scheduleUid": "ScheduleUID1",
@@ -609,12 +618,23 @@
       button.setAttribute("disabled", "disabled");
     });
 
-    if (repeatType === 'daily') {
+    if (repeatType === 'norepeat') {
+      weekdaysButtons.forEach(function(button) {
+        button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+      });
+      // Disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').setAttribute('disabled', 'disabled');
+      document.getElementById('untilCheckbox').checked = false;
+      document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
+    }
+    else if (repeatType === 'daily') {
       // Select all weekdays
       weekdaysButtons.forEach(function(button) {
         button.classList.add("active");
         //button.style.fontWeight = "bold";
       });
+      // Remove disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').removeAttribute('disabled');
     }
     else if (repeatType === 'weekdays') {
       weekdaysButtons.forEach(function(button) {
@@ -622,15 +642,38 @@
         button.classList.remove("active");
         button.style.borderColor = "#007BFF"; //Change border color of weekdays buttons to blue
       });
+      // Remove disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').removeAttribute('disabled');
+    }
+    else if (repeatType === 'monthly') {
+      weekdaysButtons.forEach(function(button) {
+        button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+      });
+      // Remove disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').removeAttribute('disabled');
     }
     else {
       weekdaysButtons.forEach(function(button) {
         button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
       });
+      // Disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').setAttribute('disabled', 'disabled');
+      document.getElementById('untilCheckbox').checked = false;
+      document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
     }
+
+
 
     var selectedRepeatButton = document.getElementById(repeatType.toLowerCase());
     selectedRepeatButton.classList.add("active");
+  }
+
+  function selectRepeatUntil() {
+    var untilCheckbox = document.getElementById("untilCheckbox");
+    untilCheckbox.checked = !untilCheckbox.checked;
+    untilCheckbox.checked = (untilCheckbox.checked == true ? false : true)
+    var untilDate = document.getElementById("until-date-picker");
+    untilDate.disabled = !untilDate.disabled;
   }
 
   function selectDay(day) {
@@ -644,6 +687,7 @@
       dayButton.classList.toggle("active");
     }
   }
+
 </script>
 
 <script> //PRIVATE FUNCTIONS
@@ -718,7 +762,8 @@
 
     document.getElementById('title').value = editingSchedule.title;
     document.getElementById('date-picker').value = editingSchedule.fromDate;
-    document.getElementById('time-picker').value = editingSchedule.fromTime;
+    document.getElementById('fromTime').value = editingSchedule.fromTime;
+    document.getElementById('toTime').value = editingSchedule.toTime;
     document.getElementById('action-toggle').checked = editingSchedule.action === 'on';
     //Check the node of channel button which has the same value with editingSchedule.channel
     //uncheck the other nodes of channel button
@@ -767,6 +812,14 @@
     editingSchedule.daysOfWeek.forEach((day) => {
       document.querySelector('.day-buttons button:nth-child(' + (["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day) + 1) + ')').classList.add('active');
     });
+
+    document.getElementById('untilCheckbox').checked = editingSchedule.repeatUntilFlag;
+    if (editingSchedule.repeatUntilFlag) {
+      document.getElementById('until-date-picker').removeAttribute('disabled');
+    }
+    else {
+      document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
+    }
     document.getElementById('until-date-picker').value = editingSchedule.untilDate;
 
     // Hiển thị popup

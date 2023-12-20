@@ -256,6 +256,22 @@
 </ul>
 <button class="add-btn" id="addBtn">+</button>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- ==================================================================== -->
 <!-- 2. Popup Form -->
 <div id="schedulePopup" class="popup">
@@ -269,21 +285,33 @@
       
       <div class="form-container">
         <div class="form-group">
-          <label for="title" style="font-weight: bold;">Add title</label>
+          <label for="title" style="font-weight: bold;">Add Title</label>
           <input type="text" id="title" placeholder="Enter title here">
         </div>
         
         <div class="form-group">
-          <label style="font-weight: bold;">From</label>
-          <input type="date" id="date-picker" value="2023-09-01">
-          <input type="time" id="time-picker" value="09:45">
+          <label style="font-weight: bold;">Active Plan</label>
+          <!-- Tạo bảng 5 cột 2 hàng -->
+          <table style="width: 100%">
+            <tr style="width: 100%"  >
+              <td   >Date</td>
+              <td  colspan="3" ><input type="date" id="date-picker" value="2023-09-01"></td>
+            </tr>
+            <tr>
+              <td>From</td>
+              <td style="text-align: center;"><input type="time" id="time-picker" value="09:45"></td>
+              <td style="text-align: center; padding: 0px 10px;">To</td>
+              <td style="text-align: center;"><input type="time" id="time-picker" value="09:45"></td>
+            </tr>
+          </table>
+          <!-- <input type="time" id="time-picker" value="09:45"> -->
         </div>
         
         <div class="form-group">
-          <label style="font-weight: bold;">Action</label>
-          <div class="toggle-switch" onclick="toggleAction()">
-            <input type="checkbox" id="action-toggle" checked>
-            <span class="slider"></span>
+          <label style="font-weight: bold;" hidden>Action</label>
+          <div class="toggle-switch" onclick="toggleAction()" hidden>
+            <input type="checkbox" id="action-toggle" checked hidden>
+            <span class="slider" hidden></span>
           </div>
         </div>
         
@@ -296,9 +324,11 @@
             <button type="button" class="channel-btn"        onclick="selectChannel(4)">CHANNEL 4</button>
           </div>
         </div>
+
         
-        <div class="form-group">
-          <label style="font-weight: bold;">Repeat</label>
+        <label style="font-weight: bold;">Repeat</label>
+        <div class="form-group" style="border: 1px solid #DDDDDD; border-radius: 10px; padding: 10px;">
+
           <div class="channel-buttons repeat-buttons">
             <button type="button" id="norepeat" class="repeat-btn active" onclick="selectRepeat('norepeat')">No Repeat</button>
             <button type="button" id="daily"    class="repeat-btn"        onclick="selectRepeat('daily')">Daily</button>
@@ -314,11 +344,11 @@
             <button type="button" class="day-btn" onclick="selectDay('Fri')" disabled>Fri</button>
             <button type="button" class="day-btn" onclick="selectDay('Sat')" disabled>Sat</button>
           </div>
-        </div>
-        
-        <div class="form-group">
-          <label style="font-weight: bold;">Until</label>
-          <input class="until-date" type="date" id="until-date-picker" value="2024-07-01">
+
+          <!-- Add a bootstrap square checkbox -->
+          <input type="checkbox" class="untilCheckbox" id="untilCheckbox" onclick="selectRepeatUntil()" style="transform: scale(2); margin: 20px 10px 10px 10px">
+          <label >Repeat Until</label>
+          <input class="until-date" type="date" id="until-date-picker" disabled value="2024-07-01">
         </div>
         <br>
         <div class="form-group" style="text-align: center;">
@@ -329,6 +359,24 @@
     </form>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -456,10 +504,15 @@
     document.getElementById('time-picker').value = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
     document.getElementById('action-toggle').checked = true;
     selectChannel(1);
-    selectRepeat('NoRepeat');
+    selectRepeat('norepeat');
+    document.getElementById('untilCheckbox').checked = false;
+    document.getElementById('untilCheckbox').setAttribute('disabled', 'disabled');
     var untilDate = new Date();
     untilDate.setFullYear(untilDate.getFullYear() + 1);
     document.getElementById('until-date-picker').value = untilDate.toISOString().slice(0, 10);
+    document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
+
+
     // Display popup
     document.getElementById("schedulePopup").style.display = "block";
   };
@@ -561,12 +614,23 @@
       button.setAttribute("disabled", "disabled");
     });
 
-    if (repeatType === 'daily') {
+    if (repeatType === 'norepeat') {
+      weekdaysButtons.forEach(function(button) {
+        button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+      });
+      // Disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').setAttribute('disabled', 'disabled');
+      document.getElementById('untilCheckbox').checked = false;
+      document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
+    }
+    else if (repeatType === 'daily') {
       // Select all weekdays
       weekdaysButtons.forEach(function(button) {
         button.classList.add("active");
         //button.style.fontWeight = "bold";
       });
+      // Remove disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').removeAttribute('disabled');
     }
     else if (repeatType === 'weekdays') {
       weekdaysButtons.forEach(function(button) {
@@ -574,15 +638,38 @@
         button.classList.remove("active");
         button.style.borderColor = "#007BFF"; //Change border color of weekdays buttons to blue
       });
+      // Remove disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').removeAttribute('disabled');
+    }
+    else if (repeatType === 'monthly') {
+      weekdaysButtons.forEach(function(button) {
+        button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
+      });
+      // Remove disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').removeAttribute('disabled');
     }
     else {
       weekdaysButtons.forEach(function(button) {
         button.style.borderColor = "#ddd"; //Remove border color of weekdays buttons
       });
+      // Disabled attribute of untilCheckbox.
+      document.getElementById('untilCheckbox').setAttribute('disabled', 'disabled');
+      document.getElementById('untilCheckbox').checked = false;
+      document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
     }
+
+
 
     var selectedRepeatButton = document.getElementById(repeatType.toLowerCase());
     selectedRepeatButton.classList.add("active");
+  }
+
+  function selectRepeatUntil() {
+    var untilCheckbox = document.getElementById("untilCheckbox");
+    untilCheckbox.checked = !untilCheckbox.checked;
+    untilCheckbox.checked = (untilCheckbox.checked == true ? false : true)
+    var untilDate = document.getElementById("until-date-picker");
+    untilDate.disabled = !untilDate.disabled;
   }
 
   function selectDay(day) {
@@ -596,6 +683,7 @@
       dayButton.classList.toggle("active");
     }
   }
+
 </script>
 
 <script> //PRIVATE FUNCTIONS
