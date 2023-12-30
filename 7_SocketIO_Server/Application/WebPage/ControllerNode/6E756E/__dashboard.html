@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controller Node Interface</title>
 <script>
-  var gatewayUID = '01C823';      //<-------------- USER MUST CHANGE THIS 
-  var deviceUID  = 'DeviceUID1';  //<-------------- USER MUST CHANGE THIS
+  var gatewayUID = '320DED';      //<-------------- USER MUST CHANGE THIS 
+  var deviceUID  = '6E756E';      //<-------------- USER MUST CHANGE THIS
+  var widgetTitle = 'Controller Node '+deviceUID; //<-------------- USER MUST CHANGE THIS
 </script>
 <style>
   body {
@@ -21,14 +22,27 @@
   }
   #setting-icon {
     float: right;
-    height: 50px;
-    width: 50px;
-    padding-right: 20px;
+    height: 40px;
+    width: 40px;
+    padding-right: 25px;
   }
   h1 {
     color: white;
     text-align: center;
-    font-size: 24px;
+    font-size: 22px;
+    font-weight: bolder;
+  }
+  h2 {
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 15px 0px;
+  }
+  h3 {
+    color: white;
+    text-align: center;
+    font-size: 16px;
     font-weight: bolder;
   }
   .channel {
@@ -104,7 +118,6 @@
   }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
-<script src="/0_LiveDev/commmon/script.js"></script>
 <script>
   const socket = io();
   var topic = "WSN_GW_"+gatewayUID+".WEB.CONTROL"; //MQTT topic
@@ -242,9 +255,21 @@
         localStorage.setItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID, JSON.stringify(storeAllChannelStatus));
         //Replace control.get with control.post
         storeAllChannelStatus.method = "control.post";
+        //remove all storeAllChannelStatus.params which don't include string of sliderId
+        for (var key in storeAllChannelStatus.params) {
+          if (key.includes("channel") && !key.includes(sliderId)) {
+            delete storeAllChannelStatus.params[key];
+          }
+        }
         socket.emit('SOCKET', { "topic": topic, "message": storeAllChannelStatus});
       });
     });
+  });
+
+  //4. Change Widget Title
+  document.addEventListener('DOMContentLoaded', () => {
+    const widgetTitleElement = document.getElementById('widgetTitle');
+    widgetTitleElement.textContent = widgetTitle;
   });
 </script>
 
@@ -404,12 +429,12 @@
     <table style="width: 100%; border: none;">
       <tr>
         <td style="width: 90%;" >
-          <h1>Controller Node</h1>
+          <h2 id="widgetTitle">Controller Node deviceUID</h2>
         </td>
         <td style="width: 10%;">
           <a href="ScheduleList" target="_blank">
             <svg id='setting-icon' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path fill="#ffffff" d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61
+              <path fill="#E8E8E8" d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61
                   l-1.93-3.32c-0.11-0.2-0.37-0.28-0.58-0.17l-2.39,1c-0.49-0.38-1.02-0.7-1.6-0.94l-0.36-2.58c-0.04-0.23-0.25-0.4-0.49-0.4h-4
                   c-0.24,0-0.45,0.17-0.49,0.4l-0.36,2.58c-0.58,0.24-1.11,0.56-1.6,0.94l-2.39-1c-0.21-0.11-0.47-0.03-0.58,0.17l-1.93,3.32
                   c-0.11,0.2-0.07,0.47,0.12,0.61l2.03,1.58c-0.04,0.3-0.06,0.61-0.06,0.94s0.02,0.64,0.06,0.94l-2.03,1.58

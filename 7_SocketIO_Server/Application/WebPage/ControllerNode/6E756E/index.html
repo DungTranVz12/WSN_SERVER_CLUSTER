@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controller Node Interface</title>
+<script>
+  var gatewayUID = '320DED';      //<-------------- USER MUST CHANGE THIS 
+  var deviceUID  = '6E756E';  //<-------------- USER MUST CHANGE THIS
+  var widgetTitle = 'Controller Node '+deviceUID; //<-------------- USER MUST CHANGE THIS
+</script>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+  }
+  .controller-title {
+    padding: 1px;
+    margin-top: 0px;
+    background-color: #008cff;
+  }
+  #setting-icon {
+    float: right;
+    height: 40px;
+    width: 40px;
+    padding-right: 25px;
+  }
+  h1 {
+    color: white;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bolder;
+  }
+  h2 {
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 15px 0px;
+  }
+  h3 {
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bolder;
+  }
+  .channel {
+    display: grid;
+    align-items: center;
+    margin: 10px 0;
+    padding: 0 15px;
+  }
+  .channel label {
+    font-size: 18px;
+    color: #333;
+    font-weight: bolder;
+  }
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    justify-self: end;
+  }
+  .toggle-switch input {
+    display: none;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ff0000;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #008cff;
+  }
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+  .slider:active:before {
+    width: 28px;
+  }
+  .locked .toggle-switch .slider {
+    background-color: #808080; /* Gray color */
+  }
+  .lock-icon {
+    font-family: Arial, sans-serif;
+    color: black;
+    font-size: 28px;
+    display: block;
+    text-align: right;
+    align-items: top;
+    align-self: top;
+  }
+  .channelInfo {
+    font-size: 14px;
+    color: #008cff;
+    font-weight: bolder;
+    font-family: Arial, sans-serif;
+    text-align: right;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<script>
+  const socket = io();
+  var topic = "WSN_GW_"+gatewayUID+".WEB.CONTROL"; //MQTT topic
+  console.log("Console hello");
+  let counter = 0; // Khởi tạo biến đếm
+  let refreshTime = parseInt(Math.random()*100)*200 + 60000; // Khởi tạo biến ngẫu nhiên từ 60s đến 80s với. Mỗi step 1000ms. Tránh trường hợp tất cả các client gửi request cùng lúc.
+  console.log("refreshTime: " + refreshTime);
+  // /////////////////////////////////////////////////////////////////////////////////////////////
+  // //RESET ALL CHANNELS TO AUTO
+  //  serverSyncMessage = {
+  //    "method": "control.get",
+  //    "params": {
+  //      "controllerUid": "DeviceUID1",
+  //      "channel1": "AUTO_OFF",
+  //      "channel1_info": "",
+  //      "channel1_lock": "",
+  //      "channel2": "AUTO_ON",
+  //      "channel2_info": "",
+  //      "channel2_lock": "",
+  //      "channel3": "MANUAL_ON",
+  //      "channel3_info": "MANUAL ON",
+  //      "channel3_lock": "locked",
+  //      "channel4": "MANUAL_OFF",
+  //      "channel4_info": "MANUAL OFF",
+  //      "channel4_lock": "locked"
+  //    }
+  //  }
+  //  localStorage.setItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID, JSON.stringify(serverSyncMessage));
+  // /////////////////////////////////////////////////////////////////////////////////////////////
+
+  //Chuỗi JSON nhận được từ server lúc kết nối thành công chứa thông tin về mode (Manual ON/OFF hay Auto) của các channel. Có dạng như sau:
+  //serverSyncMessage = {
+  //  "topic": "WEB.CONTROL",
+  //  "message": {
+  //    "method": "control.get",
+  //    "params": {
+  //      "controllerUid": "DeviceUID1",
+  //      "channel1": "AUTO_OFF",
+  //      "channel1_info": "",
+  //      "channel1_lock": "",
+  //      "channel2": "AUTO_ON",
+  //      "channel2_info": "",
+  //      "channel2_lock": "",
+  //      "channel3": "MANUAL_ON",
+  //      "channel3_info": "MANUAL ON",
+  //      "channel3_lock": "locked",
+  //      "channel4": "MANUAL_OFF",
+  //      "channel4_info": "MANUAL OFF",
+  //      "channel4_lock": "locked"
+  //}
+
+  socket.on('connect', () => {
+    console.log('Connected to server');
+    var message = {"method":"control.get","params":{"controllerUid":deviceUID}};
+    socket.emit('SOCKET',{"topic":topic,"message": message});
+  });
+
+  // 1. Listen for events when receiving messages from the server
+  //===========================================================================
+  // Function: socket.on(topic, (serverMessage)
+  // This code block listens for a message from the server using Socket.IO.
+  // When a message is received, it updates the host status, resets a counter, and saves the message to local storage.
+  // Parameters:
+  //   - topic: The topic to listen for messages on.
+  //   - serverMessage: The message received from the server.
+  // Returns:
+  //   None.
+  //===========================================================================
+  socket.on(topic, (serverMessage) => {
+    console.log("Received message from server");
+    serverMessage = serverMessage.replace(/'/g, '"'); //replace ' with " in serverMessage
+    //Convert serverMessage to JSON
+    serverMessage = JSON.parse(serverMessage);
+    __updateHostStatus(serverMessage); // Update host status based on server message.
+    __resetCounter(); // Reset counter to 0 when receiving message from server.
+    if (serverMessage.method == "control.get") {
+      console.log("Save message to local storage");
+      //Save message to local storage
+      localStorage.setItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID, JSON.stringify(serverMessage));
+    }
+  });
+
+  // 2. Load initial status from local storage and periodically send update status request
+  //===========================================================================
+  // This code block adds an event listener to the 'DOMContentLoaded' event, which fires when the initial HTML document has been completely loaded and parsed.
+  // It then loads the initial status from the local storage and updates the host status if it exists.
+  // After that, it sets up a setInterval function to periodically send an update status request.
+  // The remaining time is calculated based on the refreshTime and counter variables.
+  // If the remaining time is less than or equal to 0, it constructs a message object and emits a 'SOCKET' event with the topic and message.
+  // The counter is reset to 0 after sending the update status request.
+  // The remaining time and counter are logged to the console for debugging purposes.
+  // The setInterval function runs every 1000ms (1 second).
+  //===========================================================================
+  document.addEventListener('DOMContentLoaded', () => {
+    // Load initial status from local storage
+    var message = JSON.parse(localStorage.getItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID));
+    if (message != null) {
+      __updateHostStatus(message);
+    }
+
+    // Periodically send update status request
+    setInterval(() => {
+      remainTime = refreshTime - counter*1000;
+      if (remainTime <= 0) {
+        var message = {"method":"control.get","params":{"controllerUid":deviceUID}};
+        socket.emit('SOCKET',{"topic":topic,"message": message});
+        console.log("Periodically send update status request");
+        counter = 0;
+      }
+      console.log("Remaining time: " + remainTime/1000 + "s");
+      counter = counter + 1;
+    }, 1000); // 1000ms
+  });
+
+
+  // 3. Send the slider status to the server when the slider changes
+  document.addEventListener('DOMContentLoaded', () => {
+    const sliders = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
+    sliders.forEach(slider => {
+      slider.addEventListener('change', () => {
+        const sliderId = slider.id; // Lấy ID của slider
+        const sliderStatus = slider.checked; // Lấy trạng thái của slider (true/false)
+        console.log('Slider toggled:', sliderId, 'Status:', sliderStatus);
+        const channelInfoText = document.getElementById('channel_info_' + sliderId.slice(-1));
+        if (slider.parentNode.classList.contains('locked')) {
+          channelInfoText.textContent = 'Manual';
+        } else {
+          channelInfoText.textContent = '';
+        }
+
+        // Open the local storage and update the slider status
+        var storeAllChannelStatus = JSON.parse(localStorage.getItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID));
+        console.log("storeAllChannelStatus: ", storeAllChannelStatus);
+        storeAllChannelStatus.params[sliderId] = sliderStatus ? "AUTO_ON" : "AUTO_OFF";
+        localStorage.setItem("LOCAL_STORE_WIDGET_CONTROL_"+deviceUID, JSON.stringify(storeAllChannelStatus));
+        //Replace control.get with control.post
+        storeAllChannelStatus.method = "control.post";
+        //remove all storeAllChannelStatus.params which don't include string of sliderId
+        for (var key in storeAllChannelStatus.params) {
+          if (key.includes("channel") && !key.includes(sliderId)) {
+            delete storeAllChannelStatus.params[key];
+          }
+        }
+        socket.emit('SOCKET', { "topic": topic, "message": storeAllChannelStatus});
+      });
+    });
+  });
+
+  //4. Change Widget Title
+  document.addEventListener('DOMContentLoaded', () => {
+    const widgetTitleElement = document.getElementById('widgetTitle');
+    widgetTitleElement.textContent = widgetTitle;
+  });
+</script>
+
+<script> //PRIVATE FUNCTIONS
+  //===========================================================================
+  //Function: __resetCounter()
+  //This function resets the counter and generates a random refresh time.
+  //The refresh time is calculated by multiplying a random number between 0 and 100 (inclusive) with 200 and adding 60000.
+  //The counter variable is set to 0.
+  //===========================================================================
+  function __resetCounter() {
+    refreshTime = parseInt(Math.random()*100)*200 + 60000;
+    console.log("refreshTime: " + refreshTime);
+    counter = 0; // Đặt lại biến đếm về 0
+  }
+
+  //===========================================================================
+  //Function: __updateHostStatus(serverMessage)
+  //This function updates the status of the host based on the server message.
+  //It retrieves the necessary elements from the DOM and updates their properties and content accordingly.
+  //The function checks the values of the server message parameters for each channel and performs the appropriate actions.
+  //If a channel is set to 'ON', it checks the corresponding checkbox and displays 'Manual ON' as the channel info.
+  //If a channel is set to 'OFF', it unchecks the corresponding checkbox and displays 'Manual OFF' as the channel info.
+  //If a channel is set to 'AUTO', it unchecks the corresponding checkbox and clears the channel info.
+  //The function also handles the locking and unlocking of channels based on their status.
+  //If a channel is set to 'AUTO', it removes the 'locked' class from the parent elements, enables the channel checkbox, and hides the lock icon.
+  //If a channel is set to 'ON' or 'OFF', it adds the 'locked' class to the parent elements, disables the channel checkbox, and displays the lock icon.
+  //===========================================================================
+  function __updateHostStatus(serverMessage) {
+    const channel1 = document.getElementById('channel1');
+    const channel2 = document.getElementById('channel2');
+    const channel3 = document.getElementById('channel3');
+    const channel4 = document.getElementById('channel4');
+    const channel_info_1 = document.getElementById('channel_info_1');
+    const channel_info_2 = document.getElementById('channel_info_2');
+    const channel_info_3 = document.getElementById('channel_info_3');
+    const channel_info_4 = document.getElementById('channel_info_4');
+    const lock_icon_1 = document.getElementById('lock_icon_1');
+    const lock_icon_2 = document.getElementById('lock_icon_2');
+    const lock_icon_3 = document.getElementById('lock_icon_3');
+    const lock_icon_4 = document.getElementById('lock_icon_4');
+    // 1. Handle channel status
+    if (serverMessage.params.channel1 === 'MANUAL_ON') {
+      channel1.checked = true;
+      channel_info_1.textContent = 'Manual ON';
+    } else if (serverMessage.params.channel1 === 'MANUAL_OFF') {
+      channel1.checked = false;
+      channel_info_1.textContent = 'Manual OFF';
+    } else if (serverMessage.params.channel1 === 'AUTO_ON') {
+      channel1.checked = true;
+      channel_info_1.textContent = '';
+    } else if (serverMessage.params.channel1 === 'AUTO_OFF') {
+      channel1.checked = false;
+      channel_info_1.textContent = '';
+    }
+    if (serverMessage.params.channel2 === 'MANUAL_ON') {
+      channel2.checked = true;
+      channel_info_2.textContent = 'Manual ON';
+    } else if (serverMessage.params.channel2 === 'MANUAL_OFF') {
+      channel2.checked = false;
+      channel_info_2.textContent = 'Manual OFF';
+    } else if (serverMessage.params.channel2 === 'AUTO_ON') {
+      channel2.checked = true;
+      channel_info_2.textContent = '';
+    }
+    else if (serverMessage.params.channel2 === 'AUTO_OFF') {
+      channel2.checked = false;
+      channel_info_2.textContent = '';
+    }
+    if (serverMessage.params.channel3 === 'MANUAL_ON') {
+      channel3.checked = true;
+      channel_info_3.textContent = 'Manual ON';
+    } else if (serverMessage.params.channel3 === 'MANUAL_OFF') {
+      channel3.checked = false;
+      channel_info_3.textContent = 'Manual OFF';
+    } else if (serverMessage.params.channel3 === 'AUTO_ON') {
+      channel3.checked = true;
+      channel_info_3.textContent = '';
+    }
+    else if (serverMessage.params.channel3 === 'AUTO_OFF') {
+      channel3.checked = false;
+      channel_info_3.textContent = '';
+    }
+    if (serverMessage.params.channel4 === 'MANUAL_ON') {
+      channel4.checked = true;
+      channel_info_4.textContent = 'Manual ON';
+    } else if (serverMessage.params.channel4 === 'MANUAL_OFF') {
+      channel4.checked = false;
+      channel_info_4.textContent = 'Manual OFF';
+    } else if (serverMessage.params.channel4 === 'AUTO_ON') {
+      channel4.checked = true;
+      channel_info_4.textContent = '';
+    }
+    else if (serverMessage.params.channel4 === 'AUTO_OFF') {
+      channel4.checked = false;
+      channel_info_4.textContent = '';
+    }
+
+    // 2. Handling lock condition
+    if (serverMessage.params.channel1_lock === 'locked') {
+      channel1.parentNode.parentNode.classList.add('locked');
+      channel1.parentNode.classList.add('locked');
+      channel1.disabled = true;
+      lock_icon_1.style.display = 'inline';
+    } else {
+      channel1.parentNode.parentNode.classList.remove('locked');
+      channel1.parentNode.classList.remove('locked');
+      channel1.disabled = false;
+      lock_icon_1.style.display = 'none';
+    }
+    if (serverMessage.params.channel2_lock === 'locked') {
+      channel2.parentNode.parentNode.classList.add('locked');
+      channel2.parentNode.classList.add('locked');
+      channel2.disabled = true;
+      lock_icon_2.style.display = 'inline';
+    } else {
+      channel2.parentNode.parentNode.classList.remove('locked');
+      channel2.parentNode.classList.remove('locked');
+      channel2.disabled = false;
+      lock_icon_2.style.display = 'none';
+    }
+    if (serverMessage.params.channel3_lock === 'locked') {
+      channel3.parentNode.parentNode.classList.add('locked');
+      channel3.parentNode.classList.add('locked');
+      channel3.disabled = true;
+      lock_icon_3.style.display = 'inline';
+    } else {
+      channel3.parentNode.parentNode.classList.remove('locked');
+      channel3.parentNode.classList.remove('locked');
+      channel3.disabled = false;
+      lock_icon_3.style.display = 'none';
+    }
+    if (serverMessage.params.channel4_lock === 'locked') {
+      channel4.parentNode.parentNode.classList.add('locked');
+      channel4.parentNode.classList.add('locked');
+      channel4.disabled = true;
+      lock_icon_4.style.display = 'inline';
+    } else {
+      channel4.parentNode.parentNode.classList.remove('locked');
+      channel4.parentNode.classList.remove('locked');
+      channel4.disabled = false;
+      lock_icon_4.style.display = 'none';
+    }
+    // 3. Handle channel info
+    channel_info_1.textContent = serverMessage.params.channel1_info;
+    channel_info_2.textContent = serverMessage.params.channel2_info;
+    channel_info_3.textContent = serverMessage.params.channel3_info;
+    channel_info_4.textContent = serverMessage.params.channel4_info;
+
+  };
+</script>
+</head>
+<body>
+
+<div class="controller-node">
+  <div class="controller-title">
+    <table style="width: 100%; border: none;">
+      <tr>
+        <td style="width: 90%;" >
+          <h2 id="widgetTitle">Controller Node deviceUID</h2>
+        </td>
+        <td style="width: 10%;">
+          <a href="ScheduleList" target="_blank">
+            <svg id='setting-icon' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="#E8E8E8" d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61
+                  l-1.93-3.32c-0.11-0.2-0.37-0.28-0.58-0.17l-2.39,1c-0.49-0.38-1.02-0.7-1.6-0.94l-0.36-2.58c-0.04-0.23-0.25-0.4-0.49-0.4h-4
+                  c-0.24,0-0.45,0.17-0.49,0.4l-0.36,2.58c-0.58,0.24-1.11,0.56-1.6,0.94l-2.39-1c-0.21-0.11-0.47-0.03-0.58,0.17l-1.93,3.32
+                  c-0.11,0.2-0.07,0.47,0.12,0.61l2.03,1.58c-0.04,0.3-0.06,0.61-0.06,0.94s0.02,0.64,0.06,0.94l-2.03,1.58
+                  c-0.18,0.14-0.23,0.41-0.12,0.61l1.93,3.32c0.11,0.2,0.37,0.28,0.58,0.17l2.39-1c0.49,0.38,1.02,0.7,1.6,0.94l0.36,2.58
+                  c0.04,0.23,0.25,0.4,0.49,0.4h4c0.24,0,0.45-0.17,0.49-0.4l0.36-2.58c0.58-0.24,1.11-0.56,1.6-0.94l2.39,1
+                  c0.21,0.11,0.47,0.03,0.58-0.17l1.93-3.32c0.11-0.2,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.5c-1.93,0-3.5-1.57-3.5-3.5
+                  s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.93,15.5,12,15.5z"/>
+            </svg>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="channel">
+    <table style="width: 100%; border: none;" >
+      <!-- Channel 1 -->
+      <tr>
+        <td style="width: 50%;padding-top:10px;" >
+          <label for="channel1">Channel 1</label>
+        </td>
+        <td class="channelInfo" id="channel_info_1" style="width: 33%;padding-top:10px;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_1" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel1">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      <!-- Channel 2 -->
+      <tr>
+        <td style="width: 50%;padding-top:10px;" >
+          <label for="channel2">Channel 2</label>
+        </td>
+        <td class="channelInfo" id="channel_info_2" style="width: 33%;padding-top:10px;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_2" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel2">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      <!-- Channel 3 -->
+      <tr>
+        <td style="width: 50%;padding-top:10px;" >
+          <label for="channel3">Channel 3</label>
+        </td>
+        <td class="channelInfo" id="channel_info_3" style="width: 33%;padding-top:10px;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_3" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel3">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+      <!-- Channel 4 -->
+      <tr>
+        <td style="width: 50%;padding-top:10px;" >
+          <label for="channel3">Channel 4</label>
+        </td>
+        <td class="channelInfo" id="channel_info_4" style="width: 33%;padding-top:10px;" >
+        </td>
+        <td style="width: 7%;text-align: right;">
+          <span class="lock-icon" id="lock_icon_4" style="display:none;"> 🔒</span>
+        </td>
+        <td style="width: 10%;padding-top:10px;">
+          <label class="toggle-switch">
+            <input type="checkbox" id="channel4">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+  </div>
+</div>
+
+</body>
+</html>

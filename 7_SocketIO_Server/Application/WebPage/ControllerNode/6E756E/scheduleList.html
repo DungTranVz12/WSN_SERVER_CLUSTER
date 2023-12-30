@@ -11,8 +11,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schedule List Interface</title>
 <script>
-  var gatewayUID = '01C823';      //<-------------- USER MUST CHANGE THIS 
-  var deviceUID  = 'DeviceUID1';  //<-------------- USER MUST CHANGE THIS
+  var gatewayUID = '320DED';      //<-------------- USER MUST CHANGE THIS 
+  var deviceUID  = '6E756E';  //<-------------- USER MUST CHANGE THIS
 </script>
 <style>
   body {
@@ -241,7 +241,6 @@
   }
 
 </style>
-<!-- <script src="/0_LiveDev/commmon/script.js"></script>
 <link rel="stylesheet" href="/0_LiveDev/commmon/styles.css"> -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
@@ -299,12 +298,11 @@
             </tr>
             <tr>
               <td>From</td>
-              <td style="text-align: center;"><input type="time" id="time-picker" value="09:45"></td>
+              <td style="text-align: center;"><input type="time" id="fromTime" value="09:45"></td>
               <td style="text-align: center; padding: 0px 10px;">To</td>
-              <td style="text-align: center;"><input type="time" id="time-picker" value="09:45"></td>
+              <td style="text-align: center;"><input type="time" id="toTime" value="09:45"></td>
             </tr>
           </table>
-          <!-- <input type="time" id="time-picker" value="09:45"> -->
         </div>
         
         <div class="form-group">
@@ -488,6 +486,7 @@
   var modifyScheduleRequestFlag = false;
   var modifyScheduleIndex = -1;
   var modifyOnUid = -1; // Lưu trữ scheduleUid của schedule đang được chỉnh sửa
+  var modifyScheduleSerVer = -1;
 </script>
 <!-- ==================================================================== -->
 <!-- 2. Popup Script -->
@@ -497,11 +496,15 @@
   document.getElementById("addBtn").onclick = function() {
     modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
     modifyOnUid = -1; // Reset modifyOnUid
+    modifyScheduleSerVer = -1; // Reset modifyScheduleSerVer
     document.querySelector('.addEditSchedule').textContent = 'ADD NEW SCHEDULE';
     // Reset form
     document.getElementById('title').value = '';
     document.getElementById('date-picker').value = new Date().toISOString().slice(0, 10);
-    document.getElementById('time-picker').value = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+    document.getElementById('fromTime').value = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+    var toTime = new Date();
+    toTime.setHours(toTime.getHours() + 1);
+    document.getElementById('toTime').value = toTime.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
     document.getElementById('action-toggle').checked = true;
     selectChannel(1);
     selectRepeat('norepeat');
@@ -518,10 +521,12 @@
   };
   document.getElementsByClassName("close")[0].onclick = function() {
     modifyOnUid = -1; // Reset modifyOnUid
+    modifyScheduleSerVer = -1; // Reset modifyScheduleSerVer
     document.getElementById("schedulePopup").style.display = "none";
   };
   function closePopup() {
     modifyOnUid = -1; // Reset modifyOnUid
+    modifyScheduleSerVer = -1; // Reset modifyScheduleSerVer
     document.getElementById("schedulePopup").style.display = "none";
   }
 
@@ -529,20 +534,31 @@
   function saveSchedule() {
     event.preventDefault(); // Ngăn chặn load lại trang khi nhấn nút Save
     // Lấy thông tin từ form
-      // Ramdom scheduleUid
+    // Ramdom scheduleUid
+    var newScheduleSerVer = 0;
+    if (modifyScheduleRequestFlag == false) { //NEW SCHEDULE
+      //newScheduleSerVer = parseInt(Math.random()*249 + 1); // Value from 1 to 250
+      newScheduleSerVer = 1;
+    }
+    else { //MODIFY SCHEDULE
+      newScheduleSerVer = (modifyScheduleSerVer >= 255)? 1 : modifyScheduleSerVer + 1; // Value from 1 to 255
+    }
     const scheduleData = {
-      scheduleUid: modifyScheduleRequestFlag ? modifyOnUid : parseInt(Math.random()*1000000),
+      scheduleUid: modifyScheduleRequestFlag ? modifyOnUid : parseInt(Math.random()*64999 + 1), // Value from 1 to 65000
+      scheduleSerVer: newScheduleSerVer,
       channel: Array.from(document.querySelectorAll('.channel-buttons button'))
                     .findIndex(button => button.classList.contains('active')) + 1,
       title: document.getElementById('title').value,
       action: document.getElementById('action-toggle').checked ? 'on' : 'off',
       fromDate: document.getElementById('date-picker').value,
-      fromTime: document.getElementById('time-picker').value,
+      fromTime: document.getElementById('fromTime').value,
+      toTime: document.getElementById('toTime').value,
       //id vaue of repeat button
       repeat: Array.from(document.querySelectorAll('.repeat-buttons button'))
                     .find(button => button.classList.contains('active')).id,
       daysOfWeek: Array.from(document.querySelectorAll('.day-buttons button.active'))
                         .map(button => button.textContent),
+      repeatUntilFlag: document.getElementById('untilCheckbox').checked ? 1 : 0,
       untilDate: document.getElementById('until-date-picker').value
     };
     //{"scheduleUid": "ScheduleUID1",
@@ -583,6 +599,7 @@
     __updateHostStatus();
     modifyScheduleRequestFlag = false; // Reset flag of modify schedule request
     modifyOnUid = -1; // Reset modifyOnUid
+    modifyScheduleSerVer = -1; // Reset modifyScheduleSerVer
   }
 
   //3. Reactive button in popup
@@ -748,6 +765,7 @@
   function __editSchedule(scheduleUid) {
     modifyScheduleRequestFlag = true; // Yêu cầu cập nhật lại danh sách schedule
     modifyOnUid = scheduleUid; // Lưu lại scheduleUid của schedule đang được chỉnh sửa
+    modifyScheduleSerVer = schedeleListData.params.scheduleList.find(schedule => schedule.scheduleUid === scheduleUid).scheduleSerVer;
     console.log('Edit schedule: ' + scheduleUid);
     // Sử dụng một biến để lưu trữ thông tin của schedule đang được chỉnh sửa
     let editingSchedule = null;
@@ -758,7 +776,8 @@
 
     document.getElementById('title').value = editingSchedule.title;
     document.getElementById('date-picker').value = editingSchedule.fromDate;
-    document.getElementById('time-picker').value = editingSchedule.fromTime;
+    document.getElementById('fromTime').value = editingSchedule.fromTime;
+    document.getElementById('toTime').value = editingSchedule.toTime;
     document.getElementById('action-toggle').checked = editingSchedule.action === 'on';
     //Check the node of channel button which has the same value with editingSchedule.channel
     //uncheck the other nodes of channel button
@@ -807,6 +826,14 @@
     editingSchedule.daysOfWeek.forEach((day) => {
       document.querySelector('.day-buttons button:nth-child(' + (["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day) + 1) + ')').classList.add('active');
     });
+
+    document.getElementById('untilCheckbox').checked = editingSchedule.repeatUntilFlag;
+    if (editingSchedule.repeatUntilFlag) {
+      document.getElementById('until-date-picker').removeAttribute('disabled');
+    }
+    else {
+      document.getElementById('until-date-picker').setAttribute('disabled', 'disabled');
+    }
     document.getElementById('until-date-picker').value = editingSchedule.untilDate;
 
     // Hiển thị popup

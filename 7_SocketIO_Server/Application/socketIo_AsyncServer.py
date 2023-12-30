@@ -224,51 +224,59 @@ app.router.add_get('/ZBProblem_01C821', ZBProblem_01C821)
 # ##############################
 # # WEBPAGE: CONTROLLER NODE   #
 # ##############################
-# #COMMON FILES
-# async def ControllerNode_common_styles(request):
-#     with open('/AppDir/Application/WebPage/ControllerNode/common/styles.css') as f:
-#         return web.Response(text=f.read(), content_type='text/css')
-# app.router.add_get('/ControllerNode/commmon/styles.css', ControllerNode_common_styles)
-# async def ControllerNode_common_script(request):
-#     with open('/AppDir/Application/WebPage/ControllerNode/common/script.js') as f:
-#         return web.Response(text=f.read(), content_type='application/javascript')
-# app.router.add_get('/ControllerNode/commmon/script.js', ControllerNode_common_script)
-# #1. Controller_AAABBB
-# async def LiveDev(request):
-#     with open('/AppDir/Application/WebPage/ControllerNode/LiveDev/index.html') as f:
-#         return web.Response(text=f.read(), content_type='text/html')
-# app.router.add_get('/LiveDev', LiveDev)
+#COMMON FILES
+async def LiveDev_common_styles(request):
+    with open('/AppDir/Application/WebPage/ControllerNode/common/styles.css') as f:
+        return web.Response(text=f.read(), content_type='text/css')
+app.router.add_get('/ControllerNode/commmon/styles.css', LiveDev_common_styles)
+async def LiveDev_common_script(request):
+  
+    with open('/AppDir/Application/WebPage/ControllerNode/common/script.js') as f:
+        return web.Response(text=f.read(), content_type='application/javascript')
+app.router.add_get('/ControllerNode/commmon/script.js', LiveDev_common_script)
+
+#1. LIVE CODE
+DeviceUID = '6E756E' #<------ User need to change this DeviceUID
+async def Controller_6E756E_scheduleList_common_script(request):
+    with open('/AppDir/Application/WebPage/ControllerNode/'+DeviceUID+'/scheduleList.html') as f:
+        return web.Response(text=f.read(), content_type='text/html')
+app.router.add_get('/'+DeviceUID+'/ScheduleList', Controller_6E756E_scheduleList_common_script)
+
+async def Controller_6E756E(request):
+    with open('/AppDir/Application/WebPage/ControllerNode/'+DeviceUID+'/index.html') as f:
+        return web.Response(text=f.read(), content_type='text/html')
+app.router.add_get('/'+DeviceUID+'/Index', Controller_6E756E)
 
 ##############################
 # WEBPAGE: LIVE CODE         #
 ##############################
-#COMMON FILES
-async def LiveDev_common_styles(request):
-    with open('/AppDir/Application/WebPage/0_LiveDev/common/styles.css') as f:
-        return web.Response(text=f.read(), content_type='text/css')
-app.router.add_get('/0_LiveDev/commmon/styles.css', LiveDev_common_styles)
-async def LiveDev_common_script(request):
+# #COMMON FILES
+# async def LiveDev_common_styles(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/common/styles.css') as f:
+#         return web.Response(text=f.read(), content_type='text/css')
+# app.router.add_get('/ControllerNode/commmon/styles.css', LiveDev_common_styles)
+# async def LiveDev_common_script(request):
   
-    with open('/AppDir/Application/WebPage/0_LiveDev/common/script.js') as f:
-        return web.Response(text=f.read(), content_type='application/javascript')
-app.router.add_get('/0_LiveDev/commmon/script.js', LiveDev_common_script)
+#     with open('/AppDir/Application/WebPage/ControllerNode/common/script.js') as f:
+#         return web.Response(text=f.read(), content_type='application/javascript')
+# app.router.add_get('/ControllerNode/commmon/script.js', LiveDev_common_script)
 
-#1. LIVE CODE
-UID = 'DeviceUID1' #<------ User need to change this UID
-async def LiveDev_scheduleList_common_script(request):
-    with open('/AppDir/Application/WebPage/0_LiveDev/'+UID+'/scheduleList.html') as f:
-        return web.Response(text=f.read(), content_type='text/html')
-app.router.add_get('/'+UID+'/ScheduleList', LiveDev_scheduleList_common_script)
+# #1. LIVE CODE
+# DeviceUID = '6E756E' #<------ User need to change this DeviceUID
+# async def LiveDev_scheduleList_common_script(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/'+DeviceUID+'/scheduleList.html') as f:
+#         return web.Response(text=f.read(), content_type='text/html')
+# app.router.add_get('/'+DeviceUID+'/ScheduleList', LiveDev_scheduleList_common_script)
 
-async def LiveDev_scheduleJson_common_script(request):
-    with open('/AppDir/Application/WebPage/0_LiveDev/'+UID+'/schedules.json') as f:
-        return web.Response(text=f.read(), content_type='application/json')
-app.router.add_get('/'+UID+'/schedules', LiveDev_scheduleJson_common_script)
+# async def LiveDev_scheduleJson_common_script(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/'+DeviceUID+'/schedules.json') as f:
+#         return web.Response(text=f.read(), content_type='application/json')
+# app.router.add_get('/'+DeviceUID+'/schedules', LiveDev_scheduleJson_common_script)
 
-async def LiveDev(request):
-    with open('/AppDir/Application/WebPage/0_LiveDev/'+UID+'/index.html') as f:
-        return web.Response(text=f.read(), content_type='text/html')
-app.router.add_get('/'+UID+'/LiveDev', LiveDev)
+# async def LiveDev(request):
+#     with open('/AppDir/Application/WebPage/ControllerNode/'+DeviceUID+'/index.html') as f:
+#         return web.Response(text=f.read(), content_type='text/html')
+# app.router.add_get('/'+DeviceUID+'/LiveDev', LiveDev)
 
 ##################################################################################################
 #Check update myConfigWSN.py to reboot container

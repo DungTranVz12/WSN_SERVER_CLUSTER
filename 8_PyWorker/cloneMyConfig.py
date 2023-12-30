@@ -23,7 +23,7 @@ MQTT_BROKER_IP  = "wsnCluster_mqtt"
 MQTT_PORT       = 1885
 MQTT_USERNAME   = "mqtt_broker"
 MQTT_PASSWORD   = "!Da#ImU%VuF3V"
-MQTT_CLIENT_ID  = f'MQTT_CLENT_JP_'+str(random.randint(0, 10000))
+MQTT_CLIENT_ID  = f'MQTT_IN_SOCKET_CLIENT_JP_'+str(random.randint(0, 10000))
 MQTT_TOPIC      = "WSN_SVR_JP_REQ" 
 
 ################### SOCKETIO #######################
